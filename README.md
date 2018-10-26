@@ -3,8 +3,8 @@
 To allow a Nao humanoid robot to Mimic the motion of a human by optical motion tracking.
 
 ### Author
-Lennon NM
-Pattern Recognition and Intelligent Systems Laboratory (PRIS-Lab)
+Lennon NM\
+Pattern Recognition and Intelligent Systems Laboratory (PRIS-Lab)\
 CORE division. 
 
 ### Equipment
