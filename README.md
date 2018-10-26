@@ -2,9 +2,11 @@
 ## General description
 To allow a Nao humanoid robot to Mimic the motion of a human by optical motion tracking.
 
-For development: Use sepparate branch.
-To clone stable release: Clone StableRelease branch.
-For hsitory reference: Master branch (be careful!).
+For development: Use sepparate branch.\
+To clone stable release: Clone *StableRelease* branch.\
+For hsitory reference: *Master* branch (be careful!).\
+
+Version description management is done on file **VersionHistory.md**.
 
 ### Author
 Lennon NM\
