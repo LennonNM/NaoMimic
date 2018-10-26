@@ -32,39 +32,34 @@ The calibration process involves capturing the motion tracking data of a human i
 
 ## File Managing
 ### File Location
-- **Dev_files:** Includes development files. Use only for reference.
--- Aldebaran_Examples: Scripts with examples on Naoqi usage. Files can be obtained from oficial website: http://doc.aldebaran.com/1-14/naoqi/index.html
--- Test_Data_MoCap: Choregraphy routines and motion tracking session files from Motive.
--- Version_History: Development versions history. Each single version is stored in a single directory with the name "Ver_VersionNumber".
-- **Current_Version:** Current version of NaoMimic. Follows the general structure of the mimicking tool.
+* **Dev_files:** Includes development files. Use only for reference.
+** Aldebaran_Examples: Scripts with examples on Naoqi usage. Files can be obtained from oficial website: http://doc.aldebaran.com/1-14/naoqi/index.html
+** Test_Data_MoCap: Choregraphy routines and motion tracking session files from Motive.
+** Version_History: Development versions history. Each single version is stored in a single directory with the name "Ver_VersionNumber".
+* **Current_Version:** Current version of NaoMimic. Follows the general structure of the mimicking tool.
 
 ### Nao Mimic structure
-- **Mimicking tool scripts**
--- Move.py: Main file. Connects to the Nao robot and send the motion instructions. Requires the Calibration Profile and the Choreography to run.
--- CSVMOCAP_Func.py: Functions to manage CSV files to generate the data required to send to the Nao robot for the motion.
--- Calibration.py: Creates the Calibration Profile CSV file. Requires the CSV files with the Nao reference data for each chain end-effector and the corresponding human data to calibrate.
--- Calibrate_Func.py: Functions to support the calibration process.
--- GetPositions.py: Used to export data sensed by the Nao's motion sensors to a CSV file to store the motion reference files for the calibration process.
--- OffsetFile_Func.py: Functions to support reading and writting of calibration coefficients of the Calibration Profile.
--- Error_Func.py: To support the management of some software usage errors with user friendly messages.
-- **MoCap:** Stores the MoCap recording sessions files. 
-- **Comparisons:** Stores files to graphically compare the motion data of a person with Nao's data. Helps to visualize the behavior of the data for specific motion. Use to compare the data in time to manually make adjustments to the CSV files used for the calibration process.
-- **Choreography:** Stores the CSV files for the different choreographies to run on the Nao robot. Some examples are included.
-- **Calbration:** Stores the calibration files.
--- Human: Data to be calibrated. Store a single CSV file with data of a single rigid body (Head, Torso, RArm, LArm) for each rigid body for a single subject in a distinguishable directory. This data is used for the creation of a Calibration Profile. Some examples are included.
--- NAO: Reference data of the motion of the Nao for the calibration process. Includes the default reference files, other files can be used.
--- Profiles: Stores the Calibration Profiles.
--- Routines: Stores the calibration routines from Choregraphy for the Nao to execute. Each routine focusses on generating useful motion information for a body section.
+* **Mimicking tool scripts**
+** Move.py: Main file. Connects to the Nao robot and send the motion instructions. Requires the Calibration Profile and the Choreography to run.
+** CSVMOCAP_Func.py: Functions to manage CSV files to generate the data required to send to the Nao robot for the motion.
+** Calibration.py: Creates the Calibration Profile CSV file. Requires the CSV files with the Nao reference data for each chain end-effector and the corresponding human data to calibrate.
+** Calibrate_Func.py: Functions to support the calibration process.
+** GetPositions.py: Used to export data sensed by the Nao's motion sensors to a CSV file to store the motion reference files for the calibration process.
+** OffsetFile_Func.py: Functions to support reading and writting of calibration coefficients of the Calibration Profile.
+** Error_Func.py: To support the management of some software usage errors with user friendly messages.
+* **MoCap:** Stores the MoCap recording sessions files. 
+* **Comparisons:** Stores files to graphically compare the motion data of a person with Nao's data. Helps to visualize the behavior of the data for specific motion. Use to compare the data in time to manually make adjustments to the CSV files used for the calibration process.
+* **Choreography:** Stores the CSV files for the different choreographies to run on the Nao robot. Some examples are included.
+* **Calbration:** Stores the calibration files.
+** Human: Data to be calibrated. Store a single CSV file with data of a single rigid body (Head, Torso, RArm, LArm) for each rigid body for a single subject in a distinguishable directory. This data is used for the creation of a Calibration Profile. Some examples are included.
+** NAO: Reference data of the motion of the Nao for the calibration process. Includes the default reference files, other files can be used.
+** Profiles: Stores the Calibration Profiles.
+** Routines: Stores the calibration routines from Choregraphy for the Nao to execute. Each routine focusses on generating useful motion information for a body section.
 
 ### Branch Management
-- To collaborate on development: Clone from *StableRelease* branch and create a separate branch. Each new approved version is to be stored on Dev_Files/Version_History. 
-- Stable release: The newest working version of the Mimicking tool will be maintained in the branch *StableRelease* for light cloning. 
-- Full history: The *Master* branch will store the main versioning of the tool. Use only for reference or if a specific version different from the latest current stable is to be used.
--- README.md will be updated with a summary of the main changes of each new version.
--- Dev_Files will include different versions of the tool.
--- Current_Version will contain the latest working version of the tool.
-
-## Version Status
-Development versions are maintained on ***Dev_Files directory***.
-- **Ver_6:** Added calibration reference file and routine for "Head". Changed the markers configuration for the Torso rigid body.
-- **Ver_5:** Calibration process requires a lot of human interaction (running the animations in Choregraphy, start recording in Motive, changing the animation to run on Choregraphy). Time coupling of the motion data (to make Human data comparable in time with the Nao's reference data for the calibration process) is done manually. Mimic is done from a stored choreography file in CSV format, no real-time streaming of data is used yet. 
+* To collaborate on development: Clone from *StableRelease* branch and create a separate branch. Each new approved version is to be stored on Dev_Files/Version_History. 
+* Stable release: The newest working version of the Mimicking tool will be maintained in the branch *StableRelease* for light cloning. 
+* Full history: The *Master* branch will store the main versioning of the tool. Use only for reference or if a specific version different from the latest current stable is to be used.
+** README.md will be updated with a summary of the main changes of each new version.
+** Dev_Files will include different versions of the tool.
+** Current_Version will contain the latest working version of the tool.
