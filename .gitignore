@@ -1,0 +1,12 @@
+#No images or videos
+*.jpg
+*.PNG
+*.jpeg
+*.psd
+*.mp4
+
+#Other python files
+*.pyc
+
+#PDF's
+*.pdf
