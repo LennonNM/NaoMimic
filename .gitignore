@@ -10,3 +10,6 @@
 
 #PDF's
 *.pdf
+
+#Jetbrains project files
+.idea/

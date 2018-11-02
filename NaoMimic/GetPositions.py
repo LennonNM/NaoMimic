@@ -1,178 +1,223 @@
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#Al ejecutarse inicia la toma de datos de las posiciones de los actuadores
-#correspondientes a los 6 efectores finales del robot humanoide NAO
-#(RArm, RLeg, LLeg, LArm, Torso, Head). Se toman "rows" cantidad de sets de
-#coordenadas. Se incluye coordenadas XYZ (+rotaciones si se especifica por el
-#usuario)
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+"""
+Used to capture the position data of the respective end effectors of the 6 humanoid robot Nao's chains
+(in this order of appearance HEAD, TORSO, RARM, LARM, RLEG, LLEG). The user decides when to stop the capture of data, then it exports
+it in a CSV file to the reference data specified path. The info includes coordinates XYZ (+rotaction).
 
-#Imports
-import sys
-import time
+"""
+
+#External Libraries
 from naoqi import ALProxy
 import motion
+import sys
+import time
 import csv
 import os
-from itertools import islice
 from os.path import dirname, abspath
 
-##Custom
-import Error_Func as error
+#Project Libraries
+import Libraries.Error_Func as error
 
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#Recibe IP del robot NAO, marco de referencia de las coordenadas y si se quiere
-#tomar datos de las rotaciones.
-#Devuelve un archivo CSV con la informacion solicitada, siguiende el formato
-#general de exportacion de archivo CSV de Motive
-def main(robotIP, frameRef, rotation, name=None):
+#----------------------------------------------------------------------------------------------------------------------
+def main(robotIP, refFrame, name=None, specificEffectors="ALL"):
+    """
+    :param robotIP: IP of the Nao robot to connect to.
+    :param frameRef: Name of the reference frame for the data collection ("ROBOT" or "TORSO").
+    :param name: Name of the exported CSV file.
+    :param specificEffectors: List of specific effectors to collect data. Separate each end effector with a "/". If
+            "ALL" is used, all available chain effectors are used.
+    """
     PORT = 9559
-    print "Using Port:", PORT
-    if rotation.lower() != "no":
-        if rotation.lower() != "yes":
-            error.abort("Expected a yes or no input for rotation data inclussion", "GetPositions")
+    print("Using Port:", PORT)
 
     try:
-        print "Trying to create ALMotion proxy"
+        print("Trying to create ALMotion proxy")
         motionProxy = ALProxy("ALMotion", robotIP, PORT)
     except Exception,e:
-        print "Could not create proxy to ALMotion"
-        print "Error was: ", e
+        print("Could not create proxy to ALMotion")
+        print("Error was: ", e)
         sys.exit(1)
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#Ajustes iniciales
 
-    #Marco de referencia para la obtencion de datos
-    if frameRef.upper() == "ROBOT":
-        space = motion.FRAME_ROBOT
-    elif frameRef.upper() == "TORSO":
-        space = motion.FRAME_TORSO
+    #-------------------------------------------------------------------------------
+    # Reference frame definition
+    if refFrame.upper() == "ROBOT":
+        frame = motion.FRAME_ROBOT
+    elif refFrame.upper() == "TORSO":
+        frame = motion.FRAME_TORSO
     else:
-        error.abort("is not a valid frame for function", frame, "GetPositions")
-    #Uso de sensores adicionales para aproximar el estado del actuador
+        error.abort("is not a valid frame for function", refFrame, "GetPositions")
+    #True to use sensor aproximaiton of values
     useSensorValues = False
-#-------------------------------------------------------------------------------
-#Obtencion de los datos
 
-    posRArm = []
-    posRLeg = []
-    posLLeg = []
-    posLArm = []
+    # -------------------------------------------------------------------------------
+    # Get effectors to collect
+    effectors = []
+    if specificEffectors.upper() != "ALL":
+        effectors = specificEffectors.split("/")
+        for item in effectors:
+            if (
+                item != "HEAD" or item != "TORSO" or item != "ARMS" or item != "RARM" or item != "LARM"
+                or item != "LEGS" or item != "RLEG" or item != "LLEG"
+            ):
+                error.abort("is not a valid end effector", item, "GetPositions")
+    else:
+        effectors = ["HEAD", "TORSO", "RARM", "LARM"]
+        # effectors = ["HEAD", "TORSO", "RARM", "LARM", "RLEG", "LLEG"]
+
+    #-------------------------------------------------------------------------------
+    # Create single array per chain effector
+    posHead  = []
     posTorso = []
-    posHead = []
+    posRArm  = []
+    posLArm  = []
+    # posRLeg  = []
+    # posLLeg  = []
     rows = 0
 
-    print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-    print "Starting to collect data, interrupt the process only if necessary"
-    print "Wait for completion"
-    print "Press Ctrl+C to stop collecting data and proceed with data writting"
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"+
+            "Starting to collect data, interrupt the process only if necessary.\n"+
+            "Press Ctrl+C anytime to stop collecting data and proceed with data export.\n"+
+            "Wait for completion...\n\n")
     time.sleep(0.5)
 
+    #Data collection
     try:
         while (True):
-            posRArm.append(motionProxy.getPosition("RArm", space, useSensorValues))
-            posRLeg.append(motionProxy.getPosition("RLeg", space, useSensorValues))
-            posLLeg.append(motionProxy.getPosition("LLeg", space, useSensorValues))
-            posLArm.append(motionProxy.getPosition("LArm", space, useSensorValues))
-            posTorso.append(motionProxy.getPosition("Torso", space, useSensorValues))
-            posHead.append(motionProxy.getPosition("Head", space, useSensorValues))
-            time.sleep(0.003)
-
+            posHead.append(motionProxy.getPosition("Head", frame, useSensorValues))
+            posTorso.append(motionProxy.getPosition("Torso", frame, useSensorValues))
+            posRArm.append(motionProxy.getPosition("RArm", frame, useSensorValues))
+            posLArm.append(motionProxy.getPosition("LArm", frame, useSensorValues))
+            # posRLeg.append(motionProxy.getPosition("RLeg", frame, useSensorValues))
+            # posLLeg.append(motionProxy.getPosition("LLeg", frame, useSensorValues))
+            time.sleep(0.003) #This time matches the FPS used on Motive's export
             rows +=1
     except KeyboardInterrupt:
-        print "Data collection finished"
-        print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-        print "Writing CSV with data"
+        print("Data collection finished.\n"+
+                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"+
+                "Writing CSV file with the data collected.")
         time.sleep(0.25)
         pass
-#-------------------------------------------------------------------------------
-#Guardado de los datos en un archivo CSV
+    #-------------------------------------------------------------------------------
+    # CSV file export
+    #
+    # Header format goes as follows:
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Effector1  ,Effector1,Effector1,Effector1,Effector1,Effector1,Effector2,...
+    # rotX       ,rotY     ,rotZ     ,posX     ,posY     ,posZ     ,rotX     ,...
+    # valTake1   ,valTake1 ,valTake1 ,valTake1 ,valTake1 ,valTake1 ,valTake1 ,...
+    # valTake2   ,valTake2 ,valTake2 ,valTake2 ,valTake2 ,valTake2 ,valTake2 ,...
+    # ...
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    #Se utiliza el formato de Motive para el acomodo de los datos en el CSV
-    ## 2 columnas con cuadros y tiempos (no se ocupan), 3 columnas (XYZ) por cada
-    ## marcador involucrado(actuador) /// Filas 1 a 6 no dan informacion valiosa,
-    ## en la fila 7 va el identificador de cada columna, a partir de la fila 8
-    ## inician los datos de las posiciones
+    # Default directory for files storage
     rootDir = dirname(dirname(abspath(__file__)))
-    archivo = os.path.join(rootDir, "Ver_Release/Cal/NAO/GetPositions_Generated/NAO_")
+    fileDir = os.path.join(rootDir, "Calibration/NAO/ReferenceData_Default/")
+    if os.path.isdir(archivo) == False:
+        error.abort("Directory "+fileDir+" does not exist\n")
+    # Add name of the file
     if name is None:
-        archivo += frameRef
-        if rotation.lower() == "yes":
-            archivo += "-wROT"
-        archivo += time.strftime("_%Y-%m-%d_%H-%M-%S")
+        fileDir += frame
+        fileDir += time.strftime("_%Y-%m-%d_%H-%M-%S")
     else:
-        archivo += name
-    archivo += ".csv"
+        fileDir += name
+        fileDir += ".csv"
 
-    #Archivo incluyendo rotaciones del NAO
-    if rotation.lower() == "yes":
-        with open(archivo, 'w') as csvfile:
-            fieldnames = ['C1', 'C2', 'X RArm', 'Y RArm', 'Z RArm', 'WX RArm', 'WY RArm', 'WZ RArm', 'X RLeg', 'Y RLeg', 'Z RLeg', 'WX RLeg', 'WY RLeg', 'WZ RLeg',
-                            'X LLeg', 'Y LLeg', 'Z LLeg', 'WX LLeg', 'WY LLeg', 'WZ LLeg', 'X LArm', 'Y LArm', 'Z LArm', 'WX LArm', 'WY LArm', 'WZ LArm',
-                            'X Torso', 'Y Torso', 'Z Torso', 'WX Torso', 'WY Torso', 'WZ Torso', 'X Head', 'Y Head', 'Z Head', 'WX Head', 'WY Head', 'WZ Head']
+    # Create the CSV file
+        with open(fileDir, 'w') as csvfile:
+            # Define columns
+            fieldnames = []
+            header = []
+            if specificEffectors == "ALL":
+                fieldnames = [
+                    'WX Head', 'WY Head', 'WZ Head', 'X Head', 'Y Head', 'Z Head',
+                    'WX Torso', 'WY Torso', 'WZ Torso', 'X Torso', 'Y Torso', 'Z Torso',
+                    'WX RArm', 'WY RArm', 'WZ RArm', 'X RArm', 'Y RArm', 'Z RArm',
+                    'WX LArm', 'WY LArm', 'WZ LArm', 'X LArm', 'Y LArm', 'Z LArm',
+                    # 'WX RLeg', 'WY RLeg', 'WZ RLeg', 'X RLeg', 'Y RLeg', 'Z RLeg',
+                    # 'WX LLeg', 'WY LLeg', 'WZ LLeg', 'X LLeg', 'Y LLeg', 'Z LLeg',
+                              ]
+            elif specificEffectors == "ARMS":
+                fieldnames = [
+                    'WX RArm', 'WY RArm', 'WZ RArm', 'X RArm', 'Y RArm', 'Z RArm',
+                    'WX LArm', 'WY LArm', 'WZ LArm', 'X LArm', 'Y LArm', 'Z LArm',
+                ]
+            elif (
+                specificEffectors == "HEAD" or specificEffectors == "TORSO" or specificEffectors == "RARM" or
+                specificEffectors == "LARM" or specificEffectors == "RLEG" or specificEffectors == "LLEG"
+                ):
+                fieldnames = [
+                    'WX', 'WY', 'WZ', 'X', 'Y', 'Z'
+                ]
+
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            for x in range(6):
-                writer.writerow({})
-            writer.writeheader()
-            for i in range(rows):
-                writer.writerow({'X RArm': posRArm[i][0], 'Y RArm': posRArm[i][1], 'Z RArm': posRArm[i][2], 'WX RArm': posRArm[i][3], 'WY RArm': posRArm[i][4], 'WZ RArm': posRArm[i][5],
-                                    'X RLeg': posRLeg[i][0], 'Y RLeg': posRLeg[i][1], 'Z RLeg': posRLeg[i][2], 'WX RLeg': posRLeg[i][3], 'WY RLeg': posRLeg[i][4], 'WZ RLeg': posRLeg[i][5],
-                                    'X LLeg': posLLeg[i][0], 'Y LLeg': posLLeg[i][1], 'Z LLeg': posLLeg[i][2], 'WX LLeg': posLLeg[i][3], 'WY LLeg': posLLeg[i][4], 'WZ LLeg': posLLeg[i][5],
-                                    'X LArm': posLArm[i][0], 'Y LArm': posLArm[i][1], 'Z LArm': posLArm[i][2], 'WX LArm': posLArm[i][3], 'WY LArm': posLArm[i][4], 'WZ LArm': posLArm[i][5],
-                                    'X Torso': posTorso[i][0], 'Y Torso': posTorso[i][1], 'Z Torso': posTorso[i][2], 'WX Torso': posTorso[i][3], 'WY Torso': posTorso[i][4], 'WZ Torso': posTorso[i][5],
-                                    'X Head': posHead[i][0], 'Y Head': posHead[i][1], 'Z Head': posHead[i][2], 'WX Head': posHead[i][3], 'WY Head': posHead[i][4], 'WZ Head': posHead[i][5],
-                                })
-        #Archivo sin rotaciones
-    else:
-            with open(archivo, 'w') as csvfile:
-                fieldnames = ['C1', 'C2', 'X RArm', 'Y RArm', 'Z RArm', 'X RLeg', 'Y RLeg', 'Z RLeg', 'X LLeg', 'Y LLeg', 'Z LLeg', 'X LArm', 'Y LArm', 'Z LArm',
-                                  'X Torso', 'Y Torso', 'Z Torso', 'X Head', 'Y Head', 'Z Head']
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                for x in range(6):
-                    writer.writerow({})
-                writer.writeheader()
-                for i in range(rows):
-                    writer.writerow({'X RArm': posRArm[i][0], 'Y RArm': posRArm[i][1], 'Z RArm': posRArm[i][2], 'X RLeg': posRLeg[i][0], 'Y RLeg': posRLeg[i][1], 'Z RLeg': posRLeg[i][2],
-                                        'X LLeg': posLLeg[i][0], 'Y LLeg': posLLeg[i][1], 'Z LLeg': posLLeg[i][2], 'X LArm': posLArm[i][0], 'Y LArm': posLArm[i][1], 'Z LArm': posLArm[i][2],
-                                        'X Torso': posTorso[i][0], 'Y Torso': posTorso[i][1], 'Z Torso': posTorso[i][2], 'X Head': posHead[i][0], 'Y Head': posHead[i][1], 'Z Head': posHead[i][2],
-                                    })
 
-    print "END"
-    print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+            # Write header info
+            writer.writerow(effectors)
+            writer.writeheader()
+            # Write rows with data
+            for i in range(rows):
+                writer.writerow({
+                    'WX Head': posHead[i][3], 'WY Head': posHead[i][4], 'WZ Head': posHead[i][5],
+                        'X Head': posHead[i][0], 'Y Head': posHead[i][1], 'Z Head': posHead[i][2],
+                    'WX Torso': posHead[i][3], 'WY Torso': posHead[i][4], 'WZ Torso': posHead[i][5],
+                        'X Torso': posHead[i][0], 'Y Torso': posHead[i][1], 'Z Torso': posHead[i][2],
+                    'WX RArm': posHead[i][3], 'WY RArm': posHead[i][4], 'WZ RArm': posHead[i][5],
+                        'X RArm': posHead[i][0], 'Y RArm': posHead[i][1], 'Z RArm': posHead[i][2],
+                    'WX LArm': posHead[i][3], 'WY LArm': posHead[i][4], 'WZ LArm': posHead[i][5],
+                        'X LArm': posHead[i][0], 'Y LArm': posHead[i][1], 'Z LArm': posHead[i][2],
+                    # 'WX RLeg': posHead[i][3], 'WY RLeg': posHead[i][4], 'WZ RLeg': posHead[i][5],
+                    #     'X RLeg': posHead[i][0], 'Y RLeg': posHead[i][1], 'Z RLeg': posHead[i][2],
+                    # 'WX LLeg': posHead[i][3], 'WY LLeg': posHead[i][4], 'WZ LLeg': posHead[i][5],
+                    #    'X LLeg': posHead[i][0], 'Y LLeg': posHead[i][1], 'Z LLeg': posHead[i][2],
+                                })
+
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nFile exported as: "+fileDir+
+          "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
-    robotIP = "10.0.1.128" #Bato en red PrisNAO
+    robotIP = "10.0.1.128" #Based on PrisNao network
     frameRef = "ROBOT"
-    rotation = "no"
     name = None
+    specificEffectors = "ALL"
 
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 3:
         robotIP = sys.argv[1]
         frame = sys.argv[2]
-        rotation = sys.argv[3]
-        print "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-        print "Using robot IP:", sys.argv[1], " with frame:", frameRef
-        print "Include rotations:", rotation
-        print "Name of CSV file default by system date and time"
-        print "---------------------------------------------------------"
-        print "Starting to retrieve sensor values"
-        print "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"+
+            "Using robot IP: "+ robotIP +" with frame: "+ frameRef +
+            "Collecting data for all available effectors.n"+
+            "\nName of CSV file defined by time and date\n"+
+            "---------------------------------------------------------\n"+
+            "Starting to retrieve sensor values\n"+
+            "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    elif len(sys.argv) == 4:
+        robotIP = sys.argv[1]
+        frame = sys.argv[2]
+        name = sys.argv[3]
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
+            "Using robot IP: " + robotIP + " with frame: " + frameRef +
+              "Collecting data for all available effectors.n"+
+            "\nName of CSV file: NAO_"+ name +
+            "\n---------------------------------------------------------\n"+
+            "Starting to retrieve sensor values\n"+
+            "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     elif len(sys.argv) == 5:
         robotIP = sys.argv[1]
         frame = sys.argv[2]
-        rotation = sys.argv[3]
-        name = sys.argv[4]
-        print "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-        print "Using robot IP:", sys.argv[1], " with frame:", frameRef
-        print "Include rotations:", rotation
-        print "Name of CSV file: NAO_", name
-        print "---------------------------------------------------------"
-        print "Starting to retrieve sensor values"
-        print "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        name = sys.argv[3]
+        specificEffectors = sys.argv[4]
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
+            "Using robot IP: " + robotIP + " with frame: " + frameRef)
+            if name is None:
+                print("\nName of CSV file defined by time and date\n")
+            else:
+                print("\nName of CSV file: NAO_" + name)
+            print("\n---------------------------------------------------------\n"+
+            "Starting to retrieve sensor values\n"+
+            "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     else:
-        error.abort("Expected 3 or 4 arguments on call.", "GetPositions")
+        error.abort("Expected 2 to 4 arguments on call.", "GetPositions")
 
     time.sleep(1.0)
-    main(robotIP, frameRef, rotation, name)
+    main(robotIP, frameRef, name, specificEffectors)
