@@ -15,7 +15,8 @@ import os
 from os.path import dirname, abspath
 
 #Project Libraries
-import Libraries.Error_Func as error
+import Error_Func as error
+import CSV_Utils as csvUtils
 
 #----------------------------------------------------------------------------------------------------------------------
 def main(robotIP, refFrame, name=None, specificEffectors="ALL"):
@@ -96,82 +97,8 @@ def main(robotIP, refFrame, name=None, specificEffectors="ALL"):
                 "Writing CSV file with the data collected.")
         time.sleep(0.25)
         pass
-    #-------------------------------------------------------------------------------
-    # CSV file export
-    #
-    # Header format goes as follows:
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # Effector1  ,Effector1,Effector1,Effector1,Effector1,Effector1,Effector2,...
-    # rotX       ,rotY     ,rotZ     ,posX     ,posY     ,posZ     ,rotX     ,...
-    # valTake1   ,valTake1 ,valTake1 ,valTake1 ,valTake1 ,valTake1 ,valTake1 ,...
-    # valTake2   ,valTake2 ,valTake2 ,valTake2 ,valTake2 ,valTake2 ,valTake2 ,...
-    # ...
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    # Default directory for files storage
-    rootDir = dirname(dirname(abspath(__file__)))
-    fileDir = os.path.join(rootDir, "Calibration/NAO/ReferenceData_Default/")
-    if os.path.isdir(archivo) == False:
-        error.abort("Directory "+fileDir+" does not exist\n")
-    # Add name of the file
-    if name is None:
-        fileDir += frame
-        fileDir += time.strftime("_%Y-%m-%d_%H-%M-%S")
-    else:
-        fileDir += name
-        fileDir += ".csv"
-
-    # Create the CSV file
-        with open(fileDir, 'w') as csvfile:
-            # Define columns
-            fieldnames = []
-            header = []
-            if specificEffectors == "ALL":
-                fieldnames = [
-                    'WX Head', 'WY Head', 'WZ Head', 'X Head', 'Y Head', 'Z Head',
-                    'WX Torso', 'WY Torso', 'WZ Torso', 'X Torso', 'Y Torso', 'Z Torso',
-                    'WX RArm', 'WY RArm', 'WZ RArm', 'X RArm', 'Y RArm', 'Z RArm',
-                    'WX LArm', 'WY LArm', 'WZ LArm', 'X LArm', 'Y LArm', 'Z LArm',
-                    # 'WX RLeg', 'WY RLeg', 'WZ RLeg', 'X RLeg', 'Y RLeg', 'Z RLeg',
-                    # 'WX LLeg', 'WY LLeg', 'WZ LLeg', 'X LLeg', 'Y LLeg', 'Z LLeg',
-                              ]
-            elif specificEffectors == "ARMS":
-                fieldnames = [
-                    'WX RArm', 'WY RArm', 'WZ RArm', 'X RArm', 'Y RArm', 'Z RArm',
-                    'WX LArm', 'WY LArm', 'WZ LArm', 'X LArm', 'Y LArm', 'Z LArm',
-                ]
-            elif (
-                specificEffectors == "HEAD" or specificEffectors == "TORSO" or specificEffectors == "RARM" or
-                specificEffectors == "LARM" or specificEffectors == "RLEG" or specificEffectors == "LLEG"
-                ):
-                fieldnames = [
-                    'WX', 'WY', 'WZ', 'X', 'Y', 'Z'
-                ]
-
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-            # Write header info
-            writer.writerow(effectors)
-            writer.writeheader()
-            # Write rows with data
-            for i in range(rows):
-                writer.writerow({
-                    'WX Head': posHead[i][3], 'WY Head': posHead[i][4], 'WZ Head': posHead[i][5],
-                        'X Head': posHead[i][0], 'Y Head': posHead[i][1], 'Z Head': posHead[i][2],
-                    'WX Torso': posHead[i][3], 'WY Torso': posHead[i][4], 'WZ Torso': posHead[i][5],
-                        'X Torso': posHead[i][0], 'Y Torso': posHead[i][1], 'Z Torso': posHead[i][2],
-                    'WX RArm': posHead[i][3], 'WY RArm': posHead[i][4], 'WZ RArm': posHead[i][5],
-                        'X RArm': posHead[i][0], 'Y RArm': posHead[i][1], 'Z RArm': posHead[i][2],
-                    'WX LArm': posHead[i][3], 'WY LArm': posHead[i][4], 'WZ LArm': posHead[i][5],
-                        'X LArm': posHead[i][0], 'Y LArm': posHead[i][1], 'Z LArm': posHead[i][2],
-                    # 'WX RLeg': posHead[i][3], 'WY RLeg': posHead[i][4], 'WZ RLeg': posHead[i][5],
-                    #     'X RLeg': posHead[i][0], 'Y RLeg': posHead[i][1], 'Z RLeg': posHead[i][2],
-                    # 'WX LLeg': posHead[i][3], 'WY LLeg': posHead[i][4], 'WZ LLeg': posHead[i][5],
-                    #    'X LLeg': posHead[i][0], 'Y LLeg': posHead[i][1], 'Z LLeg': posHead[i][2],
-                                })
-
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nFile exported as: "+fileDir+
-          "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    dataSet = [posHead, posTorso, posRArm, posLArm]
+    csvUtils.writeCSVReference(dataSet, name, refFrame, specificEffectors)
 
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------

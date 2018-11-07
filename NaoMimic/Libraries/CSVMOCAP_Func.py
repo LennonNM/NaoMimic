@@ -10,13 +10,12 @@
 #Imports
 import csv
 import os
-from itertools import islice
 from os.path import dirname, abspath
 from copy import deepcopy
 
 ##Custom
-import OffsetFile_Func as offset
 import Error_Func as error
+import OffsetFile_Func as offset
 
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
