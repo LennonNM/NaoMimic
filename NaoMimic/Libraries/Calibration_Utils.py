@@ -10,69 +10,6 @@ import Error_Func as error
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def getCalibrationTerms(listReference, listPerson, degree = 1):
-    """
-    This function performs the linear regression coupling between the 2 data sets received. The sets correspond to a
-    single effector. The default polynomial degree for the regression is set to 1. This function uses polyfit from
-    numpy to perform the linear regression. It supposes that both sets received are of the same size.
-    
-    :param listReference: Data set to be used as reference for the data coupling. Includes all the axes of the effector.
-    :param listPerson: Data set to be adjusted.
-    :param degree: Degree of the polynomial model to use for the linear regression.
-    :return calibrationTerms: The coefficients of the polynomial fit between data sets, per axis of the effector.
-    """
-
-    # Makes sure data sets are same size
-    if len(listReference) != len(listPerson):
-        error.abort("Sizes of the data sets are not equal." +
-                    "\nReference data set size: " + listReference +
-                    "\nPerson data set size: " + listPerson)
-
-    # Create lists 
-    refX = list()
-    refY = list()
-    refZ = list()
-    refWX = list()
-    refWY = list()
-    refWZ = list()
-    personX = list()
-    personY = list()
-    personZ = list()
-    personWX = list()
-    personWY = list()
-    personWZ = list()
-    coefficients = [[] for k in range(6)]  # Always does X, Y, Z, WX, WY, WZ
-
-    # Separates each axis
-    # Reference data
-    for i in range(len(listReference)):
-        refX.append(listReference[i][0])
-        refY.append(listReference[i][1])
-        refZ.append(listReference[i][2])
-        refWX.append(listReference[i][3])
-        refWY.append(listReference[i][4])
-        refWZ.append(listReference[i][5])
-    # Data to adjust
-    for i in range(len(listPerson)):
-            personX.append(listPerson[i][0])
-            personY.append(listPerson[i][1])
-            personZ.append(listPerson[i][2])
-            personWX.append(listPerson[i][3])
-            personWY.append(listPerson[i][4])
-            personWZ.append(listPerson[i][5])
-
-    # Uses polyfit to perform pylinomial linear regression
-    coefficients[0] = list(np.polyfit(personX, refX, degree))
-    coefficients[1] = list(np.polyfit(personY, refY, degree))
-    coefficients[2] = list(np.polyfit(personZ, refZ, degree))
-    coefficients[3] = list(np.polyfit(personWX, refWX, degree))
-    coefficients[4] = list(np.polyfit(personWY, refWY, degree))
-    coefficients[5] = list(np.polyfit(personWZ, refWZ, degree))
-
-    return coefficients
-
-# ----------------------------------------------------------------------------------------------------------------------
-
 def syncData(referenceData, mocapData):
     """
     This function is used to time couple 2 different sets of data. It shifts the mocapData to match the
@@ -228,3 +165,67 @@ def syncData(referenceData, mocapData):
     # Return adjusted data set
     adjustedSet = [mocapDataWX, mocapDataWY, mocapDataWZ, mocapDataX, mocapDataY, mocapDataZ]
     return adjustedSet
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def getCalibrationTerms(listReference, listPerson, degree = 1):
+    """
+    This function performs the linear regression coupling between the 2 data sets received. The sets correspond to a
+    single effector. The default polynomial degree for the regression is set to 1. This function uses polyfit from
+    numpy to perform the linear regression. It supposes that both sets received are of the same size.
+    
+    :param listReference: Data set to be used as reference for the data coupling. Includes all the axes of the effector.
+    :param listPerson: Data set to be adjusted.
+    :param degree: Degree of the polynomial model to use for the linear regression.
+    :return calibrationTerms: The coefficients of the polynomial fit between data sets, per axis of the effector.
+    """
+
+    # Makes sure data sets are same size
+    if len(listReference) != len(listPerson):
+        error.abort("Sizes of the data sets are not equal." +
+                    "\nReference data set size: " + listReference +
+                    "\nPerson data set size: " + listPerson)
+
+    # Create lists 
+    refX = list()
+    refY = list()
+    refZ = list()
+    refWX = list()
+    refWY = list()
+    refWZ = list()
+    personX = list()
+    personY = list()
+    personZ = list()
+    personWX = list()
+    personWY = list()
+    personWZ = list()
+    coefficients = [[] for k in range(6)]  # Always does X, Y, Z, WX, WY, WZ
+
+    # Separates each axis
+    # Reference data
+    for i in range(len(listReference)):
+        refX.append(listReference[i][0])
+        refY.append(listReference[i][1])
+        refZ.append(listReference[i][2])
+        refWX.append(listReference[i][3])
+        refWY.append(listReference[i][4])
+        refWZ.append(listReference[i][5])
+    # Data to adjust
+    for i in range(len(listPerson)):
+            personX.append(listPerson[i][0])
+            personY.append(listPerson[i][1])
+            personZ.append(listPerson[i][2])
+            personWX.append(listPerson[i][3])
+            personWY.append(listPerson[i][4])
+            personWZ.append(listPerson[i][5])
+
+    # Uses polyfit to perform pylinomial linear regression
+    coefficients[0] = list(np.polyfit(personX, refX, degree))
+    coefficients[1] = list(np.polyfit(personY, refY, degree))
+    coefficients[2] = list(np.polyfit(personZ, refZ, degree))
+    coefficients[3] = list(np.polyfit(personWX, refWX, degree))
+    coefficients[4] = list(np.polyfit(personWY, refWY, degree))
+    coefficients[5] = list(np.polyfit(personWZ, refWZ, degree))
+
+    return coefficients
+
