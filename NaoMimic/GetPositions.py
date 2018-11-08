@@ -15,8 +15,8 @@ import os
 from os.path import dirname, abspath
 
 #Project Libraries
-import Error_Utils as error
-import CSV_Utils as csvUtils
+from Libraries import Error_Utils as error
+from Libraries import CSV_Utils as csvUtils
 
 #----------------------------------------------------------------------------------------------------------------------
 def main(robotIP, refFrame, name=None, specificEffectors="ALL"):
@@ -106,12 +106,20 @@ def main(robotIP, refFrame, name=None, specificEffectors="ALL"):
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
-    robotIP = "10.0.1.128" #Based on PrisNao network
+    robotIP = "10.0.1.193" # Based on PrisNao network
     frameRef = "ROBOT"
     name = None
     specificEffectors = "ALL"
 
-    if len(sys.argv) == 3:
+    if len(sys.argv) < 3:
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"+
+            "Using robot IP: "+ robotIP +" with frame: "+ frameRef +
+            "\nCollecting data for all available effectors"+
+            "\nName of CSV file defined by time and date\n"+
+            "---------------------------------------------------------\n"+
+            "Starting to retrieve sensor values\n"+
+            "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    elif len(sys.argv) == 3:
         robotIP = sys.argv[1]
         frame = sys.argv[2]
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"+
@@ -138,18 +146,17 @@ if __name__ == "__main__":
         name = sys.argv[3]
         specificEffectors = sys.argv[4]
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
-            "Using robot IP: " + robotIP + " with frame: " + frameRef
-              )
+            "Using robot IP: " + robotIP + " with frame: " + frameRef)
         if name is None:
             print("\nName of CSV file defined by time and date\n")
         else:
             print("\nName of CSV file: NAO_" + name)
         print("\n---------------------------------------------------------\n" +
         "Starting to retrieve sensor values\n" +
-        "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-              )
+        "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     else:
-        error.abort("Expected 2 to 4 arguments on call.", "GetPositions")
+        print("\nRetrieving canceled\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+        error.abort("Expected maximum 4 arguments on call.", "GetPositions")
 
     time.sleep(1.0)
     main(robotIP, frameRef, name, specificEffectors)
