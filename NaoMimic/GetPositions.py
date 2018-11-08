@@ -15,7 +15,7 @@ import os
 from os.path import dirname, abspath
 
 #Project Libraries
-import Error_Func as error
+import Error_Utils as error
 import CSV_Utils as csvUtils
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ def main(robotIP, refFrame, name=None, specificEffectors="ALL"):
     try:
         print("Trying to create ALMotion proxy")
         motionProxy = ALProxy("ALMotion", robotIP, PORT)
-    except Exception,e:
+    except Exception as e:
         print("Could not create proxy to ALMotion")
         print("Error was: ", e)
         sys.exit(1)
@@ -93,12 +93,15 @@ def main(robotIP, refFrame, name=None, specificEffectors="ALL"):
             rows +=1
     except KeyboardInterrupt:
         print("Data collection finished.\n"+
-                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"+
+                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" +
                 "Writing CSV file with the data collected.")
         time.sleep(0.25)
         pass
     dataSet = [posHead, posTorso, posRArm, posLArm]
     csvUtils.writeCSVReference(dataSet, name, refFrame, specificEffectors)
+
+    print("Finish GetPositions routine" +
+          "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
@@ -125,7 +128,7 @@ if __name__ == "__main__":
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
             "Using robot IP: " + robotIP + " with frame: " + frameRef +
               "Collecting data for all available effectors.n"+
-            "\nName of CSV file: NAO_"+ name +
+            "\nName of CSV file: NAO_" + name +
             "\n---------------------------------------------------------\n"+
             "Starting to retrieve sensor values\n"+
             "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -135,14 +138,16 @@ if __name__ == "__main__":
         name = sys.argv[3]
         specificEffectors = sys.argv[4]
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
-            "Using robot IP: " + robotIP + " with frame: " + frameRef)
-            if name is None:
-                print("\nName of CSV file defined by time and date\n")
-            else:
-                print("\nName of CSV file: NAO_" + name)
-            print("\n---------------------------------------------------------\n"+
-            "Starting to retrieve sensor values\n"+
-            "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            "Using robot IP: " + robotIP + " with frame: " + frameRef
+              )
+        if name is None:
+            print("\nName of CSV file defined by time and date\n")
+        else:
+            print("\nName of CSV file: NAO_" + name)
+        print("\n---------------------------------------------------------\n" +
+        "Starting to retrieve sensor values\n" +
+        "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+              )
     else:
         error.abort("Expected 2 to 4 arguments on call.", "GetPositions")
 

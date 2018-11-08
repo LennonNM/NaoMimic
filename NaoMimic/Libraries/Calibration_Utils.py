@@ -6,7 +6,7 @@ Supports the calibration process.
 import numpy as np
 
 # Project libraries
-import Error_Func as error
+import Error_Utils as error
 
 # ----------------------------------------------------------------------------------------------------------------------
 

@@ -14,7 +14,7 @@ from os.path import dirname, abspath
 from copy import deepcopy
 
 ##Custom
-import Error_Func as error
+import Error_Utils as error
 import OffsetFile_Func as offset
 
 #-------------------------------------------------------------------------------

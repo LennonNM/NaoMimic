@@ -23,7 +23,7 @@ import time
 
 ##Custom
 import Calibration_Utils as cal
-import Error_Func as error
+import Error_Utils as error
 import CSV_Utils as csvUtils
 
 
