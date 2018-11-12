@@ -1,34 +1,35 @@
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#Manejo de errores de uso de la aplicacion. Recibe explicacion del error,
-#script donde se dio el error, y entrada recibida que ocasiono el error (opcional)
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+"""
+Functions for managing known errors to gracefully terminate the process.
+"""
 
-#Imports
+# Imports
 import sys
 
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#abort: ocasiona un aborto de la operacion en proceso
-def abort(explanation, value=None, program=None, called=None):
-    print("---------------------------------------------------")
-    print("ERROR on Teleoperation Execution:")
-    if value is not None:
-        print("        Received", value)
-        print("   ", explanation)
-        if called is not None:
-            print("        Called from:", called)
-        if program is not None:
-            print("    Aborting from file:", program)
-        else:
-            print("    Aborting process")
-    else:
-        print("   ", explanation)
-        if called is not None:
-            print("        Called from:", called)
-        if program is not None:
-            print("    Aborting from file:", program)
-        else:
-            print("    Aborting process")
-    print("---------------------------------------------------")
+# -------------------------------------------------------------------------------
+
+def abort(errorMessage, processName = None, sysError = None):
+    """
+    This function is used to terminate the current process with a user defined error messages on terminal.
+
+    :param errorMessage: Error message text to be displayed.
+    :param error: Exception type variable from a 'catch-except'.
+    :param processName: User defined name of the process being terminated.
+    :return: void
+    """
+    printMessage = ("\n\n++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+                    +   "      ERROR ON A NAO MIMIC PROCESS EXECUTION      \n\n")
+    printMessage += errorMessage
+    if processName is not None:
+        printMessage += ("\n----------------\n"
+                         + "Interrupted process: "
+                         + processName
+                         + "\n----------------\n")
+    if sysError is not None:
+        printMessage += ("\n----------------\nSystem Error: "
+                        + sysError
+                        + "\n----------------\n")
+    printMessage +=  ("\n                 PROCESS ABORTED                  \n"
+                      + "++++++++++++++++++++++++++++++++++++++++++++++++++\n")
     sys.exit()
-#-------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------

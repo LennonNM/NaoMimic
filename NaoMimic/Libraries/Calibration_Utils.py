@@ -61,10 +61,10 @@ def syncData(referenceData, mocapData):
     # Make sure there is only one maximum per axis
     for i in maxRef:
         if len(i) > 1:
-            error.abort("Data ste has more than one maximum")
+            error.abort("Data set has more than one maximum", "Syncing MoCap data set with Reference data set")
     for i in maxMocap:
         if len(i) > 1:
-            error.abort("Data ste has more than one maximum")
+            error.abort("Data set has more than one maximum", "Syncing MoCap data set with Reference data set")
 
     # Find indexes of maximums
     indxRef = [[] for k in range(DoF)]
@@ -184,7 +184,7 @@ def getCalibrationTerms(listReference, listPerson, degree = 1):
     if len(listReference) != len(listPerson):
         error.abort("Sizes of the data sets are not equal." +
                     "\nReference data set size: " + listReference +
-                    "\nPerson data set size: " + listPerson)
+                    "\nPerson data set size: " + listPerson, "Generation of calibration terms")
 
     # Create lists 
     refX = list()

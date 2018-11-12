@@ -38,8 +38,8 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
     dirNao = os.path.join(dirNao, pathFile + ".csv")
     try:
         fileNao = open(dirNao, 'rt', encoding="utf8")
-    except Exception:
-        error.abort("is not a valid directory or file", dirNao, "CalibrateFunc")
+    except Exception as e1:
+        error.abort(dirNao + " is not a valid directory or file", "Read CSV file with MoCap exported data", e1)
     reader = csv.reader(fileNao)
     rowsMocap = [r for r in reader]
     fileNao.close()
@@ -74,7 +74,7 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
     ):
         totalEffectors = 1
     else:
-        error.abort("is not a valid Effector definition", whichEffectors)
+        error.abort(whichEffectors + " is not a valid Effector definition", "Read CSV file with MoCap exported data")
 
     dataEffector = [[] for k in range(totalEffectors)]  # list to store the data separated by effector
     countColumn = 0  # Counter to keep track of each set of axes per effector
@@ -86,16 +86,18 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
         for column in range(dataSetLen):
                 try:
                     dataSet[countColumn] = float(rowsData[i].pop(0))
-                except Exception:
-                    error.abort("A value on " + dirNao + " is not valid when converting to float.")
+                except Exception as e2:
+                    error.abort("A value on " + dirNao + " is not valid when converting to float",
+                                "Read CSV file with MoCap exported data", e2)
                 countColumn += 1
 
                 # All columns for a single row covered
                 if countColumn == dataSetLen - 1:
                     try:
                         dataSet[countColumn] = float(rowsData[i].pop(0))
-                    except Exception:
-                        error.abort("A value on " + dirNao + " is not valid when converting to float.")
+                    except Exception as e3:
+                        error.abort("A value on " + dirNao + " is not valid when converting to float",
+                                    "Read CSV file with MoCap exported data", e3)
                     countColumn = 0
 
                     # Organize data to the order: X, Y, Z, WX, WY, WZ
@@ -122,7 +124,7 @@ def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
     storeDir = os.path.join(rootDir, "Calibration/Human/CalibrationProfiles/")
 
     if pathCalProf.find("/") == -1:
-        error.abort("Must specify the folder to store the file. Received only " + pathCalProf)
+        error.abort("Must specify the folder to store the file. Received only " + pathCalProf, "Write CSV file with MoCap adjusted data")
     folder = pathCalProf.split("/")
     storeDir = os.path.join(storeDir, folder[0])
 
@@ -133,8 +135,8 @@ def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
               )
         try:
             os.makedirs(storeDir)
-        except Exception:
-            error.abort("Failed to create directory " + storeDir)
+        except Exception as e1:
+            error.abort("Failed to create directory " + storeDir, "Write CSV file with MoCap adjusted data", e1)
         print("Directory " + storeDir + " successfully created")
 
     # Creating file
@@ -162,11 +164,14 @@ def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
                         fieldnames[i*6+2]: dataEffectors[i][j][2], fieldnames[i*6+3]: dataEffectors[i][j][3],
                         fieldnames[i*6+4]: dataEffectors[i][j][4], fieldnames[i*6+5]: dataEffectors[i][j][5],
                     })
-    except Exception as e:
+    except Exception as e2:
         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
               "Failed to create" + storeDir +
               "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        error.abort("")
+        error.abort("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+              "Failed to create" + storeDir +
+              "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
+                    "Write CSV file with MoCap adjusted data", e2)
 
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           "CSV file created succesfully" +
@@ -210,7 +215,7 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
     elif whichEffectors.upper() == "LEGS":
         effectors = ["RLEG", "LLEG"]
     else:
-        error.abort("is not a valid Effector definition", whichEffectors)
+        error.abort(whichEffectors + " is not a valid Effector definition", "Write CSV with reference data")
 
     # Default directory for files storage
     rootDir = dirname(dirname(abspath(__file__)))
@@ -285,8 +290,8 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
               "CSV file created succesfully" +
               "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    except Exception:
-        error.abort("Failed to create file " + fileDir)
+    except Exception as e1:
+        error.abort("Failed to create file " + fileDir, "Write CSV with reference data", e1)
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -296,7 +301,7 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
     appearance of the effectors must follow: Head, Torso, RArm, LArm, RLeg, LLeg. The CSV file is custom for the project
     and includes a single row header.
 
-    :param pathFile: Path to the CSV file containing the calibration data from a MoCap recording from Motive.
+    :param pathFile: Path to the CSV file containing the reference calibration data extracted from the Nao with GetPositions.
     :param whichEffectors: Used to identify the amount of effectors included on the CSV file.
                     "ALL": Head, Torso, RArm, LArm, RLeg, LLeg
                     "ARMS": RArm, LArm
@@ -322,8 +327,8 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
     dirNao = os.path.join(dirNao, pathFile + ".csv")
     try:
         fileNao = open(dirNao, 'rt', encoding="utf8")
-    except Exception:
-        error.abort("is not a valid directory or file", dirNao, "Calibrate_Utils")
+    except Exception as e1:
+        error.abort(dirNao + " is not a valid directory or file", "Read CSV file with reference data", e1)
     reader = csv.reader(fileNao)
     rowsMocap = [r for r in reader]
     fileNao.close()
@@ -348,7 +353,7 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
     ):
         totalEffectors = 1
     else:
-        error.abort("is not a valid Effector definition", whichEffectors)
+        error.abort(whichEffectors + " is not a valid Effector definition", "Read CSV file with reference data")
 
     countColumn = 0  # Counter to keep track of each set of axes per effector
     dataSet = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # Set of WX, WY, WZ, X, Y, Z
@@ -357,10 +362,10 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
 
     for i, item in enumerate(rowsData):
         for column in range(dataSetLen):
-            # try:
-            dataSet[countColumn] = float(rowsData[i].pop(0))
-            # except Exception:
-            #     error.abort("A value on " + dirNao + " is not valid when converting to float.")
+            try:
+                dataSet[countColumn] = float(rowsData[i].pop(0))
+            except Exception:
+                error.abort("A value on " + dirNao + " is not valid when converting to float", "Read CSV file with reference data")
             countColumn += 1
 
             # All columns for a single row covered
@@ -368,7 +373,7 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
                 try:
                     dataSet[countColumn] = float(rowsData[i].pop(0))
                 except Exception:
-                    error.abort("A value on " + dirNao + " is not valid when converting to float.")
+                    error.abort("A value on " + dirNao + " is not valid when converting to float", "Read CSV file with reference data")
                 countColumn = 0
 
                 # Organize data to the order: X, Y, Z, WX, WY, WZ
@@ -419,7 +424,7 @@ def readCalibrationProfile(fileName):
         coefficients = [r for r in reader]  # Each row contains the coefficients of a single axis
         f.close()
     except Exception:
-        error.abort("Could not open " + file)
+        error.abort("Could not open " + file, "Read Calibration Profile")
 
     print("Data extracted from Calibration Profile " + file)
 
@@ -441,7 +446,7 @@ def writeCalibrationProfile(coefficients, fileName):
     rootDir = dirname(dirname(abspath(__file__)))
     file = os.path.join(rootDir, "Calibration/Human/CalibrationProfiles/")
     if fileName.find("/") == -1:
-        error.abort("Must specify the folder to store the file. Received only " + fileName)
+        error.abort("Must specify the folder to store the file. Received only " + fileName, "Write Calibration Profile")
     folder = fileName.split("/")
     file = os.path.join(file, folder[0])
     if not os.path.exists(file):
@@ -450,8 +455,8 @@ def writeCalibrationProfile(coefficients, fileName):
               )
         try:
             os.makedirs(file)
-        except Exception:
-            error.abort("Failed to create directory " + file)
+        except Exception as e1:
+            error.abort("Failed to create directory " + file, "Write Calibration Profile", e1)
         print("Directory " + file + " successfully created")
     file += folder[1]
 
@@ -465,5 +470,5 @@ def writeCalibrationProfile(coefficients, fileName):
             for item in coefficients:
                 for element in item:
                     writer.writerow(element)
-    except Exception as e:
-        error.abort("Could not create Calibration Profile")
+    except Exception as e2:
+        error.abort("Could not create Calibration Profile", "Write Calibration Profile", e2)
