@@ -11,9 +11,9 @@ import sys
 import time
 
 # Project Libraries
-import Error_Utils as error
-import CSV_Utils as csvUtils
-import Nao_Utils as naoUtils
+from Libraries import Error_Utils as error
+from Libraries import CSV_Utils as csvUtils
+from Libraries import Nao_Utils as naoUtils
 
 # ----------------------------------------------------------------------------------------------------------------------
 

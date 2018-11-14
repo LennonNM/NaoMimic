@@ -3,13 +3,10 @@ Functions to support Nao interfacing.
 """
 
 # Imports
-import csv
-import os
 import time
-from os.path import dirname, abspath
 
 # Project libraries
-import Error_Utils as error
+from Libraries import Error_Utils as error
 
 def startCollectingData(frame = "ROBOT", useSensorValues = False):
     """

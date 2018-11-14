@@ -1,7 +1,8 @@
 
 # import sys
-import CSV_Utils as csvUtils
-import Calibration_Utils as calibration
+from Libraries import CSV_Utils as csvUtils
+from Libraries import Calibration_Utils as calibration
+import matplotlib.pyplot as plt
 
 def  main(humanDir):
 
@@ -9,12 +10,14 @@ def  main(humanDir):
     HeadNao = csvUtils.readCSVNao("ref_HEAD", "HEAD")
     TorsoNao = csvUtils.readCSVNao("ref_TORSO", "TORSO")
     RArmNao, LArmNao = csvUtils.readCSVNao("ref_ARMS", "ARMS")
+    x = range(len(RArmNao))
+    plt.plot(x, RArmNao)
 
     # Make single CSV with adjusted data from MoCap
     # # Read data from each single CSV from calibration routines
-    HeadP = csvUtils.readCSVMocap(humanDir+"HEAD", "HEAD")
-    TorsoP = csvUtils.readCSVMocap(humanDir+"TORSO", "TORSO")
-    RArmP, LArmP = csvUtils.readCSVMocap(humanDir+"ARMS", "ARMS")
+    HeadP = csvUtils.readCSVMocap(humanDir+"Head", "HEAD")
+    TorsoP = csvUtils.readCSVMocap(humanDir+"Torso", "TORSO")
+    [RArmP, LArmP] = csvUtils.readCSVMocap(humanDir+"Arms", "ARMS")
 
     # # Sync data
     HeadSync = calibration.syncData(HeadNao, HeadP)
@@ -45,4 +48,4 @@ def  main(humanDir):
 
 if __name__ == "__main__":
     # main(sys.argv[1], sys.argv[2], sys.argv[3])
-    main("Javier/")
+    main("Javier2/Javier")

@@ -16,6 +16,8 @@ def abort(errorMessage, processName = None, sysError = None):
     :param processName: User defined name of the process being terminated.
     :return: void
     """
+
+    # Build error message
     printMessage = ("\n\n++++++++++++++++++++++++++++++++++++++++++++++++++\n"
                     +   "      ERROR ON A NAO MIMIC PROCESS EXECUTION      \n\n")
     printMessage += errorMessage
@@ -24,12 +26,20 @@ def abort(errorMessage, processName = None, sysError = None):
                          + "Interrupted process: "
                          + processName
                          + "\n----------------\n")
+
+    # Print error message and abort
+    print(printMessage)
+
+    # Message addition if there is system error info
     if sysError is not None:
-        printMessage += ("\n----------------\nSystem Error: "
-                        + sysError
-                        + "\n----------------\n")
-    printMessage +=  ("\n                 PROCESS ABORTED                  \n"
-                      + "++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+        print("\n----------------\nSystem Error: ")
+        print(sysError)
+        print("\n----------------\n")
+
+    # Print final section of message
+    print("\n                 PROCESS ABORTED                  \n"
+        + "++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+
     sys.exit()
 
 # -------------------------------------------------------------------------------

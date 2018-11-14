@@ -6,7 +6,7 @@ Supports the calibration process.
 import numpy as np
 
 # Project libraries
-import Error_Utils as error
+from Libraries import Error_Utils as error
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -36,35 +36,39 @@ def syncData(referenceData, mocapData):
 
     # Make all data positive and separate it into lists
     # Reference data
-    for i in range(len(referenceData)):
-        referenceX.append(abs(referenceData[i][0]))
-        referenceY.append(abs(referenceData[i][1]))
-        referenceZ.append(abs(referenceData[i][2]))
-        referenceWX.append(abs(referenceData[i][3]))
-        referenceWY.append(abs(referenceData[i][4]))
-        referenceWZ.append(abs(referenceData[i][5]))
+    for axesRefSet in referenceData[0]:
+        referenceX.append(abs(axesRefSet[0]))
+        referenceY.append(abs(axesRefSet[1]))
+        referenceZ.append(abs(axesRefSet[2]))
+        referenceWX.append(abs(axesRefSet[3]))
+        referenceWY.append(abs(axesRefSet[4]))
+        referenceWZ.append(abs(axesRefSet[5]))
 
     # Data to adjust
-    for i in range(len(mocapData)):
-        print(i)
-        print(mocapData[i][0])
-        mocapDataX.append(abs(mocapData[i][0]))
-        mocapDataY.append(abs(mocapData[i][1]))
-        mocapDataZ.append(abs(mocapData[i][2]))
-        mocapDataWX.append(abs(mocapData[i][3]))
-        mocapDataWY.append(abs(mocapData[i][4]))
-        mocapDataWZ.append(abs(mocapData[i][5]))
+    for axesModSet in mocapData[0]:
+        mocapDataX.append(abs(axesModSet[0]))
+        mocapDataY.append(abs(axesModSet[1]))
+        mocapDataZ.append(abs(axesModSet[2]))
+        mocapDataWX.append(abs(axesModSet[3]))
+        mocapDataWY.append(abs(axesModSet[4]))
+        mocapDataWZ.append(abs(axesModSet[5]))
 
     # Find maximum on each set
-    maxRef = [max(referenceX), max(referenceY), max(referenceY), max(referenceWX), max(referenceWY), max(referenceWZ)]
+    maxRef = [max(referenceX), max(referenceY), max(referenceZ), max(referenceWX), max(referenceWY), max(referenceWZ)]
     maxMocap = [max(mocapDataX), max(mocapDataY), max(mocapDataZ), max(mocapDataWX), max(mocapDataWY), max(mocapDataWZ)]
     # Make sure there is only one maximum per axis
     for i in maxRef:
-        if len(i) > 1:
-            error.abort("Data set has more than one maximum", "Syncing MoCap data set with Reference data set")
+        try:
+            if len(i) > 1:
+                error.abort("Data set has more than one maximum", "Syncing MoCap data set with Reference data set")
+        except TypeError:
+            pass
     for i in maxMocap:
-        if len(i) > 1:
-            error.abort("Data set has more than one maximum", "Syncing MoCap data set with Reference data set")
+        try:
+            if len(i) > 1:
+                error.abort("Data set has more than one maximum", "Syncing MoCap data set with Reference data set")
+        except TypeError:
+            pass
 
     # Find indexes of maximums
     indxRef = [[] for k in range(DoF)]
@@ -72,7 +76,7 @@ def syncData(referenceData, mocapData):
     # Reference data
     indxRef[0] = [index for index, item in enumerate(referenceX) if item == maxRef[0]]
     indxRef[1] = [index for index, item in enumerate(referenceY) if item == maxRef[1]]
-    indxRef[2] = [index for index, item in enumerate(referenceX) if item == maxRef[2]]
+    indxRef[2] = [index for index, item in enumerate(referenceZ) if item == maxRef[2]]
     indxRef[3] = [index for index, item in enumerate(referenceWX) if item == maxRef[3]]
     indxRef[4] = [index for index, item in enumerate(referenceWY) if item == maxRef[4]]
     indxRef[5] = [index for index, item in enumerate(referenceWZ) if item == maxRef[5]]
@@ -87,7 +91,7 @@ def syncData(referenceData, mocapData):
     # Get distance to shift MoCap Data
     shiftLen = [[] for k in range(DoF)]
     for i in range(len(shiftLen)):
-        shiftLen[i] = indxRef[i] - indxMocap[i]
+        shiftLen[i] = indxRef[i][0] - indxMocap[i][0]
 
     # Crop MoCap sets to match maximums
     # X
@@ -96,32 +100,38 @@ def syncData(referenceData, mocapData):
         del mocapDataX[0:abs(shiftLen[0])]
     else:
         # Adds elements at the begining to shift to the right
-        mocapDataX.insert(0, mocapDataX[0])
+        for spaces in range(shiftLen[0]):
+            mocapDataX.insert(0, mocapDataX[0])
     # Y
     if shiftLen[1] < 0:
-        del mocapDataX[0:abs(shiftLen[1])]
+        del mocapDataY[0:abs(shiftLen[1])]
     else:
-        mocapDataX.insert(0, mocapDataX[1])
+        for spaces in range(shiftLen[1]):
+            mocapDataY.insert(0, mocapDataX[1])
     # Z
     if shiftLen[2] < 0:
-        del mocapDataX[0:abs(shiftLen[2])]
+        del mocapDataZ[0:abs(shiftLen[2])]
     else:
-        mocapDataX.insert(0, mocapDataX[2])
+        for spaces in range(shiftLen[2]):
+            mocapDataZ.insert(0, mocapDataX[2])
     # WX
     if shiftLen[3] < 0:
-        del mocapDataX[0:abs(shiftLen[3])]
+        del mocapDataWX[0:abs(shiftLen[3])]
     else:
-        mocapDataX.insert(0, mocapDataX[3])
+        for spaces in range(shiftLen[3]):
+            mocapDataWX.insert(0, mocapDataX[3])
     # WY
     if shiftLen[4] < 0:
-        del mocapDataX[0:abs(shiftLen[4])]
+        del mocapDataWY[0:abs(shiftLen[4])]
     else:
-        mocapDataX.insert(0, mocapDataX[4])
+        for spaces in range(shiftLen[4]):
+            mocapDataWY.insert(0, mocapDataX[4])
     # WZ
     if shiftLen[5] < 0:
-        del mocapDataX[0:abs(shiftLen[5])]
+        del mocapDataWZ[0:abs(shiftLen[5])]
     else:
-        mocapDataX.insert(0, mocapDataX[5])
+        for spaces in range(shiftLen[5]):
+            mocapDataWZ.insert(0, mocapDataX[5])
 
     # Final crop to make reference set and MoCap set of the same length
     lenDiff = [[] for i in range(DoF)]

@@ -9,7 +9,7 @@ import time
 from os.path import dirname, abspath
 
 # Project libraries
-import Error_Utils as error
+from Libraries import Error_Utils as error
 
 # ----------------------------------------------------------------------------------------------------------------------
 # MoCap related
@@ -34,15 +34,15 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
 
     # Open file from default directory
     rootDir = dirname(dirname(abspath(__file__)))
-    dirNao = os.path.join(rootDir, "Calibration/Human/MoCap_Export/")
-    dirNao = os.path.join(dirNao, pathFile + ".csv")
+    dirMocap = os.path.join(rootDir, "Calibration/Human/MoCap_Export/")
+    dirMocap = os.path.join(dirMocap, pathFile + ".csv")
     try:
-        fileNao = open(dirNao, 'rt', encoding="utf8")
+        fileMocap = open(dirMocap, 'rt', encoding="utf8")
     except Exception as e1:
-        error.abort(dirNao + " is not a valid directory or file", "Read CSV file with MoCap exported data", e1)
-    reader = csv.reader(fileNao)
+        error.abort(dirMocap + " is not a valid directory or file", "Read CSV file with MoCap exported data", e1)
+    reader = csv.reader(fileMocap)
     rowsMocap = [r for r in reader]
-    fileNao.close()
+    fileMocap.close()
     del reader
 
     # ------------------------------------------------------------------------------
@@ -307,16 +307,8 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
                     "ARMS": RArm, LArm
                     "LEGS": RLeg, LLeg
                     "_effector_": Uses a single effector, e.g. "Head".
-    :return dataHead, dataTorso, dataRArm, dataLArm, dataRLeg, dataLLeg: Each one a list with the data extracted from
-        the CSV for each effector required.
+    :return dataEffectors: List with the data extracted from the reference CSV for each effector required.
     """
-    # Define return lists
-    dataHead  = list()
-    dataTorso = list()
-    dataRArm  = list()
-    dataLArm  = list()
-    # dataRLeg  = list()
-    # dataLLeg  = list()
 
     # Open file from default directory
     rootDir = dirname(dirname(abspath(__file__)))
@@ -355,9 +347,10 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
     else:
         error.abort(whichEffectors + " is not a valid Effector definition", "Read CSV file with reference data")
 
+    dataEffectors = [[] for k in range(totalEffectors)]
     countColumn = 0  # Counter to keep track of each set of axes per effector
     dataSet = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # Set of WX, WY, WZ, X, Y, Z
-    countEffector = 1  # Counter of effectors passed per set extracted
+    countEffector = 0  # Counter of effectors passed per set extracted
     dataSetLen = len(dataSet)
 
     for i, item in enumerate(rowsData):
@@ -368,32 +361,21 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
                 error.abort("A value on " + dirNao + " is not valid when converting to float", "Read CSV file with reference data")
             countColumn += 1
 
-            # All columns for a single row covered
+            # Last column for a single row
             if countColumn == dataSetLen - 1:
                 try:
                     dataSet[countColumn] = float(rowsData[i].pop(0))
                 except Exception:
                     error.abort("A value on " + dirNao + " is not valid when converting to float", "Read CSV file with reference data")
-                countColumn = 0
 
                 # Organize data to the order: X, Y, Z, WX, WY, WZ
-                if countEffector == 1:
-                    dataHead.append([dataSet[4], dataSet[5], dataSet[6], dataSet[0], dataSet[1], dataSet[2]])
-                elif countEffector == 2:
-                    dataTorso.append([dataSet[4], dataSet[5], dataSet[6], dataSet[0], dataSet[1], dataSet[2]])
-                elif countEffector == 3:
-                    dataRArm.append([dataSet[4], dataSet[5], dataSet[6], dataSet[0], dataSet[1], dataSet[2]])
-                elif countEffector == 4:
-                    dataLArm.append([dataSet[4], dataSet[5], dataSet[6], dataSet[0], dataSet[1], dataSet[2]])
-                # elif countEffector == 5:
-                #     dataRLeg.append([dataSet[4], dataSet[5], dataSet[6], dataSet[0], dataSet[1], dataSet[2]])
-                # elif countEffector == 6:
-                #     dataLLeg.append([dataSet[4], dataSet[5], dataSet[6], dataSet[0], dataSet[1], dataSet[2]])
+                dataEffectors[countEffector].append([dataSet[3], dataSet[4], dataSet[5], dataSet[0], dataSet[1], dataSet[2]])
 
-                countEffector = 1 if countEffector == totalEffectors else countEffector + 1
+                # Reset counters
+                countColumn = 0
+                countEffector = 0 if countEffector == totalEffectors-1 else countEffector + 1
 
-    # return dataHead, dataTorso, dataRArm, dataLArm, dataRLeg, dataLLeg
-    return dataHead, dataTorso, dataRArm, dataLArm
+    return dataEffectors
 
 # ----------------------------------------------------------------------------------------------------------------------
 
