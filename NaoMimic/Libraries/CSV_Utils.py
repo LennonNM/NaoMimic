@@ -28,8 +28,7 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
                     "LEGS": RLeg, LLeg
                     "_effector_": Uses a single effector, e.g. "Head".
     :param includesHeader: True if the file includes the default header from Motive
-    :return dataHead, dataTorso, dataRArm, dataLArm, dataRLeg, dataLLeg: Each one a list with the data extracted from
-        the CSV for each effector required.
+    :return dataEffectors: List with the data extracted from the reference CSV for each effector required.
     """
 
     # Open file from default directory
@@ -63,49 +62,63 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
         del rowsData[i][0]  # Removes "Time"
 
     # Begin extraction of motion tracking data
-    if whichEffectors == "ALL":
-        totalEffectors = 4 # 6
-    elif whichEffectors == "ARMS" or whichEffectors == "LEGS":
+    if whichEffectors.upper() == "ALL":
+        totalEffectors = 4  # 6
+    elif whichEffectors.upper() == "ARMS":
         totalEffectors = 2
-    elif (
-            whichEffectors.upper() == "HEAD" or whichEffectors.upper() == "TORSO" or
-            whichEffectors.upper() == "RARM" or whichEffectors.upper() == "LARM" or
-            whichEffectors.upper() == "RLEG" or whichEffectors.upper() == "LLEG"
-    ):
+        for i in range(len(rowsData)):
+            del rowsData[i][7 * 4::]
+            del rowsData[i][0:7 * 2]
+    # elif whichEffectors.upper() == "LEGS":
+    #     totalEffectors = 2
+    elif whichEffectors.upper() == "HEAD":
+        totalEffectors = 1
+        for i in range(len(rowsData)):
+            del rowsData[i][7::]
+    elif whichEffectors.upper() == "TORSO":
+        totalEffectors = 1
+        for i in range(len(rowsData)):
+            del rowsData[i][7 * 2::]
+            del rowsData[i][0:7]
+    elif whichEffectors.upper() == "RARM":
+        totalEffectors = 1
+        for i in range(len(rowsData)):
+            del rowsData[i][7 * 3::]
+            del rowsData[i][0:7 * 2]
+    elif whichEffectors.upper() == "LARM":
+        totalEffectors = 1
+        for i in range(len(rowsData)):
+            del rowsData[i][7 * 4::]
+            del rowsData[i][0:7 * 3]
+    elif whichEffectors.upper() == "RLEG":
+        totalEffectors = 1
+    elif whichEffectors.upper() == "LLEG":
         totalEffectors = 1
     else:
-        error.abort(whichEffectors + " is not a valid Effector definition", "Read CSV file with MoCap exported data")
+        error.abort(whichEffectors + " is not a valid Effector definition", "Read CSV file with reference data")
 
-    dataEffector = [[] for k in range(totalEffectors)]  # list to store the data separated by effector
-    countColumn = 0  # Counter to keep track of each set of axes per effector
+    dataEffectors = [[] for k in range(totalEffectors)]  # list to store the data separated by effector
     dataSet = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # Set of WX, WY, WZ, W, X, Y, Z
-    countEffector = 1  # Counter of effectors passed per set extracted
     dataSetLen = len(dataSet)
 
-    for i, item in enumerate(rowsData):
-        for column in range(dataSetLen):
-                try:
-                    dataSet[countColumn] = float(rowsData[i].pop(0))
-                except Exception as e2:
-                    error.abort("A value on " + dirNao + " is not valid when converting to float",
-                                "Read CSV file with MoCap exported data", e2)
-                countColumn += 1
-
-                # All columns for a single row covered
-                if countColumn == dataSetLen - 1:
+    for countEffector in range(totalEffectors):
+        for rowNo, row in enumerate(rowsData):
+            for columnNo in range(dataSetLen):
                     try:
-                        dataSet[countColumn] = float(rowsData[i].pop(0))
-                    except Exception as e3:
+                        dataSet[columnNo] = float(rowsData[rowNo].pop(0))
+                    except TypeError as e2:
                         error.abort("A value on " + dirNao + " is not valid when converting to float",
-                                    "Read CSV file with MoCap exported data", e3)
-                    countColumn = 0
+                                    "Read CSV file with MoCap exported data", e2)
 
-                    # Organize data to the order: X, Y, Z, WX, WY, WZ
-                    dataEffector[countEffector - 1].append([dataSet[4], dataSet[6], dataSet[5], dataSet[0], dataSet[2], dataSet[1]])
+                    # All columns for a single row covered
+                    if columnNo == dataSetLen - 1:
+                        # Organize data to the order: X, Y, Z, WX, WY, WZ
+                        dataEffectors[countEffector].append([dataSet[4], dataSet[6], dataSet[5], dataSet[0], dataSet[2], dataSet[1]])
 
-                    countEffector = 1 if countEffector == totalEffectors else countEffector + 1
-
-    return dataEffector
+    if totalEffectors == 1:
+        return dataEffectors[0]
+    else:
+        return dataEffectors
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -206,15 +219,8 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
     :return: void
     """
 
-    # Identify involved effectors
-    if whichEffectors.upper() == "ALL":
-        # effectors = ["HEAD", "TORSO", "RARM", "LARM", "RLEG", "LLEG"]
-        effectors = ["HEAD", "TORSO", "RARM", "LARM"]
-    elif whichEffectors.upper() == "ARMS":
-        effectors = ["RARM", "LARM"]
-    elif whichEffectors.upper() == "LEGS":
-        effectors = ["RLEG", "LLEG"]
-    else:
+    # Identify if desired effectors are valid
+    if whichEffectors.upper() != "ALL" and whichEffectors.upper() != "ARMS" and whichEffectors.upper() != "LEGS":
         error.abort(whichEffectors + " is not a valid Effector definition", "Write CSV with reference data")
 
     # Default directory for files storage
@@ -330,52 +336,66 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
 
     # Begin extraction of the data from CSV
 
-    # Numerical data starts from row No. 3
-    rowsData = rowsMocap[2::]
+    # Numerical data starts from row No. 1
+    rowsData = rowsMocap[1::]
 
     # Begin extraction of motion tracking data
     if whichEffectors.upper() == "ALL":
         totalEffectors = 4  # 6
-    elif whichEffectors.upper() == "ARMS" or whichEffectors.upper() == "LEGS":
+    elif whichEffectors.upper() == "ARMS":
         totalEffectors = 2
-    elif (
-            whichEffectors.upper() == "HEAD" or whichEffectors.upper() == "TORSO" or
-            whichEffectors.upper() == "RARM" or whichEffectors.upper() == "LARM" or
-            whichEffectors.upper() == "RLEG" or whichEffectors.upper() == "LLEG"
-    ):
+        for i in range(len(rowsData)):
+            del rowsData[i][6 * 4::]
+            del rowsData[i][0:6 * 2]
+    # elif whichEffectors.upper() == "LEGS":
+    #     totalEffectors = 2
+    elif whichEffectors.upper() == "HEAD":
+        totalEffectors = 1
+        for i in range(len(rowsData)):
+            del rowsData[i][6::]
+    elif whichEffectors.upper() == "TORSO":
+        totalEffectors = 1
+        for i in range(len(rowsData)):
+            del rowsData[i][6 * 2::]
+            del rowsData[i][0:6]
+    elif whichEffectors.upper() == "RARM":
+        totalEffectors = 1
+        for i in range(len(rowsData)):
+            del rowsData[i][6 * 3::]
+            del rowsData[i][0:6 * 2]
+    elif whichEffectors.upper() == "LARM":
+        totalEffectors = 1
+        for i in range(len(rowsData)):
+            del rowsData[i][6 * 4::]
+            del rowsData[i][0:6 * 3]
+    elif whichEffectors.upper() == "RLEG":
+        totalEffectors = 1
+    elif whichEffectors.upper() == "LLEG":
         totalEffectors = 1
     else:
         error.abort(whichEffectors + " is not a valid Effector definition", "Read CSV file with reference data")
 
     dataEffectors = [[] for k in range(totalEffectors)]
-    countColumn = 0  # Counter to keep track of each set of axes per effector
     dataSet = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # Set of WX, WY, WZ, X, Y, Z
-    countEffector = 0  # Counter of effectors passed per set extracted
     dataSetLen = len(dataSet)
 
-    for i, item in enumerate(rowsData):
-        for column in range(dataSetLen):
-            try:
-                dataSet[countColumn] = float(rowsData[i].pop(0))
-            except Exception:
-                error.abort("A value on " + dirNao + " is not valid when converting to float", "Read CSV file with reference data")
-            countColumn += 1
-
-            # Last column for a single row
-            if countColumn == dataSetLen - 1:
+    for countEffector in range(totalEffectors):
+        for rowNo, row in enumerate(rowsData):
+            for columnNo in range(dataSetLen):
                 try:
-                    dataSet[countColumn] = float(rowsData[i].pop(0))
-                except Exception:
-                    error.abort("A value on " + dirNao + " is not valid when converting to float", "Read CSV file with reference data")
+                    dataSet[columnNo] = float(rowsData[rowNo].pop(0))
+                except TypeError as e:
+                    error.abort("A value on " + dirNao + " is not valid when converting to float", "Read CSV file with reference data", e)
 
-                # Organize data to the order: X, Y, Z, WX, WY, WZ
-                dataEffectors[countEffector].append([dataSet[3], dataSet[4], dataSet[5], dataSet[0], dataSet[1], dataSet[2]])
+                # Last column for a single row extracted
+                if columnNo == dataSetLen - 1:
+                    # Organize data to the order: X, Y, Z, WX, WY, WZ
+                    dataEffectors[countEffector].append([dataSet[3], dataSet[4], dataSet[5], dataSet[0], dataSet[1], dataSet[2]])
 
-                # Reset counters
-                countColumn = 0
-                countEffector = 0 if countEffector == totalEffectors-1 else countEffector + 1
-
-    return dataEffectors
+    if totalEffectors == 1:
+        return dataEffectors[0]
+    else:
+        return dataEffectors
 
 # ----------------------------------------------------------------------------------------------------------------------
 
