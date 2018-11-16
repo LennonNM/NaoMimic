@@ -47,16 +47,8 @@ def main(robotIP, refFrame, name=None):
 
     # -------------------------------------------------------------------------------
 
-    # Create single list per chain effector
-    posHead  = list()
-    posTorso = list()
-    posRArm  = list()
-    posLArm  = list()
-    # posRLeg  = list()
-    # posLLeg  = list()
-
     # Data collection
-    naoUtils.startCollectingData(frame)
+    naoUtils.startCollectingData(motionProxy, frame)
 
     print("Writing CSV file with the data collected")
     dataSet = [posHead, posTorso, posRArm, posLArm]

@@ -8,7 +8,7 @@ import time
 # Project libraries
 from Libraries import Error_Utils as error
 
-def startCollectingData(frame = "ROBOT", useSensorValues = False):
+def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
     """
     This function is used to extract data from the Nao effector's sensors.
 
@@ -17,6 +17,15 @@ def startCollectingData(frame = "ROBOT", useSensorValues = False):
     :return dataCollected: List with the data collected from each effector. The order of the axes is as follows:
                 X, Y, Z, WX, WY, WZ
     """
+
+    # Create single list per chain effector
+    posHead = list()
+    posTorso = list()
+    posRArm = list()
+    posLArm = list()
+    # posRLeg  = list()
+    # posLLeg  = list()
+
     rowsCounter = 0
     print("\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "Starting to collect data, interrupt the process only if necessary.\n"
