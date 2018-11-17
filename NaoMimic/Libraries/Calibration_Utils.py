@@ -4,195 +4,43 @@ Supports the calibration process.
 
 # Imports
 import numpy as np
+from collections import Counter
 
 # Project libraries
 from Libraries import Error_Utils as error
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def syncData(referenceData, mocapData):
+def syncData(mocapData, referenceData):
     """
     This function is used to time couple 2 different sets of data. It shifts the mocapData to match the
     referenceData general shape by comparing the position in the timeline of the maximum peak.
     Each set corresponds to a single effector and includes the axes, in the corresponding order, X, Y, Z, WX, WY, WZ.
 
-    :param referenceData: Set of data to be used as reference. Obtained from the Nao's sensors using GetPositions.py.
     :param mocapData: Data to adjust. Obtained from Motive export.
-    :return adjustedSet: Complete data set time coupled with the reference data. Set for a single effector.
+    :param referenceData: Set of data to be used as reference. Obtained from the Nao's sensors using GetPositions.py.
+    :return finalDataSet: Complete data set time coupled with the reference data.
     """
-    referenceX = list()
-    referenceY = list()
-    referenceZ = list()
-    referenceWX = list()
-    referenceWY = list()
-    referenceWZ = list()
-    mocapDataX = list()
-    mocapDataY = list()
-    mocapDataZ = list()
-    mocapDataWX = list()
-    mocapDataWY = list()
-    mocapDataWZ = list()
-    mocapDataAbsX = list()
-    mocapDataAbsY = list()
-    mocapDataAbsZ = list()
-    mocapDataAbsWX = list()
-    mocapDataAbsWY = list()
-    mocapDataAbsWZ = list()
-    DoF = 6
 
-    # Make all data positive and separate it into lists
-    # Reference data
-    for axesRefSet in referenceData:
-        referenceX.append(abs(axesRefSet[0]))
-        referenceY.append(abs(axesRefSet[1]))
-        referenceZ.append(abs(axesRefSet[2]))
-        referenceWX.append(abs(axesRefSet[3]))
-        referenceWY.append(abs(axesRefSet[4]))
-        referenceWZ.append(abs(axesRefSet[5]))
+    # Separate axes of the data sets
+    mocapAxes = extractAxes(mocapData)
+    referenceAxes = extractAxes(referenceData)
 
-    # Data to adjust
-    for axesModSet in mocapData:
-        # Data all positive
-        mocapDataAbsX.append(abs(axesModSet[0]))
-        mocapDataAbsY.append(abs(axesModSet[1]))
-        mocapDataAbsZ.append(abs(axesModSet[2]))
-        mocapDataAbsWX.append(abs(axesModSet[3]))
-        mocapDataAbsWY.append(abs(axesModSet[4]))
-        mocapDataAbsWZ.append(abs(axesModSet[5]))
-        # Data separated by axis
-        mocapDataX.append(abs(axesModSet[0]))
-        mocapDataY.append(abs(axesModSet[1]))
-        mocapDataZ.append(abs(axesModSet[2]))
-        mocapDataWX.append(abs(axesModSet[3]))
-        mocapDataWY.append(abs(axesModSet[4]))
-        mocapDataWZ.append(abs(axesModSet[5]))
+    # Shift data set according to reference data set
+    shiftedAxes = [[] for k in range(6)]
+    for axis in range(6):
+        shiftedAxes[axis] = shiftDataSet(mocapAxes[axis], referenceAxes[axis])
 
-    # Find maximum on each set
-    maxRef = [max(referenceX), max(referenceY), max(referenceZ), max(referenceWX), max(referenceWY), max(referenceWZ)]
-    maxMocap = [max(mocapDataAbsX), max(mocapDataAbsY), max(mocapDataAbsZ), max(mocapDataAbsWX), max(mocapDataAbsWY), max(mocapDataAbsWZ)]
+    # Adjust data sets lengths
+    finalDataSet = [[] for k in range(6)]
+    for axis in range(6):
+        finalDataSet[axis] = makeListSameLength(shiftedAxes[axis], referenceAxes[axis])
 
-    # Find indexes of maximums
-    indxRef = [[] for k in range(DoF)]
-    indxMocap = [[] for k in range(DoF)]
-    # # Reference data
-    indxRef[0] = referenceX.index(maxRef[0])
-    indxRef[1] = referenceY.index(maxRef[1])
-    indxRef[2] = referenceZ.index(maxRef[2])
-    indxRef[3] = referenceWX.index(maxRef[3])
-    indxRef[4] = referenceWY.index(maxRef[4])
-    indxRef[5] = referenceWZ.index(maxRef[5])
-    # # MoCap data
-    indxMocap[0] = mocapDataX.index(maxMocap[0])
-    indxMocap[1] = mocapDataY.index(maxMocap[1])
-    indxMocap[2] = mocapDataZ.index(maxMocap[2])
-    indxMocap[3] = mocapDataWX.index(maxMocap[3])
-    indxMocap[4] = mocapDataWY.index(maxMocap[4])
-    indxMocap[5] = mocapDataWZ.index(maxMocap[5])
-
-    # Get distance to shift MoCap Data
-    shiftLen = [[] for k in range(DoF)]
-    for i in range(len(shiftLen)):
-        shiftLen[i] = indxRef[i] - indxMocap[i]
-
-    # Crop MoCap sets to match maximums
-    # X
-    if shiftLen[0] < 0:
-        # Crops from the begining to shift to the left
-        del mocapDataX[0:abs(shiftLen[0])]
-    elif shiftLen[0] > 0:
-        # Adds elements at the begining to shift to the right
-        for spaces in range(abs(shiftLen[0])):
-            mocapDataX.insert(0, mocapDataX[0])
-    # Y
-    if shiftLen[1] < 0:
-        del mocapDataY[0:abs(shiftLen[1])]
-    elif shiftLen[1] > 0:
-        for spaces in range(abs(shiftLen[1])):
-            mocapDataY.insert(0, mocapDataY[0])
-    # Z
-    if shiftLen[2] < 0:
-        del mocapDataZ[0:abs(shiftLen[2])]
-    elif shiftLen[2] > 0:
-        for spaces in range(abs(shiftLen[2])):
-            mocapDataZ.insert(0, mocapDataZ[0])
-    # WX
-    if shiftLen[3] < 0:
-        del mocapDataWX[0:abs(shiftLen[3])]
-    elif shiftLen[3] > 0:
-        for spaces in range(abs(shiftLen[3])):
-            mocapDataWX.insert(0, mocapDataWX[0])
-    # WY
-    if shiftLen[4] < 0:
-        del mocapDataWY[0:abs(shiftLen[4])]
-    elif shiftLen[4] > 0:
-        for spaces in range(abs(shiftLen[4])):
-            mocapDataWY.insert(0, mocapDataWY[0])
-    # WZ
-    if shiftLen[5] < 0:
-        del mocapDataZ[0:abs(shiftLen[5])]
-    elif shiftLen[5] > 0:
-        for spaces in range(abs(shiftLen[5])):
-            mocapDataWZ.insert(0, mocapDataWZ[0])
-
-    # Final crop to make reference set and MoCap set of the same length
-    lenDiff = [[] for i in range(DoF)]
-    lenDiff[0] = len(referenceX) - len(mocapDataX)
-    lenDiff[1] = len(referenceY) - len(mocapDataY)
-    lenDiff[2] = len(referenceZ) - len(mocapDataZ)
-    lenDiff[3] = len(referenceWX) - len(mocapDataWX)
-    lenDiff[4] = len(referenceWY) - len(mocapDataWY)
-    lenDiff[5] = len(referenceWZ) - len(mocapDataWZ)
-
-    # X
-    if lenDiff[0] < 0:
-        for i in range(abs(lenDiff[0])):
-            del mocapDataX[- 1]
-    elif lenDiff[0] > 0:
-        for i in range(lenDiff[0]):
-            mocapDataX.insert(- 1, mocapDataX[- 1])
-    # Y
-    if lenDiff[1] < 0:
-        for i in range(abs(lenDiff[1])):
-            del mocapDataY[- 1]
-    elif lenDiff[1] > 0:
-        for i in range(lenDiff[1]):
-            mocapDataY.insert(- 1, mocapDataY[- 1])
-    # Z
-    if lenDiff[2] < 0:
-        for i in range(abs(lenDiff[2])):
-            del mocapDataZ[- 1]
-    elif lenDiff[2] > 0:
-        for i in range(lenDiff[2]):
-            mocapDataZ.insert(- 1,mocapDataZ[- 1])
-    # WX
-    if lenDiff[3] < 0:
-        for i in range(abs(lenDiff[3])):
-            del mocapDataWX[- 1]
-    elif lenDiff[3] > 0:
-        for i in range(lenDiff[3]):
-            mocapDataWX.insert(- 1, mocapDataWX[- 1])
-    # WY
-    if lenDiff[4] < 0:
-        for i in range(abs(lenDiff[4])):
-            del mocapDataWY[- 1]
-    elif lenDiff[4] > 0:
-        for i in range(lenDiff[4]):
-            mocapDataWY.insert(- 1, mocapDataWY[- 1])
-    # WZ
-    if lenDiff[5] < 0:
-        for i in range(abs(lenDiff[5])):
-            del mocapDataWZ[- 1]
-    elif lenDiff[5] > 0:
-        for i in range(lenDiff[5]):
-            mocapDataWZ.insert(- 1, mocapDataWZ[- 1])
-
-    # Return adjusted data set
-    adjustedData = [mocapDataX, mocapDataY, mocapDataZ, mocapDataWX, mocapDataWY, mocapDataWZ]
-    return adjustedData
+    return finalDataSet
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def getCalibrationTerms(listReference, listPerson, degree = 1):
+def getCalibrationTerms(listPerson, listReference, degree = 1):
     """
     This function performs the linear regression coupling between the 2 data sets received. The sets correspond to a
     single effector. The default polynomial degree for the regression is set to 1. This function uses polyfit from
@@ -253,3 +101,153 @@ def getCalibrationTerms(listReference, listPerson, degree = 1):
 
     return coefficients
 
+# ----------------------------------------------------------------------------------------------------------------------
+
+def extractAxes(axisDataSet):
+    """
+    This function is used to separate (X,Y,Z,WX,WY,WZ) data set into individual sets for each axis
+    as X, Y, Z, WX, WY, WZ.
+
+    :param axisDataSet: Set with the data to separate into axes. Each element (row) is a set of (X,Y,Z,WX,WY,WZ).
+    :return axesList: List which each element is a set of the separated axes.
+    """
+
+    # Define list to store separated axes (X, Y, X, WX, WY, WZ)
+    axesList = [[] for k in range(6)]
+
+    for row in axisDataSet:
+        axesList[0].append(row[0])
+        axesList[1].append(row[1])
+        axesList[2].append(row[2])
+        axesList[3].append(row[3])
+        axesList[4].append(row[4])
+        axesList[5].append(row[5])
+
+    return axesList
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def getBaseValueOfSet(axisDataSet):
+    """
+    This function is used to get the most frequent value from an axis data set.
+
+    :param axisDataSet: Data set to find value for a single axis.
+    :return: Returns the value of the most frequent item and its frequency.
+    """
+
+    mostCommonValue, frequencyOfAppereance = Counter(axisDataSet).most_common(1)[0]
+
+    return [mostCommonValue, frequencyOfAppereance]
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def findMaxValue(axisDataSet):
+    """
+    This function is used to find the item with the maximum value of a data set.
+
+    :param axisDataSet: Data set for a single axis.
+    :return: The Index of the element with the maximum value form the data set and its Value.
+    """
+
+    maxValue = max(axisDataSet)
+    index = axisDataSet.index(maxValue)
+
+    return [maxValue, index]
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def rotateAxis(axisDataSet):
+    """
+    This function is used to rotate a data set around its base value (most common value of the set).
+
+    :param axisDataSet: The data set to rotate. Comes from a single axis.
+    :return rotatedDataSet: The rotated data set.
+    """
+
+    rotatedDataSet = list()
+    [baseValue, frequencyValue] = getBaseValueOfSet(axisDataSet)
+
+    # Define limits for rotation with a 10% tolerance margin
+    if baseValue < 0:
+        lowTolerance = baseValue + baseValue * 0.1
+    else:
+        lowTolerance = baseValue - baseValue * 0.1
+
+    # Rotate data set around baseValue
+    for value in axisDataSet:
+        if value < lowTolerance:
+            rotatedDataSet.append(baseValue + abs(baseValue - value))
+        else:
+            rotatedDataSet.append(value)
+
+    return rotatedDataSet
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def shiftDataSet(axisDataSet, referenceDataSet):
+    """
+    This function is used to shift the data set from a single axis so that the place of its maximum value matches the
+    placement of the maximum value of the reference data set. To make sure it finds a maximum value (the value can be a
+    minimum due to orientation of the object) it rotates both data sets.
+
+    :param axisDataSet: Data set to shift from a single axis.
+    :param referenceDataSet: Reference data set from a single axis.
+    :return axisDataSet: The shifted data set
+    """
+
+    # Make sure all curves have maximums by rotating the data sets
+    rotAxes = rotateAxis(axisDataSet)
+    rotRef = rotateAxis(referenceDataSet)
+
+    # Find maximums of each data set
+    [maxValueAxis, indexValueAxis] = findMaxValue(rotAxes)
+    [maxValueRef, indexValueRef] = findMaxValue(rotRef)
+
+    # Get the distance between maximums
+    maxDistance = indexValueRef - indexValueAxis
+
+    # Shift the data set
+    # # Shift to the right
+    if maxDistance > 0:
+        for space in range(maxDistance):
+            axisDataSet.insert(0, axisDataSet[0])
+    # # Shift to the left
+    elif maxDistance < 0:
+        for space in range(abs(maxDistance)):
+            del axisDataSet[0]
+
+    return axisDataSet
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def makeListSameLength(axisDataSet, referenceDataSet):
+    """
+    This function is used to adjust a data set length to match a reference data set length. The reference data set
+    is not altered.
+
+    :param axisDataSet: The data set to adjust its length.
+    :param referenceDataSet: The reference data fo compare the desired length.
+    :return axisDataSet: The data set with its length adjusted to match the referenceDataSet length.
+    """
+
+    # Get lengths of each data set
+    lenAxis = len(axisDataSet)
+    lenRef = len(referenceDataSet)
+
+    # Get the difference between lengths
+    lenDiff = lenRef - lenAxis
+
+    # Adjust length of axisDataSet to match the reference length
+    if lenDiff > 0:
+        for space in range(lenDiff):
+            axisDataSet.insert(-1, axisDataSet[-1])
+    elif lenDiff < 0:
+        for space in range(abs(lenDiff)):
+            del axisDataSet[-1]
+
+    # Check that the lengths do match
+    finalLenAxis = len(axisDataSet)
+    if finalLenAxis != lenRef:
+        error.abort("Failed to adjust data sets lengths", "Make List Same Length")
+
+    return axisDataSet

@@ -107,13 +107,14 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
                     try:
                         dataSet[columnNo] = float(rowsData[rowNo].pop(0))
                     except TypeError as e2:
-                        error.abort("A value on " + dirNao + " is not valid when converting to float",
+                        error.abort("A value on " + fileMocap + " is not valid when converting to float",
                                     "Read CSV file with MoCap exported data", e2)
 
                     # All columns for a single row covered
                     if columnNo == dataSetLen - 1:
                         # Organize data to the order: X, Y, Z, WX, WY, WZ
-                        dataEffectors[countEffector].append([dataSet[4], dataSet[6], dataSet[5], dataSet[0], dataSet[2], dataSet[1]])
+                        dataEffectors[countEffector].append([dataSet[4], dataSet[6], dataSet[5],
+                                                             dataSet[0], dataSet[2], dataSet[1]])
 
     if totalEffectors == 1:
         return dataEffectors[0]
@@ -124,8 +125,8 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
 
 def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
     """
-    This function is used to write a single CSV file containing the data for each calibration routine done for a specific
-    set of effectors. The data sets received must be already time adjusted using syncData() from Calibrate_Utils.
+    This function is used to write a single CSV file containing the data for each calibration routine done for a
+    specific set of effectors. The data sets received must be already time adjusted using syncData() from Calibrate_Utils.
 
     :param dataEffectors: List with the data to write. Must include all effectors.
     :param pathCalProf: Directory file to write the CSV file.
@@ -137,7 +138,8 @@ def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
     storeDir = os.path.join(rootDir, "Calibration/Human/CalibrationProfiles/")
 
     if pathCalProf.find("/") == -1:
-        error.abort("Must specify the folder to store the file. Received only " + pathCalProf, "Write CSV file with MoCap adjusted data")
+        error.abort("Must specify the folder to store the file. Received only " + pathCalProf,
+                    "Write CSV file with MoCap adjusted data")
     folder = pathCalProf.split("/")
     storeDir = os.path.join(storeDir, folder[0])
 
@@ -307,7 +309,8 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
     appearance of the effectors must follow: Head, Torso, RArm, LArm, RLeg, LLeg. The CSV file is custom for the project
     and includes a single row header.
 
-    :param pathFile: Path to the CSV file containing the reference calibration data extracted from the Nao with GetPositions.
+    :param pathFile: Path to the CSV file containing the reference calibration data extracted from the Nao with
+                    GetPositions.
     :param whichEffectors: Used to identify the amount of effectors included on the CSV file.
                     "ALL": Head, Torso, RArm, LArm, RLeg, LLeg
                     "ARMS": RArm, LArm
@@ -385,12 +388,14 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
                 try:
                     dataSet[columnNo] = float(rowsData[rowNo].pop(0))
                 except TypeError as e:
-                    error.abort("A value on " + dirNao + " is not valid when converting to float", "Read CSV file with reference data", e)
+                    error.abort("A value on " + fileNao + " is not valid when converting to float",
+                                "Read CSV file with reference data", e)
 
                 # Last column for a single row extracted
                 if columnNo == dataSetLen - 1:
                     # Organize data to the order: X, Y, Z, WX, WY, WZ
-                    dataEffectors[countEffector].append([dataSet[3], dataSet[4], dataSet[5], dataSet[0], dataSet[1], dataSet[2]])
+                    dataEffectors[countEffector].append([dataSet[3], dataSet[4], dataSet[5],
+                                                         dataSet[0], dataSet[1], dataSet[2]])
 
     if totalEffectors == 1:
         return dataEffectors[0]
