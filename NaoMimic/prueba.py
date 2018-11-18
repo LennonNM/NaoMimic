@@ -21,15 +21,16 @@ def  main(humanDir):
     TorsoSync = calibration.syncData(TorsoP, TorsoNao)
     RArmSync = calibration.syncData(ARmsP[0], ARmsNao[0])
     LArmSync = calibration.syncData(ARmsP[1], ARmsNao[1])
+    dataEffectors = [HeadSync, TorsoSync, RArmSync, LArmSync]
 
     naoRArm = calibration.extractAxes(HeadNao)
     personRArm = calibration.extractAxes(HeadP)
-    for i in range(6):
-        compare.plotCompareSameAxis(HeadSync[i], personRArm[i], "Synced " + str(i),
-                                    "Javier RArm " + str(i), naoRArm[i], "Nao " + str(i))
+    # for i in range(6):
+    #     compare.plotCompareSameAxis(HeadSync[i], personRArm[i], "Synced " + str(i),
+    #                                 "Javier RArm " + str(i), naoRArm[i], "Nao " + str(i))
 
-    # # # Write single CSV with adjusted data
-    # csvUtils.writeCSVMocapSingleAdjusted(dataEffectors, "NewSubject1/AdjustedData")
+    # Write single CSV with adjusted data
+    csvUtils.writeCSVMocapSingleAdjusted(dataEffectors, "Javier2/AdjustedDataSet")
     #
     # # Create Calibration Profile from adjusted data CSV
     # # # Read synced data

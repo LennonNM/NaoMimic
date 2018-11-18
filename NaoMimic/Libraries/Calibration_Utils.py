@@ -105,8 +105,8 @@ def getCalibrationTerms(listPerson, listReference, degree = 1):
 
 def extractAxes(axisDataSet):
     """
-    This function is used to separate (X,Y,Z,WX,WY,WZ) data set into individual sets for each axis
-    as X, Y, Z, WX, WY, WZ.
+    This function is used to separate a list with data sets with all axes per row, of the form [[X,Y,Z,WX,WY,WZ]], to a
+    list with data sets for each axis, with the form [[X], [Y], [Z], [WX], [WY], [WZ]].
 
     :param axisDataSet: Set with the data to separate into axes. Each element (row) is a set of (X,Y,Z,WX,WY,WZ).
     :return axesList: List which each element is a set of the separated axes.
@@ -251,3 +251,25 @@ def makeListSameLength(axisDataSet, referenceDataSet):
         error.abort("Failed to adjust data sets lengths", "Make List Same Length")
 
     return axisDataSet
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def joinAxesInRow(axesDataSets):
+    """
+    This function is used to join into "rows" the data from a list with separated axes.
+    From a list of the form [[X], [Y], [Z], [WX], [WY], [WZ]] to [[X, Y, Z, WX, WY, WZ]].
+
+    :param axesDataSets: List with the data set for each individual axis.
+    :return dataSetsInRow: List with data by sets of all axes per row.
+    """
+
+    dataSetsInRow = list()
+    rowAxes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    rowsLength = len(axesDataSets[0])  # All axes should be the same length
+
+    for row in range(rowsLength):
+        for axisNo, axisValue in enumerate(axesDataSets):
+            rowAxes[axisNo] = axisValue[row]
+        dataSetsInRow.append(rowAxes)
+
+    return dataSetsInRow

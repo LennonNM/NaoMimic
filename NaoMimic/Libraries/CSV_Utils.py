@@ -10,6 +10,7 @@ from os.path import dirname, abspath
 
 # Project libraries
 from Libraries import Error_Utils as error
+from Libraries import Calibration_Utils as cal
 
 # ----------------------------------------------------------------------------------------------------------------------
 # MoCap related
@@ -123,15 +124,24 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
+def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
     """
     This function is used to write a single CSV file containing the data for each calibration routine done for a
-    specific set of effectors. The data sets received must be already time adjusted using syncData() from Calibrate_Utils.
+    specific set of effectors. The data sets received must be already time adjusted using syncData() from
+    Calibrate_Utils.
 
     :param dataEffectors: List with the data to write. Must include all effectors.
     :param pathCalProf: Directory file to write the CSV file.
     :return: void
     """
+
+    # Join axes data set into a data set of all axes per row, if needed
+    if joinAxes:
+        dataEffectors = [[] for k in range(len(dataSet))]
+        for effectorNo, effector in enumerate(dataSet):
+            dataEffectors[effectorNo] = cal.joinAxesInRow(effector)
+    else:
+        dataEffectors = dataSet
 
     # Define location to store the file
     rootDir = dirname(dirname(abspath(__file__)))
@@ -148,6 +158,7 @@ def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
         print("Specified directory does not exist into CalibrationProfiles/" +
               "\nCreating " + storeDir
               )
+        time.sleep(3)
         try:
             os.makedirs(storeDir)
         except Exception as e1:
@@ -160,6 +171,7 @@ def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
         + "Creating file " + storeDir +
           "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
           )
+    time.sleep(3)
     try:
         with open(storeDir, 'w') as csvfile:
             fieldnames = [
@@ -180,12 +192,9 @@ def writeCSVMocapSingleAdjusted(dataEffectors, pathCalProf):
                         fieldnames[i*6+4]: dataEffectors[i][j][4], fieldnames[i*6+5]: dataEffectors[i][j][5],
                     })
     except Exception as e2:
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-              "Failed to create" + storeDir +
-              "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         error.abort("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-              "Failed to create" + storeDir +
-              "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
+                    + "Failed to create" + storeDir
+                    + "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
                     "Write CSV file with MoCap adjusted data", e2)
 
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
@@ -239,6 +248,7 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           "Creating CSV file as: " + fileDir +
           "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    time.sleep(3)
     try:
         with open(fileDir, 'w') as csvfile:
             # Define columns
@@ -417,6 +427,7 @@ def readCalibrationProfile(fileName):
     """
 
     print("Reading Calibration Profile from default directory .../Calibration/Human/CalibrationProfiles/")
+    time.sleep(3)
 
     # Define path
     rootDir = dirname(dirname(abspath(__file__)))
@@ -426,6 +437,7 @@ def readCalibrationProfile(fileName):
     # Extract all data from file
     try:
         print("Opening file: " + fileName + ".csv")
+        time.sleep(3)
         f = open(file, 'rt')
         reader = csv.reader(f)
         coefficients = [r for r in reader]  # Each row contains the coefficients of a single axis
@@ -460,17 +472,20 @@ def writeCalibrationProfile(coefficients, fileName):
         print("Specified directory does not exist into CalibrationProfiles/" +
               "\nCreating " + file
               )
+        time.sleep(3)
         try:
             os.makedirs(file)
         except Exception as e1:
             error.abort("Failed to create directory " + file, "Write Calibration Profile", e1)
         print("Directory " + file + " successfully created")
+        time.sleep(3)
     file += folder[1]
 
     # Create file
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
           "Creating Calibration Profile" +
           "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    time.sleep(3)
     try:
         with open(file, 'w') as csvfile:
             writer = csv.writer(csvfile)
@@ -479,3 +494,7 @@ def writeCalibrationProfile(coefficients, fileName):
                     writer.writerow(element)
     except Exception as e2:
         error.abort("Could not create Calibration Profile", "Write Calibration Profile", e2)
+
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
+          "Calibration Profile Created Successfully" +
+          "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
