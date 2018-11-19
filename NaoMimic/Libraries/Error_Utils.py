@@ -18,14 +18,15 @@ def abort(errorMessage, processName = None, sysError = None):
     """
 
     # Build error message
-    printMessage = ("\n\n++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-                    +   "      ERROR ON A NAO MIMIC PROCESS EXECUTION      \n\n")
-    printMessage += errorMessage
+    printMessage = ("\n\n**************************************************\n"
+                    + "**************************************************\n"
+                    + "      ERROR ON A NAO MIMIC PROCESS EXECUTION      \n\n")
+    printMessage += errorMessage + "\n"
     if processName is not None:
         printMessage += ("\n----------------\n"
                          + "Interrupted process: "
                          + processName
-                         + "\n----------------\n")
+                         + "\n----------------")
 
     # Print error message and abort
     print(printMessage)
@@ -38,7 +39,8 @@ def abort(errorMessage, processName = None, sysError = None):
 
     # Print final section of message
     print("\n                 PROCESS ABORTED                  \n"
-        + "++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+          + "**************************************************\n"
+          + "**************************************************\n")
 
     sys.exit()
 

@@ -63,7 +63,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
 # ----------------------------------------------------------------------------------------------------------------------
 
 def plotAxes(axesDataSet, labels = ["X axis", "Y axis", "Z axis", "WX axis", "WY axis", "WZ axis"],
-                saveImage = False, filePath = "Default/"):
+                saveImage = False, filePath = "Default/", showPlot = True):
     """
     This function is used to plot a single data set to show all included axes. The plot can be saved into a PNG file.
 

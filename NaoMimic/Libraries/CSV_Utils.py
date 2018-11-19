@@ -156,49 +156,55 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
     # If directory does not exist, create it
     if not os.path.exists(storeDir):
         print("Specified directory does not exist into CalibrationProfiles/" +
-              "\nCreating " + storeDir
+              "\n\nCreating " + storeDir
               )
         time.sleep(3)
         try:
             os.makedirs(storeDir)
         except Exception as e1:
             error.abort("Failed to create directory " + storeDir, "Write CSV file with MoCap adjusted data", e1)
-        print("Directory " + storeDir + " successfully created")
+        print("\n\nDirectory " + storeDir + " successfully created")
 
     # Creating file
     storeDir += "/" + folder[1] + ".csv"
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+    print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
         + "Creating file " + storeDir +
           "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
           )
     time.sleep(3)
+
     try:
-        with open(storeDir, 'w') as csvfile:
+        with open(storeDir, 'w', newline='') as csvfile:
             fieldnames = [
                 'X Head', 'Y Head', 'Z Head', 'WX Head', 'WY Head', 'WZ Head',
                 'X Torso', 'Y Torso', 'Z Torso', 'WX Torso', 'WY Torso', 'WZ Torso',
                 'X RArm', 'Y RArm', 'Z RArm', 'WX RArm', 'WY RArm', 'WZ RArm',
-                'X LArm', 'Y LArm', 'Z LArm', 'WX LArm', 'WY LArm', 'WZ LArm',
+                'X LArm', 'Y LArm', 'Z LArm', 'WX LArm', 'WY LArm', 'WZ LArm'#,
                 # 'X RLeg', 'Y RLeg', 'Z RLeg', 'WX RLeg', 'WY RLeg', 'WZ RLeg',
                 # 'X LLeg', 'Y LLeg', 'Z LLeg', 'WX LLeg', 'WY LLeg', 'WZ LLeg',
             ]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            for i in range(len(dataEffectors)):
-                for j in range(len(dataEffectors[i])):
-                    writer.writerow({
-                        fieldnames[i*6]: dataEffectors[i][j][0], fieldnames[i*6+1]: dataEffectors[i][j][1],
-                        fieldnames[i*6+2]: dataEffectors[i][j][2], fieldnames[i*6+3]: dataEffectors[i][j][3],
-                        fieldnames[i*6+4]: dataEffectors[i][j][4], fieldnames[i*6+5]: dataEffectors[i][j][5],
-                    })
-    except Exception as e2:
-        error.abort("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-                    + "Failed to create" + storeDir
-                    + "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
-                    "Write CSV file with MoCap adjusted data", e2)
 
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-          "CSV file created succesfully" +
+            # Find maximum amount of rows
+            maxRows = max(len(dataEffectors[0]), len(dataEffectors[1]), len(dataEffectors[2]), len(dataEffectors[3]))
+            rowToWrite = dict()
+            for rowNo in range(maxRows):
+                for effectorNo in range(len(dataEffectors)):
+                    for axis in range(6):
+                        try:
+                            rowToWrite.update({fieldnames[6*effectorNo + axis]: dataEffectors[effectorNo][rowNo][axis]})
+                        except IndexError:
+                            # Manage when passing over the end of a shorter effector list
+                            # # Leave the space in blank because there is no important info to write
+                            rowToWrite[fieldnames[6 * effectorNo + axis]] = None
+                writer.writerow(rowToWrite)
+
+    except Exception as e2:
+        error.abort("Failed to create" + storeDir, "Write CSV file with MoCap adjusted data", e2)
+
+    print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+          "\nCSV file created succesfully" +
           "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -250,7 +256,7 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
           "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     time.sleep(3)
     try:
-        with open(fileDir, 'w') as csvfile:
+        with open(fileDir, 'w', newline='') as csvfile:
             # Define columns
             fieldnames = list()
             if whichEffectors.upper() == "ALL":
@@ -487,7 +493,7 @@ def writeCalibrationProfile(coefficients, fileName):
           "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     time.sleep(3)
     try:
-        with open(file, 'w') as csvfile:
+        with open(file, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             for item in coefficients:
                 for element in item:
@@ -495,6 +501,6 @@ def writeCalibrationProfile(coefficients, fileName):
     except Exception as e2:
         error.abort("Could not create Calibration Profile", "Write Calibration Profile", e2)
 
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
-          "Calibration Profile Created Successfully" +
-          "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+          + "Calibration Profile Created Successfully"
+          + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
