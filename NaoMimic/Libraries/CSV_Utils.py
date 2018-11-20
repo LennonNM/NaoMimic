@@ -424,7 +424,7 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
 # Calibration Profiles related
 # ----------------------------------------------------------------------------------------------------------------------
 
-def readCalibrationProfile(fileName):
+def readCalibrationFile(fileName):
     """
     This function reads a Calibration Profile CSV file and returns a list with all the coefficients contained.
 
@@ -432,7 +432,8 @@ def readCalibrationProfile(fileName):
     :return coefficients: Coefficients that conforms the Calibration Profile.
     """
 
-    print("Reading Calibration Profile from default directory .../Calibration/Human/CalibrationProfiles/")
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+          + "Reading Calibration Profile from default directory .../Calibration/Human/CalibrationProfiles/")
     time.sleep(3)
 
     # Define path
@@ -442,16 +443,17 @@ def readCalibrationProfile(fileName):
 
     # Extract all data from file
     try:
-        print("Opening file: " + fileName)
+        print("\n------------------------------------------------------------------\nOpening file: " + file)
         time.sleep(3)
         f = open(file, 'rt')
         reader = csv.reader(f)
-        coefficients = [r for r in reader]  # Each row contains the coefficients of a single axis
+        coefficients = [row for row in reader]  # Each row contains the coefficients of a single axis
         f.close()
     except Exception as e:
         error.abort("Could not open " + file, "Read Calibration Profile", e)
 
-    print("Data extracted from Calibration Profile " + file)
+    print("\nData extracted from Calibration Profile " + file
+          + "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
     return coefficients
 
@@ -475,9 +477,8 @@ def writeCalibrationProfile(coefficients, fileName):
     folder = fileName.split("/")
     file = os.path.join(file, folder[0])
     if not os.path.exists(file):
-        print("Specified directory does not exist into CalibrationProfiles/" +
-              "\nCreating " + file
-              )
+        print("Specified directory does not exist into CalibrationProfiles/"
+              + "\nCreating " + file)
         time.sleep(3)
         try:
             os.makedirs(file)
@@ -485,12 +486,11 @@ def writeCalibrationProfile(coefficients, fileName):
             error.abort("Failed to create directory " + file, "Write Calibration Profile", e1)
         print("Directory " + file + " successfully created")
         time.sleep(3)
-    file += folder[1]
+    file += "/" + folder[1] + ".csv"
 
     # Create file
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
-          "Creating Calibration Profile" +
-          "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+          + "Creating Calibration Profile" + file)
     time.sleep(3)
     try:
         with open(file, 'w', newline='') as csvfile:
@@ -501,6 +501,5 @@ def writeCalibrationProfile(coefficients, fileName):
     except Exception as e2:
         error.abort("Could not create Calibration Profile", "Write Calibration Profile", e2)
 
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-          + "Calibration Profile Created Successfully"
+    print("\nCalibration Profile Created Successfully as:\n" + file
           + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
