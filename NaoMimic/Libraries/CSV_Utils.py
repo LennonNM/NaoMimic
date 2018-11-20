@@ -438,18 +438,18 @@ def readCalibrationProfile(fileName):
     # Define path
     rootDir = dirname(dirname(abspath(__file__)))
     file = os.path.join(rootDir, "Calibration/Human/CalibrationProfiles/")
-    file += fileName
+    file += fileName + ".csv"
 
     # Extract all data from file
     try:
-        print("Opening file: " + fileName + ".csv")
+        print("Opening file: " + fileName)
         time.sleep(3)
         f = open(file, 'rt')
         reader = csv.reader(f)
         coefficients = [r for r in reader]  # Each row contains the coefficients of a single axis
         f.close()
-    except Exception:
-        error.abort("Could not open " + file, "Read Calibration Profile")
+    except Exception as e:
+        error.abort("Could not open " + file, "Read Calibration Profile", e)
 
     print("Data extracted from Calibration Profile " + file)
 

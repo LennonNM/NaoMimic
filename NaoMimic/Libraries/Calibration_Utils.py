@@ -263,13 +263,13 @@ def joinAxesInRow(axesDataSets):
     :return dataSetsInRow: List with data by sets of all axes per row.
     """
 
-    dataSetsInRow = list()
     rowAxes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     rowsLength = len(axesDataSets[0])  # All axes should be the same length
+    dataSetsInRow = list()
 
     for row in range(rowsLength):
         for axisNo, axisValue in enumerate(axesDataSets):
             rowAxes[axisNo] = axisValue[row]
-        dataSetsInRow.append(rowAxes)
+        dataSetsInRow.append(rowAxes[:])
 
     return dataSetsInRow

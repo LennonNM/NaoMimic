@@ -2,7 +2,7 @@
 # import sys
 from Libraries import CSV_Utils as csvUtils
 from Libraries import Calibration_Utils as calibration
-from Libraries import Graph_Utils as compare
+from Libraries import Graph_Utils as graph
 
 def  main(humanDir):
 
@@ -23,22 +23,19 @@ def  main(humanDir):
     LArmSync = calibration.syncData(ARmsP[1], ARmsNao[1])
     dataEffectors = [HeadSync, TorsoSync, RArmSync, LArmSync]
 
-    naoRArm = calibration.extractAxes(HeadNao)
-    personRArm = calibration.extractAxes(HeadP)
+    # naoRArm = calibration.extractAxes(HeadNao)
+    # personRArm = calibration.extractAxes(HeadP)
     # for i in range(6):
-    #     compare.plotCompareSameAxis(HeadSync[i], personRArm[i], "Synced " + str(i),
+    #     graph.plotCompareSameAxis(HeadSync[i], personRArm[i], "Synced " + str(i),
     #                                 "Javier RArm " + str(i), naoRArm[i], "Nao " + str(i))
 
     # Write single CSV with adjusted data
     csvUtils.writeCSVMocapSingleAdjusted(dataEffectors, "Javier2/AdjustedDataSet")
-    #
-    # # Create Calibration Profile from adjusted data CSV
-    # # # Read synced data
-    # HeadPerson = csvUtils.readCSVMocap("NewSubject1/AdjustedData", "HEAD")
-    # TorsoPerson = csvUtils.readCSVMocap("NewSubject1/AdjustedData", "TORSO")
-    # RArmPerson, LArmPerson = csvUtils.readCSVMocap("NewSubject1/AdjustedData", "ARMS")
-    #
-    # # # Get calibration terms
+
+    # Create Calibration Profile from adjusted data CSV
+    # # Read adjusted data
+    dataAdjusted = csvUtils.readCalibrationProfile("Javier2/AdjustedDataSet")
+    # # Get calibration terms
     # HeadCoeff = calibration.getCalibrationTerms(HeadNao, HeadPerson)
     # TorsoCoeff = calibration.getCalibrationTerms(TorsoNao, TorsoPerson)
     # RArmCoeff = calibration.getCalibrationTerms(RArmNao, RArmPerson)
