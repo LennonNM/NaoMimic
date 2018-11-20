@@ -321,6 +321,16 @@ def cleanseDataSet(dataSetToClean):
 # ----------------------------------------------------------------------------------------------------------------------
 
 def performFullCalibration(pathMoCap, pathReferences, pathCalProfile):
+    """
+    This function is used to run the whole calibration process. It requires the existance of the calibration CSV files,
+    the MoCap calibration data and the Nao reference data. The calibration is performed for all available effectors to
+    use by default (Head, Torso, RArm, LArm). It uses the default directories to store/read each involved file.
+
+    :param pathMoCap: Path inside Calibration/Human/MoCap_Export to read the MoCap export file.
+    :param pathReferences: Path inside Calibration/NAO/ReferenceData(/Default)
+    :param pathCalProfile: Path inside Calibration/Human/CalibrationProfiles to store the Calibration Profile files.
+    :return: void
+    """
 
 
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
