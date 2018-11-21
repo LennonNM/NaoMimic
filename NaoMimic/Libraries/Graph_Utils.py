@@ -38,6 +38,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
     if compareAxis2 is not None:
         plt.plot(compareAxis2, label=axisLabel2)
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    image = plt.gcf()
 
     if showPlot:
         plt.show()
@@ -50,15 +51,22 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
         if filePath == "Default/":
             fileDir += time.strftime("%Y-%m-%d_%H-%M-%S")
         fileDir += ".png"
-        try:
-            plt.savefig(fileDir, bbox_inches='tight')
-        except FileExistsError:
-            print("File name already exists, saving file with time and date on Default directory.")
+        if os.path.exists(fileDir):
+            print(fileDir + " already exists, saving file with time and date on Default directory.")
             try:
-                newDir =  os.path.join(rootDir, "Comparisons/Default/%Y-%m-%d_%H-%M-%S")
-                print("Plot image saved as: " + newDir)
+                fileDir = os.path.join(rootDir, "Comparisons/Default/")
+                fileDir += time.strftime("%Y-%m-%d_%H-%M-%S")
             except Exception:
                 error.abort("Failed to save plot image", None, Exception)
+        try:
+            image.savefig(fileDir, bbox_inches='tight')
+            print("Plot image saved as: " + fileDir)
+            time.sleep(1.5)
+        except Exception:
+            error.abort("Failed to save plot image", None, Exception)
+
+    # Clear plot figure
+    plt.clf()
 
 # ----------------------------------------------------------------------------------------------------------------------
 

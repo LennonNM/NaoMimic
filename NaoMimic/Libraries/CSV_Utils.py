@@ -167,6 +167,7 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
 
     # Creating file
     storeDir += "/" + folder[1] + ".csv"
+    # storeDir = checkFileExists(storeDir)
     print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
         + "Creating file " + storeDir +
           "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
@@ -249,6 +250,8 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
     else:
         fileDir += filePath
     fileDir += ".csv"
+
+    # fileDir = checkFileExists(fileDir)
 
     # Create the CSV file
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
@@ -476,20 +479,24 @@ def writeCalibrationProfile(coefficients, fileName):
         error.abort("Must specify the folder to store the file. Received only " + fileName, "Write Calibration Profile")
     folder = fileName.split("/")
     file = os.path.join(file, folder[0])
+    # Check if directory exists
     if not os.path.exists(file):
-        print("Specified directory does not exist into CalibrationProfiles/"
+        print("---------------------------------------\nSpecified directory does not exist into CalibrationProfiles/"
               + "\nCreating " + file)
         time.sleep(3)
         try:
             os.makedirs(file)
         except Exception as e1:
             error.abort("Failed to create directory " + file, "Write Calibration Profile", e1)
-        print("Directory " + file + " successfully created")
+        print("Directory " + file + " successfully created\n---------------------------------------")
         time.sleep(3)
-    file += "/" + folder[1] + ".csv"
+    file += "/" + folder[1]
+
+    # Check if file exists
+    # file = checkFileExists(file)
 
     # Create file
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+    print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "Creating Calibration Profile" + file)
     time.sleep(3)
     try:
@@ -503,3 +510,41 @@ def writeCalibrationProfile(coefficients, fileName):
 
     print("\nCalibration Profile Created Successfully as:\n" + file
           + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def checkFileExists(pathToFile):
+
+    # Split file name and path
+    pathSplit = pathToFile.split("/")
+    fileName = pathSplit.pop(-1)
+    # Rejoin path
+    filePath = ""
+    for item in pathSplit:
+        filePath += item + "/"
+    # Check if file name already has extension
+    if fileName.find(".") != -1:
+        fileName = fileName.split(".")[0]  # Delete extension
+
+    checkFile = True
+    while (checkFile):
+        if os.path.exists(filePath + fileName + ".csv"):
+            print("\n---------------------------------------\n"
+                  + "File already exists as :" + filePath + fileName + ".csv")
+            response = input("OVERWRITE FILE? (Y/N):  ").upper()
+            if  response == "N":
+                fileName = input("Write the NAME of the file to create and then press [ENTER]."
+                                 + "\nPath to folder remains the same.\n")
+                checkFile = True
+            elif response == "Y":
+                filePath += fileName + ".csv"
+                print("File will be overwritten.")
+                checkFile = False
+            else:
+                print("Wrong input received.")
+                checkFile = True
+        else:
+            filePath += fileName + ".csv"
+            checkFile = False
+
+    return filePath
