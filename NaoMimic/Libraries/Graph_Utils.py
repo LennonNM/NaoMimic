@@ -9,7 +9,7 @@ import time
 from os.path import dirname, abspath
 
 # Project libraries
-from Libraries import Error_Utils as error
+from Libraries import Miscellaneous_Utils as misc
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -48,6 +48,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
         rootDir = dirname(dirname(abspath(__file__)))
         fileDir = os.path.join(rootDir, "Comparisons/")
         fileDir = os.path.join(fileDir, filePath)
+
         if filePath == "Default/":
             fileDir += time.strftime("%Y-%m-%d_%H-%M-%S")
         fileDir += ".png"
@@ -56,14 +57,14 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
             try:
                 fileDir = os.path.join(rootDir, "Comparisons/Default/")
                 fileDir += time.strftime("%Y-%m-%d_%H-%M-%S")
-            except Exception:
-                error.abort("Failed to save plot image", None, Exception)
+            except Exception as e1:
+                misc.abort("Failed to save plot image", None, e1)
         try:
             image.savefig(fileDir, bbox_inches='tight')
             print("Plot image saved as: " + fileDir)
             time.sleep(1.5)
-        except Exception:
-            error.abort("Failed to save plot image", None, Exception)
+        except Exception as e2:
+            misc.abort("Failed to save plot image", None, e2)
 
     # Clear plot figure
     plt.clf()
@@ -99,6 +100,10 @@ def plotAxes(axesDataSet, labels = ["X axis", "Y axis", "Z axis", "WX axis", "WY
         rootDir = dirname(dirname(abspath(__file__)))
         fileDir = os.path.join(rootDir, "Comparisons/")
         fileDir = os.path.join(fileDir, filePath)
+
+        # Check that directory exists
+        misc.checkDirExists(fileDir)
+
         if filePath == "Default/":
             fileDir += time.strftime("%Y-%m-%d_%H-%M-%S")
         fileDir += ".png"
@@ -109,5 +114,7 @@ def plotAxes(axesDataSet, labels = ["X axis", "Y axis", "Z axis", "WX axis", "WY
             try:
                 newDir = os.path.join(rootDir, "Comparisons/Default/%Y-%m-%d_%H-%M-%S")
                 print("Plot image saved as: " + newDir)
-            except Exception:
-                error.abort("Failed to save plot image", None, Exception)
+            except Exception as e:
+                misc.abort("Failed to save plot image", None, e)
+
+# ----------------------------------------------------------------------------------------------------------------------

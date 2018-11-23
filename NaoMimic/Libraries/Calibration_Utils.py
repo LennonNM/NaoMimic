@@ -8,7 +8,7 @@ import numpy as np
 from collections import Counter
 
 # Project libraries
-from Libraries import Error_Utils as error
+from Libraries import Miscellaneous_Utils as misc
 from Libraries import CSV_Utils as csvUtils
 from Libraries import Graph_Utils as graph
 
@@ -57,7 +57,7 @@ def getCalibrationTerms(listPerson, listReference, degree = 1):
 
     # Makes sure data sets are same size
     if len(listReference) != len(listPerson):
-        error.abort("Sizes of the data sets are not equal." +
+        misc.abort("Sizes of the data sets are not equal." +
                     "\nReference data set size: " + listReference +
                     "\nPerson data set size: " + listPerson, "Generation of calibration terms")
 
@@ -251,7 +251,7 @@ def makeListSameLength(axisDataSet, referenceDataSet):
     # Check that the lengths do match
     finalLenAxis = len(axisDataSet)
     if finalLenAxis != lenRef:
-        error.abort("Failed to adjust data sets lengths", "Make List Same Length")
+        misc.abort("Failed to adjust data sets lengths", "Make List Same Length")
 
     return axisDataSet
 
@@ -333,15 +333,17 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
     :return: void
     """
 
-
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+    print("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+          + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "                   Starting Calibration Process                   ")
     time.sleep(3)
 
-    print("\n------------------------------------------------------------------\n"
+    print("\n\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n"
           + "Retrieving data from CSV files"
-          + "\n------------------------------------------------------------------\n")
+          + "\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n")
     time.sleep(2)
     # Get reference data
     HeadNao = csvUtils.readCSVNao(pathReferences[0], "HEAD")
@@ -354,9 +356,11 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
     ArmsP = csvUtils.readCSVMocap(pathMoCap + "Arms", "ARMS")
 
     # Sync data (now data sets are gruped by axes instead of frame)
-    print("\n------------------------------------------------------------------\n"
+    print("\n\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n"
           + "Syncing MoCap data to match time placement and data set size"
-          + "\n------------------------------------------------------------------\n")
+          + "\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n")
     time.sleep(2)
     HeadSync = syncData(HeadP, HeadNao)
     TorsoSync = syncData(TorsoP, TorsoNao)
@@ -365,17 +369,21 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
     dataEffectors = [HeadSync, TorsoSync, RArmSync, LArmSync]
 
     # Write single CSV with adjusted data
-    print("\n------------------------------------------------------------------\n"
+    print("\n\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n"
           + "Write single CSV with synced MoCap data"
-          + "\n------------------------------------------------------------------\n")
+          + "\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n")
     time.sleep(2)
     singleCSVPath = pathCalProfile + "/AdjustedDataSet"
     csvUtils.writeCSVMocapSingleAdjusted(dataEffectors, singleCSVPath)
 
     # Create Calibration Profile from adjusted data CSV
-    print("\n------------------------------------------------------------------\n"
+    print("\n\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n"
           + "Creating Calibration Profile file"
-          + "\n------------------------------------------------------------------\n")
+          + "\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n")
     time.sleep(2)
     # # Read adjusted data
     dataAdjusted = csvUtils.readCalibrationFile(singleCSVPath)[1:]
@@ -393,12 +401,14 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
     # # Write Calibration Profile with terms
     csvUtils.writeCalibrationProfile(coefficientsList, pathCalProfile + "/" + pathCalProfile)
 
-    print("\n\n             Calibration Process Finished Succesfully             \n"
+    print("\n\n             Calibration Process Finished Successfully             \n"
           + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
     if saveProcessPNG:
-        print("\nSaving plot of data through the process as PNG files at /Comparisons\n")
+        print("\n------------------------------------------------------------------\n"
+              + "\nSaving plot of data through the process as PNG files at /Comparisons\n"
+              + "------------------------------------------------------------------\n")
         axesLabels = ["X", "Y", "Z", "WX", "WY", "WZ"]
 
         # Original data
@@ -412,22 +422,22 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
         axesLArmP = extractAxes(ArmsP[1])
         
         # Plot reference and MoCap data sets together
-        # for axis in range(6):
-        #     graph.plotCompareSameAxis(axesHeadNao[axis], axesHeadP[axis], "Nao " + axesLabels[axis],
-        #                               "MoCap Orig " + axesLabels[axis], None,  None, True,
-        #                               "Default/JavierOrig_Head_" + axesLabels[axis], False)
-        # for axis in range(6):
-        #     graph.plotCompareSameAxis(axesTorsoNao[axis], axesTorsoP[axis], "Nao " + axesLabels[axis],
-        #                               "MoCap Orig " + axesLabels[axis], None,  None, True,
-        #                               "Default/JavierOrig_Torso_" + axesLabels[axis], False)
-        # for axis in range(6):
-        #     graph.plotCompareSameAxis(axesRArmNao[axis], axesRArmP[axis], "Nao " + axesLabels[axis],
-        #                               "MoCap Orig " + axesLabels[axis], None,  None, True,
-        #                               "Default/JavierOrig_RArm_" + axesLabels[axis], False)
-        # for axis in range(6):
-        #     graph.plotCompareSameAxis(axesLArmNao[axis], axesLArmP[axis], "Nao " + axesLabels[axis],
-        #                               "MoCap Orig " + axesLabels[axis], None,  None, True,
-        #                               "Default/JavierOrig_LArm_" + axesLabels[axis], False)
+        for axis in range(6):
+            graph.plotCompareSameAxis(axesHeadNao[axis], axesHeadP[axis], "Nao " + axesLabels[axis],
+                                      "MoCap Orig " + axesLabels[axis], None,  None, True,
+                                      "Default/JavierOrig_Head_" + axesLabels[axis], False)
+        for axis in range(6):
+            graph.plotCompareSameAxis(axesTorsoNao[axis], axesTorsoP[axis], "Nao " + axesLabels[axis],
+                                      "MoCap Orig " + axesLabels[axis], None,  None, True,
+                                      "Default/JavierOrig_Torso_" + axesLabels[axis], False)
+        for axis in range(6):
+            graph.plotCompareSameAxis(axesRArmNao[axis], axesRArmP[axis], "Nao " + axesLabels[axis],
+                                      "MoCap Orig " + axesLabels[axis], None,  None, True,
+                                      "Default/JavierOrig_RArm_" + axesLabels[axis], False)
+        for axis in range(6):
+            graph.plotCompareSameAxis(axesLArmNao[axis], axesLArmP[axis], "Nao " + axesLabels[axis],
+                                      "MoCap Orig " + axesLabels[axis], None,  None, True,
+                                      "Default/JavierOrig_LArm_" + axesLabels[axis], False)
 
         # Plot MoCap orig data and synced sets together
         for axis in range(6):
@@ -450,3 +460,5 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
                                       "MoCap Synced " + axesLabels[axis],
                                       axesLArmNao[axis], "Nao " + axesLabels[axis], True,
                                       "Default/JavierSynced_LArm_" + axesLabels[axis], False)
+
+# ----------------------------------------------------------------------------------------------------------------------

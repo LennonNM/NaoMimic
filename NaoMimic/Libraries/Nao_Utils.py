@@ -6,7 +6,8 @@ Functions to support Nao interfacing.
 import time
 
 # Project libraries
-from Libraries import Error_Utils as error
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
     """
@@ -49,5 +50,8 @@ def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
               + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n")
         time.sleep(0.25)
         pass
+
     dataCollected = [posHead, posTorso, posRArm, posLArm]
     return dataCollected
+
+# ----------------------------------------------------------------------------------------------------------------------
