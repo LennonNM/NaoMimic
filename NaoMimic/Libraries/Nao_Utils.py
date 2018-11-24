@@ -1,9 +1,10 @@
 """
-Functions to support Nao interfacing.
+Functions to support Nao interfacing. Uses naoqi methods
 """
 
 # Imports
 import time
+from naoqi import ALProxy
 
 # Project libraries
 
@@ -13,6 +14,7 @@ def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
     """
     This function is used to extract data from the Nao effector's sensors.
 
+    :param motionProxy: Naoqi motion proxy object.
     :param frame: Reference frame from which the data collected is referenced to.
     :param useSensorValues: Set to True to use sensor approximations for values collected.
     :return dataCollected: List with the data collected from each effector. The order of the axes is as follows:
@@ -55,3 +57,109 @@ def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
     return dataCollected
 
 # ----------------------------------------------------------------------------------------------------------------------
+
+def setStiffness(motionProxy, stiffnessOn = True):
+    """
+    This function is used to toggle stiffness of Nao robot. Duration of transition is set to 1 second.
+
+    :param motionProxy: NAoqi motion proxy object.
+    :return:
+    """
+    pNames = "Body"  # Sets stiffnes for the whole body
+    # Stiffness value
+    pStiffnessLists = 1.0  if stiffnessOn == True else 0.0
+    pTimeLists = 1.0  # In seconds
+    stiffnessState = "On" if pStiffnessLists == 1.0 else "Off"
+
+    print("Turning Nao's stiffness " + stiffnessState)
+    motionProxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def setNaoReadyToMimic(motionProxy, postureProxy):
+
+    print("\n\n------------------------------------------------------------------"
+          + "\nSetting the Nao ready for Mimicking process"
+          + "\n------------------------------------------------------------------")
+
+    # Set stiffness On
+    setStiffness(motionProxy)
+
+    # Set the robot to a safe position
+    print("\n------------------------------------------------------------------\n"
+          + "Moving Nao to position: STANDINIT")
+    postureProxy.goToPosture("StandInit", 0.5)
+
+    # Disable Fall Manager
+    print("\n******************************************************************"
+          + "\n******************************************************************"
+          + "\n******************************************************************"
+          + "\n*                  Disabling Nao's Fall Manager                  *"
+          + "\n*                           WARNING!!!                           *"
+          + "\n*       NAO WONT REACT AUTOMATICALLY TO PROTECT FROM FALLS       *"
+          + "\n*       PLEASE TAKE CARE OF THE NAO'S INTEGRITY DURING THE       *"
+          + "\n*               EXECUTION OF THE MIMICKING PROCESS               *"
+          + "\n******************************************************************"
+          + "\n******************************************************************"
+          + "\n******************************************************************")
+    time.sleep(3.0)
+    motionProxy.setFallManagerEnabled(False)
+
+    # Enable Nao's Whole Body Balancer
+    print("\n------------------------------------------------------------------\n"
+          + "Enabling Whole Body Balance Manager")
+    motionProxy.wbEnable(True)
+
+    # # Setting balance constraints
+    # # # Plane constraints
+    fixedConstraint = "Fixed"  # Fixed feet position
+    # planeConstraint = "Plane"  # Feet free to move along the virtual floor plane
+    # freeConstraint = "Free"  # Feet free to move along the 3D space
+
+    # # # Support effector for constraint
+    supportLegs = "Legs"  # Both legs
+    supportLLeg = "LLeg"  # Left leg
+    supportRLeg = "RLeg"  # Right leg
+
+    # # # Enable balance contraints for specified support effector
+    motionProxy.wbFootState(fixedConstraint, supportLegs)
+    # motionProxy.wbFootState(planeConstraint, supportRLeg)
+    # motionProxy.wbFootState(planeConstraint, supportLLeg)
+
+    # # Enable balance management over specified constraints
+    activateConstraintsSupport = True
+    motionProxy.wbEnableBalanceConstraint(activateConstraintsSupport, supportLegs)
+
+    print("\nNao robot is ready to start Mimicking operation"
+          + "\n------------------------------------------------------------------")
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def restNao(motionProxy, postureProxy):
+
+    print("\n\n------------------------------------------------------------------"
+          + "\nResting the Nao robot"
+          + "\n------------------------------------------------------------------")
+
+    # Stabilization time
+    time.sleep(3.0)
+
+    # Enable Fall Manager
+    print("\n------------------------------------------------------------------\n"
+          + "Enabling Nao's Fall Manager")
+    motionProxy.setFallManagerEnabled(True)
+
+    # Disable Nao's Whole Body Balancer
+    print("\n------------------------------------------------------------------\n"
+          + "Disabling Whole Body Balance Manager")
+    motionProxy.wbEnable(False)
+
+    # Moving Nao to safe position
+    print("\n------------------------------------------------------------------\n"
+          + "Moving Nao to position: CROUCH")
+    postureProxy.goToPosture("Crouch", 0.5)
+
+    # Resting Nao's motors
+    motionProxy.rest()
+    print("\n------------------------------------------------------------------\n"
+          + "The Nao's motors are in state REST")

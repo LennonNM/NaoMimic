@@ -53,7 +53,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
             fileDir += time.strftime("%Y-%m-%d_%H-%M-%S")
         fileDir += ".png"
         if os.path.exists(fileDir):
-            print(fileDir + " already exists, saving file with time and date on Default directory.")
+            print(fileDir + "\nalready exists, saving file with time and date on Default directory.")
             try:
                 fileDir = os.path.join(rootDir, "Comparisons/Default/")
                 fileDir += time.strftime("%Y-%m-%d_%H-%M-%S")
@@ -61,7 +61,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
                 misc.abort("Failed to save plot image", None, e1)
         try:
             image.savefig(fileDir, bbox_inches='tight')
-            print("Plot image saved as: " + fileDir)
+            print("Plot image saved as:\n" + fileDir)
             time.sleep(1.5)
         except Exception as e2:
             misc.abort("Failed to save plot image", None, e2)

@@ -16,11 +16,11 @@ from Libraries import Graph_Utils as graph
 
 def syncData(mocapData, referenceData):
     """
-    This function is used to time couple 2 different sets of data. It shifts the mocapData to match the
-    referenceData general shape by comparing the position in the timeline of the maximum peak.
-    Each set corresponds to a single effector and includes the axes, in the corresponding order, X, Y, Z, WX, WY, WZ.
+    This function is used to time couple 2 different sets of data. It shifts mocapData to match the referenceData
+    general shape by comparing the position in the timeline of the maximum peak. Each set corresponds to a single
+    effector and includes the axes, in the corresponding order, X, Y, Z, WX, WY, WZ.
 
-    :param mocapData: Data to adjust. Obtained from Motive export.
+    :param mocapData: Data to adjust. Obtained from Motive export. Single effector.
     :param referenceData: Set of data to be used as reference. Obtained from the Nao's sensors using GetPositions.py.
     :return finalDataSet: Complete data set time coupled with the reference data.
     """
@@ -43,7 +43,7 @@ def syncData(mocapData, referenceData):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def getCalibrationTerms(listPerson, listReference, degree = 1):
+def createCalibrationTerms(listPerson, listReference, degree = 1):
     """
     This function performs the linear regression coupling between the 2 data sets received. The sets correspond to a
     single effector. The default polynomial degree for the regression is set to 1. This function uses polyfit from
@@ -393,11 +393,12 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
                               cleanseDataSet(adjustedEffectors[2]),
                               cleanseDataSet(adjustedEffectors[3])]
     # # Get calibration terms
-    HeadCoeff = getCalibrationTerms(adjustedEffectorsFinal[0], HeadNao)
-    TorsoCoeff = getCalibrationTerms(adjustedEffectorsFinal[1], TorsoNao)
-    RArmCoeff = getCalibrationTerms(adjustedEffectorsFinal[2], ArmsNao[0])
-    LArmCoeff = getCalibrationTerms(adjustedEffectorsFinal[3], ArmsNao[1])
+    HeadCoeff = createCalibrationTerms(adjustedEffectorsFinal[0], HeadNao)
+    TorsoCoeff = createCalibrationTerms(adjustedEffectorsFinal[1], TorsoNao)
+    RArmCoeff = createCalibrationTerms(adjustedEffectorsFinal[2], ArmsNao[0])
+    LArmCoeff = createCalibrationTerms(adjustedEffectorsFinal[3], ArmsNao[1])
     coefficientsList = [HeadCoeff, TorsoCoeff, RArmCoeff, LArmCoeff]
+
     # # Write Calibration Profile with terms
     csvUtils.writeCalibrationProfile(coefficientsList, pathCalProfile + "/" + pathCalProfile)
 

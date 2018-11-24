@@ -422,6 +422,8 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
 def readCalibrationFile(fileName):
     """
     This function reads a Calibration Profile CSV file and returns a list with all the coefficients contained.
+    The coefficients are ordered per row and per effector's axis, meaning first 6 rows corresponds to the axes
+    X, Y, Z, WX, WY, WZ for Head effector, the next 6 rows the same for Torso and so on.
 
     :param fileName: Path to the desired Calibration Profile.
     :return coefficients: Coefficients that conforms the Calibration Profile.
@@ -457,7 +459,8 @@ def readCalibrationFile(fileName):
 def writeCalibrationProfile(coefficients, fileName):
     """
     This functions is used to create a CSV file containing the coefficients to adjust a data set. The file does not
-    include a header. Each row corresponds to a single axis, each effector uses 6 rows (X, Y, Z, WX, WY, WZ).
+    include a header. Each row corresponds to the coefficients of a single axis, each effector uses 6 rows
+    (X, Y, Z, WX, WY, WZ).
 
     :param coefficients: List with the coefficients to write into the Calibration Profile.
     :param fileName: Name of the Calibration Profile file. If "None" a generic name will be used.
@@ -475,7 +478,7 @@ def writeCalibrationProfile(coefficients, fileName):
     misc.checkDirExists(file)
 
     # Check if file exists
-    file += "/" + folder[1] + ".csv"
+    file += "/" + folder[1] + "_CP.csv"
     file = checkCSVFileExists(file)
 
     # Create file
@@ -519,12 +522,12 @@ def checkCSVFileExists(pathToFile):
     checkFile = True
     while (checkFile):
         if os.path.exists(filePath + fileName + ".csv"):
-            print("\n---------------------------------------\n"
+            print("\n------------------------------------------------------------------\n"
                   + "File already exists as :\n" + filePath + fileName + ".csv")
             response = input("OVERWRITE FILE? (Y/N):  ").upper()
             if  response == "N":
                 fileName = input("Write the NAME of the file to create and then press [ENTER]."
-                                 + "\nPath to folder remains the same.\n")
+                                 + "\nPath of folder remains the same.\n")
                 checkFile = True
             elif response == "Y":
                 filePath += fileName + ".csv"
