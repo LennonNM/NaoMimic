@@ -26,7 +26,7 @@ from naoqi import ALProxy
 import motion
 
 ##Custom
-import Error_Utils as error
+import Miscellaneous_Utils as error
 import CSVMOCAP_Func as csvMocap
 
 

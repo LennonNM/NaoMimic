@@ -3,6 +3,7 @@
 from Libraries import Calibration_Utils as calibration
 from Libraries import  CSV_Utils as csvUtils
 from Libraries import Graph_Utils as graph
+from Libraries import Mimic_Utils as mimic
 
 def  main(pathMocap, pathReferences, calProfileDir):
 
@@ -15,14 +16,15 @@ def  main(pathMocap, pathReferences, calProfileDir):
     RArmNao = calibration.extractAxes(ArmsNao[0])
     LArmNao = calibration.extractAxes(ArmsNao[1])
 
-    # Read data from each single CSV from calibration routines
-    HeadP = calibration.extractAxes(csvUtils.readCSVMocap(pathMocap + "Head", "HEAD"))
-    TorsoP = calibration.extractAxes(csvUtils.readCSVMocap(pathMocap + "Torso", "TORSO"))
-    ArmsP = csvUtils.readCSVMocap(pathMocap + "Arms", "ARMS")
-    RArmP = calibration.extractAxes(ArmsP[0])
-    LArmP = calibration.extractAxes(ArmsP[1])
-
-    coefficients = csvUtils.readCalibrationFile(calProfileDir + "/Javier2_CP")
+    # # Read data from each single CSV from calibration routines
+    # HeadP = calibration.extractAxes(csvUtils.readCSVMocap(pathMocap + "Head", "HEAD"))
+    # TorsoP = calibration.extractAxes(csvUtils.readCSVMocap(pathMocap + "Torso", "TORSO"))
+    # ArmsP = csvUtils.readCSVMocap(pathMocap + "Arms", "ARMS")
+    # RArmP = calibration.extractAxes(ArmsP[0])
+    # LArmP = calibration.extractAxes(ArmsP[1])
+    #
+    # coefficients = csvUtils.readCalibrationFile(calProfileDir + "/Javier2_CP")
+    mimic.adjustChoreography("CoreografiaPrueba", calProfileDir + "/Javier2_CP")
     
     adjustedHead = [[] for k in range(6)]
     adjustedTorso = [[] for k in range(6)]

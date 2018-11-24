@@ -16,7 +16,7 @@ from Libraries import Calibration_Utils as cal
 # MoCap related
 # ----------------------------------------------------------------------------------------------------------------------
 
-def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
+def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChoreography = False):
     """
     This function is used to extract the data from a MoCap recording export to CSV from Motive. The order of appearance
     of the effectors must follow: Head, Torso, RArm, LArm, RLeg, LLeg. If Header from Motive export is included,
@@ -34,7 +34,10 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True):
 
     # Open file from default directory
     rootDir = dirname(dirname(abspath(__file__)))
-    dirMocap = os.path.join(rootDir, "Calibration/Human/MoCap_Export/")
+    if isChoreography:
+        dirMocap = os.path.join(rootDir, "Choreography/")
+    else:
+        dirMocap = os.path.join(rootDir, "Calibration/Human/MoCap_Export/")
     dirMocap = os.path.join(dirMocap, pathFile + ".csv")
     try:
         fileMocap = open(dirMocap, 'rt', encoding="utf8")

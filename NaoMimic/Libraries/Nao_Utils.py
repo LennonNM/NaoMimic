@@ -1,5 +1,5 @@
 """
-Functions to support Nao interfacing. Uses naoqi methods
+Supports Nao interfacing. Uses naoqi methods
 """
 
 # Imports
@@ -7,6 +7,7 @@ import time
 from naoqi import ALProxy
 
 # Project libraries
+from Libraries import Miscellaneous_Utils as misc
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -14,7 +15,7 @@ def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
     """
     This function is used to extract data from the Nao effector's sensors.
 
-    :param motionProxy: Naoqi motion proxy object.
+    :param motionProxy: ALMotion proxy object.
     :param frame: Reference frame from which the data collected is referenced to.
     :param useSensorValues: Set to True to use sensor approximations for values collected.
     :return dataCollected: List with the data collected from each effector. The order of the axes is as follows:
@@ -62,7 +63,7 @@ def setStiffness(motionProxy, stiffnessOn = True):
     """
     This function is used to toggle stiffness of Nao robot. Duration of transition is set to 1 second.
 
-    :param motionProxy: NAoqi motion proxy object.
+    :param motionProxy: ALMotion proxy object.
     :return:
     """
     pNames = "Body"  # Sets stiffnes for the whole body
@@ -77,12 +78,18 @@ def setStiffness(motionProxy, stiffnessOn = True):
 # ----------------------------------------------------------------------------------------------------------------------
 
 def setNaoReadyToMimic(motionProxy, postureProxy):
+    """
+    This function is used to set ready the Nao prior to the Mimicking operations. Disables Fall Manager and enables
+    Whole Body Manager. Sends Nao to predefined position STANDINIT.
 
-    print("\n\n------------------------------------------------------------------"
-          + "\nSetting the Nao ready for Mimicking process"
-          + "\n------------------------------------------------------------------")
+    :param motionProxy: ALMotion proxy object.
+    :param postureProxy: ALPosture proxy object.
+    :return: void.
+    """
 
     # Set stiffness On
+    print("\n------------------------------------------------------------------\n"
+          + "Set stiffness On")
     setStiffness(motionProxy)
 
     # Set the robot to a safe position
@@ -136,6 +143,14 @@ def setNaoReadyToMimic(motionProxy, postureProxy):
 # ----------------------------------------------------------------------------------------------------------------------
 
 def restNao(motionProxy, postureProxy):
+    """
+    This function is used to rest the Nao's motors. Enables Fall Manager and disables Whole Body Balancing. Sends the
+    Nao to predefined position CROUCH.
+
+    :param motionProxy: ALMotion proxy object.
+    :param postureProxy: ALPosture proxy object.
+    :return: void.
+    """
 
     print("\n\n------------------------------------------------------------------"
           + "\nResting the Nao robot"
@@ -163,3 +178,28 @@ def restNao(motionProxy, postureProxy):
     motionProxy.rest()
     print("\n------------------------------------------------------------------\n"
           + "The Nao's motors are in state REST")
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def createALProxy(naoqiProxyName, robotIP, proxyPort = 9559):
+    """
+    This function is used to create a Naoqi proxy object.
+
+    :param naoqiProxyName: AL proxy name. Must match the expected name according to Nao's documentation.
+    :param robotIP: IP address of the Nao robot.
+    :param proxyPort: Port for the proxy to use on communication.
+    :return newALProxy: The proxy object.
+    """
+
+    print("\n\n------------------------------------------------------------------"
+          + "Creating NAO proxy " + naoqiProxyName)
+    try:
+        newALProxy = ALProxy(naoqiProxyName, robotIP, proxyPort)
+        print(naoqiProxyName + " creation successfully"
+              + "\n\n------------------------------------------------------------------")
+    except Exception as e:
+        misc.abort("Could not create proxy " + naoqiProxyName, None, e)
+
+    return newALProxy
+
+# ----------------------------------------------------------------------------------------------------------------------
