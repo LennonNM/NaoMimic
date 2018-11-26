@@ -80,6 +80,7 @@ def plotAxes(axesDataSet, labels = ["X axis", "Y axis", "Z axis", "WX axis", "WY
     :param labels: Label of the axes included.
     :param saveImage: True to save plot as PNG file.
     :param filePath: Path and name of image to save.
+    :param showPlot: True to display the plot.
     :return: void
     """
 

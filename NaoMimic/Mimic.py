@@ -12,10 +12,7 @@ Some info:
 """
 
 # Imports
-import sys
 import time
-import numpy as np
-from naoqi import ALProxy
 import motion
 
 # Project libraries
@@ -25,7 +22,7 @@ from Libraries import Mimic_Utils as mimic
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def main(robotIP, choreographyName, pathCP, refFrame):
+def main(robotIP, choreographyName, pathCP, refFrame, effectorsToUse = "UPPER"):
 
     print("\n\n\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
@@ -71,10 +68,18 @@ def main(robotIP, choreographyName, pathCP, refFrame):
     # # Degrees of freedom. Must include one definition per effector
     axisMask = [motion.AXIS_MASK_VEL] * 4
 
+    # # Define effectors list
+    effectorsList = ["Head", "Torso", "RArm", "LArm"]
+    print("Effectors to control: " + effectorsList[0], effectorsList[1], effectorsList[2], effectorsList[3])
+
+    # # Timeline
+    timeline = mimic.getFixedTimeline(choreographyName[0])
+
     # # Frame per Seconds used on MoCap exported data
-    FPS = 30
-    print("FPS: " + str(FPS)
-          + "\n------------------------------------------------------------------")
+    fps = 30
+    print("FPS: " + str(fps))
+
+    print("\n------------------------------------------------------------------")
     time.sleep(3)
 
     # -------------------------------------------------------------------------------
@@ -102,10 +107,13 @@ def main(robotIP, choreographyName, pathCP, refFrame):
     # Start Mimicking
     print("\n\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n"
-          + "Nao is Mimicking human motion...\n\n\n")
+          + "Nao is Mimicking human motion in choreography...\n\n\n")
     time.sleep(1)
 
+    naoUtils.mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effectorsList, timeline, axisMask,
+                                   referenceFrame, useAbsoluteValues, fps)
 
+    # -------------------------------------------------------------------------------
 
     # Rest the Nao
     print("...finished Mimic activity"

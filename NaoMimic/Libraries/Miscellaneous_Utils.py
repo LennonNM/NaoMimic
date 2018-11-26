@@ -7,15 +7,18 @@ import sys
 import os
 import time
 
-# -------------------------------------------------------------------------------
+# Project libraries
+from Libraries import Nao_Utilities as naoUtils
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 def abort(errorMessage, processName = None, sysError = None):
     """
     This function is used to terminate the current process with a defined error messages on terminal.
 
     :param errorMessage: Error message text to be displayed.
-    :param error: Exception type variable from a 'catch-except'.
     :param processName: User defined name of the process being terminated.
+    :param sysError: Exception type variable from a 'catch-except'.
     :return: void
     """
 
@@ -70,3 +73,40 @@ def checkDirExists(storeDir):
               + "\n---------------------------------------\n")
 
 # ----------------------------------------------------------------------------------------------------------------------
+
+def abortMimic(motionProxy, postureProxy, sysError = None):
+    """
+    This function is used to terminate the current process handling the robot Nao spatial position and safety.
+
+    :param motionProxy: ALMotion proxy object.
+    :param postureProxy: ALPosture proxy object.
+    :param sysError: Exception type variable from a 'catch-except'.
+    :return: void
+    """
+
+    # Build error message
+    printMessage = ("\n\n**************************************************\n"
+                    + "**************************************************\n"
+                    + "      ERROR ON A NAO MIMIC PROCESS EXECUTION      \n\n")
+
+    # System error info
+    if sysError is not None:
+        print("\n----------------\nSystem Error: ")
+        print(sysError)
+        print("\n----------------\n")
+
+    # Nao handler for Mimic operations
+    if isMimic:
+        print("\n----------------\nHandling Nao robot... ")
+        naoUtils.restNao(motionProxy, postureProxy)
+        print("\n----------------\n")
+
+    # Print final section of message
+    print("\n                 PROCESS ABORTED                  \n"
+          + "**************************************************\n"
+          + "**************************************************\n")
+
+    sys.exit()
+
+# ----------------------------------------------------------------------------------------------------------------------
+

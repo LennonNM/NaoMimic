@@ -64,16 +64,17 @@ def setStiffness(motionProxy, stiffnessOn = True):
     This function is used to toggle stiffness of Nao robot. Duration of transition is set to 1 second.
 
     :param motionProxy: ALMotion proxy object.
-    :return:
+    :param stiffnessOn: True to set stiffness On, False to turn it Off.
+    :return: void
     """
-    pNames = "Body"  # Sets stiffnes for the whole body
+    bodySection = "Body"  # Sets stiffnes for the whole body
     # Stiffness value
-    pStiffnessLists = 1.0  if stiffnessOn == True else 0.0
-    pTimeLists = 1.0  # In seconds
-    stiffnessState = "On" if pStiffnessLists == 1.0 else "Off"
+    stiffnessValue = 1.0 if stiffnessOn else 0.0
+    time = 1.0  # In seconds
+    stiffnessState = "On" if stiffnessOn else "Off"
 
     print("Turning Nao's stiffness " + stiffnessState)
-    motionProxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
+    motionProxy.stiffnessInterpolation(bodySection, stiffnessValue, time)
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -201,5 +202,32 @@ def createALProxy(naoqiProxyName, robotIP, proxyPort = 9559):
         misc.abort("Could not create proxy " + naoqiProxyName, None, e)
 
     return newALProxy
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effectorsList, timeline, axisMask, frame,
+                          useAbsolutes = True, fps = 30):
+
+    # Define operation parameters
+
+    for i in range(0, len(adjustedChoreography[0]), fps):
+        try:
+            motionProxy.positionInterpolations(effectorsList, frame, [
+                listaCoordenadas[0][i:i + fps - 1],
+                listaCoordenadas[1][i:i + fps - 1],
+                listaCoordenadas[2][i:i + fps - 1],
+                listaCoordenadas[3][i:i + fps - 1]
+            ],
+                                               axisMask, [
+                listaTiempos[0][0:len(listaCoordenadas[0][i:i + fps - 1])],
+                listaTiempos[1][0:len(listaCoordenadas[1][i:i + fps - 1])],
+                listaTiempos[2][0:len(listaCoordenadas[2][i:i + fps - 1])],
+                listaTiempos[3][0:len(listaCoordenadas[3][i:i + fps - 1])]
+            ],
+                                               useAbsolutes)
+        except Exception as e:
+            misc.abortMimic(motionProxy, postureProxy, e)
+
+    time.sleep(1)
 
 # ----------------------------------------------------------------------------------------------------------------------

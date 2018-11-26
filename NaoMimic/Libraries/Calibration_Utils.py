@@ -330,6 +330,7 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
     :param pathMoCap: Path inside Calibration/Human/MoCap_Export to read the MoCap export file.
     :param pathReferences: Path inside Calibration/NAO/ReferenceData(/Default)
     :param pathCalProfile: Path inside Calibration/Human/CalibrationProfiles to store the Calibration Profile files.
+    :param saveProcessPNG: True to save plots of the calibration process to PNG files.
     :return: void
     """
 

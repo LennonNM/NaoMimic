@@ -55,8 +55,9 @@ def getFixedTimeline(effectorData):
             - Kinematics resolver time to find a motion solution between frames: 20 ms
             - FPS of the MoCap recording exported data.
 
-    :param effectorData: List with motion data from a single effector.
-    :return:
+    :param effectorData: List with motion data from a single effector. It supposes that all the effectors of a same
+                animation must have the same length.
+    :return singleTimeline: A list with the timeline in seconds for the animation length.
     """
 
     timeBase = 0.05
