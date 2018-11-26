@@ -8,7 +8,7 @@ import os
 import time
 
 # Project libraries
-from Libraries import Nao_Utilities as naoUtils
+from Libraries import Nao_Utils as naoUtils
 
 # ----------------------------------------------------------------------------------------------------------------------
 

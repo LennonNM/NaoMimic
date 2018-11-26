@@ -29,6 +29,8 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChor
                     "LEGS": RLeg, LLeg
                     "_effector_": Uses a single effector, e.g. "Head".
     :param includesHeader: True if the file includes the default header from Motive
+    :param isChoreography: True to use .../Choreography as default directory to look up CSV files instead of
+                .../Calibration/Human/MoCap_Export
     :return dataEffectors: List with the data extracted from the reference CSV for each effector required.
     """
 
@@ -135,6 +137,8 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
 
     :param dataEffectors: List with the data to write. Must include all effectors.
     :param pathCalProf: Directory file to write the CSV file.
+    :param joinAxes: True if data set received is organized as axes data set [[X], [Y], [Z], [WX], [WY], [WZ]] to join
+                the axes data into a data set of a row per axes set [[X, Y, Z, WX, WY, WZ]].
     :return: void
     """
 
