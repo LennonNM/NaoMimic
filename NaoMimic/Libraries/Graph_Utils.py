@@ -9,7 +9,7 @@ import time
 from os.path import dirname, abspath
 
 # Project libraries
-from Libraries import Miscellaneous_Utils as misc
+import Miscellaneous_Utils as misc
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -48,11 +48,14 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
     if saveImage:
         rootDir = dirname(dirname(abspath(__file__)))
         fileDir = os.path.join(rootDir, "Comparisons/")
-        fileDir = os.path.join(fileDir, filePath)
 
-        if filePath == "Default/":
-            fileDir += time.strftime("%Y-%m-%d_%H-%M-%S")
-        fileDir += ".png"
+        folder = filePath.split("/")
+        fileName = folder.pop(-1)
+        for item in folder:
+            fileDir += "/" + item
+        misc.checkDirExists(fileDir)
+        fileDir += "/" + fileName + ".png"
+
         if os.path.exists(fileDir):
             print(fileDir + "\nalready exists, saving file with time and date on Default directory.")
             try:

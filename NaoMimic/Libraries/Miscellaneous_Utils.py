@@ -8,7 +8,7 @@ import os
 import time
 
 # Project libraries
-from Libraries import Nao_Utils as naoUtils
+import Nao_Utils as naoUtils
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ def checkDirExists(storeDir):
         time.sleep(3)
         try:
             os.makedirs(storeDir)
-        except Exception as e1:
+        except OSError as e1:
             error.abort("Failed to create directory \n" + storeDir, "Write CSV file with MoCap adjusted data", e1)
         print("\n\nDirectory\n" + storeDir + "\nsuccessfully created"
               + "\n---------------------------------------\n")
@@ -112,4 +112,3 @@ def abortMimic(motionProxy, postureProxy, sysError = None):
     sys.exit()
 
 # ----------------------------------------------------------------------------------------------------------------------
-

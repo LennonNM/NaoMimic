@@ -4,8 +4,8 @@ Directly support the Mimic operation.
 
 
 # Project libraries
-from Libraries import Miscellaneous_Utils as misc
-from Libraries import Calibration_Utils as calibration
+import Miscellaneous_Utils as misc
+import Calibration_Utils as calibration
 
 # ----------------------------------------------------------------------------------------------------------------------
 

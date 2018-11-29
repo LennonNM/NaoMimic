@@ -8,9 +8,9 @@ import numpy as np
 from collections import Counter
 
 # Project libraries
-from Libraries import Miscellaneous_Utils as misc
-from Libraries import CSV_Utils as csvUtils
-from Libraries import Graph_Utils as graph
+import Miscellaneous_Utils as misc
+import CSV_Utils as csvUtils
+import Graph_Utils as graph
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ def createCalibrationTerms(listPerson, listReference, degree = 1):
     This function performs the linear regression coupling between the 2 data sets received. The sets correspond to a
     single effector. The default polynomial degree for the regression is set to 1. This function uses polyfit from
     numpy to perform the linear regression. It supposes that both sets received are of the same size.
-    
+
     :param listReference: Data set to be used as reference for the data coupling. Includes all the axes of the effector.
     :param listPerson: Data set to be adjusted.
     :param degree: Degree of the polynomial model to use for the linear regression.
@@ -63,7 +63,7 @@ def createCalibrationTerms(listPerson, listReference, degree = 1):
                     "\nReference data set size: " + listReference +
                     "\nPerson data set size: " + listPerson, "Generation of calibration terms")
 
-    # Create lists 
+    # Create lists
     refX = list()
     refY = list()
     refZ = list()
@@ -434,45 +434,45 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
         axesTorsoP = extractAxes(TorsoP)
         axesRArmP = extractAxes(ArmsP[0])
         axesLArmP = extractAxes(ArmsP[1])
-        
+
         # Plot reference and MoCap data sets together
         for axis in range(6):
             graph.plotCompareSameAxis(axesHeadNao[axis], axesHeadP[axis], "Nao " + axesLabels[axis],
                                       "MoCap Orig " + axesLabels[axis], None,  None, True,
-                                      "Default/JavierOrig_Head_" + axesLabels[axis], False)
+                                      pathMoCap + "Orig_Head_" + axesLabels[axis], False)
         for axis in range(6):
             graph.plotCompareSameAxis(axesTorsoNao[axis], axesTorsoP[axis], "Nao " + axesLabels[axis],
                                       "MoCap Orig " + axesLabels[axis], None,  None, True,
-                                      "Default/JavierOrig_Torso_" + axesLabels[axis], False)
+                                      pathMoCap + "Orig_Torso_" + axesLabels[axis], False)
         for axis in range(6):
             graph.plotCompareSameAxis(axesRArmNao[axis], axesRArmP[axis], "Nao " + axesLabels[axis],
                                       "MoCap Orig " + axesLabels[axis], None,  None, True,
-                                      "Default/JavierOrig_RArm_" + axesLabels[axis], False)
+                                      pathMoCap + "Orig_RArm_" + axesLabels[axis], False)
         for axis in range(6):
             graph.plotCompareSameAxis(axesLArmNao[axis], axesLArmP[axis], "Nao " + axesLabels[axis],
                                       "MoCap Orig " + axesLabels[axis], None,  None, True,
-                                      "Default/JavierOrig_LArm_" + axesLabels[axis], False)
+                                      pathMoCap + "Orig_LArm_" + axesLabels[axis], False)
 
         # Plot MoCap orig data and synced sets together
         for axis in range(6):
             graph.plotCompareSameAxis(axesHeadP[axis], HeadSync[axis], "MoCap Orig " + axesLabels[axis],
                                       "MoCap Synced " + axesLabels[axis],
                                       axesHeadNao[axis], "Nao " + axesLabels[axis], True,
-                                      "Default/JavierSynced_Head_" + axesLabels[axis], False)
+                                      pathMoCap + "Synced_Head_" + axesLabels[axis], False)
         for axis in range(6):
             graph.plotCompareSameAxis(axesTorsoP[axis], TorsoSync[axis], "MoCap Orig " + axesLabels[axis],
                                       "MoCap Synced " + axesLabels[axis],
                                       axesTorsoNao[axis], "Nao " + axesLabels[axis], True,
-                                      "Default/JavierSynced_Torso_" + axesLabels[axis], False)
+                                      pathMoCap + "Synced_Torso_" + axesLabels[axis], False)
         for axis in range(6):
             graph.plotCompareSameAxis(axesRArmP[axis], RArmSync[axis], "MoCap Orig " + axesLabels[axis],
                                       "MoCap Synced " + axesLabels[axis],
                                       axesRArmNao[axis], "Nao " + axesLabels[axis], True,
-                                      "Default/JavierSynced_RArm_" + axesLabels[axis], False)
+                                      pathMoCap + "Synced_RArm_" + axesLabels[axis], False)
         for axis in range(6):
             graph.plotCompareSameAxis(axesLArmP[axis], LArmSync[axis], "MoCap Orig " + axesLabels[axis],
                                       "MoCap Synced " + axesLabels[axis],
                                       axesLArmNao[axis], "Nao " + axesLabels[axis], True,
-                                      "Default/JavierSynced_LArm_" + axesLabels[axis], False)
+                                      pathMoCap + "Synced_LArm_" + axesLabels[axis], False)
 
 # ----------------------------------------------------------------------------------------------------------------------

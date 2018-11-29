@@ -9,8 +9,8 @@ import time
 from os.path import dirname, abspath
 
 # Project libraries
-from Libraries import Miscellaneous_Utils as misc
-from Libraries import Calibration_Utils as cal
+import Miscellaneous_Utils as misc
+import Calibration_Utils as cal
 
 # ----------------------------------------------------------------------------------------------------------------------
 # MoCap related
@@ -43,8 +43,9 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChor
         dirMocap = os.path.join(rootDir, "Calibration/Human/MoCap_Export/")
     dirMocap = os.path.join(dirMocap, pathFile + ".csv")
     try:
-        fileMocap = open(dirMocap, 'rt', encoding="utf8")
-    except Exception as e1:
+        # fileMocap = open(dirMocap, 'rt', encoding="utf8")
+        fileMocap = open(dirMocap, 'rt')
+    except IOError as e1:
         misc.abort(dirMocap + " is not a valid directory or file", "Read CSV file with MoCap exported data", e1)
     reader = csv.reader(fileMocap)
     rowsMocap = [r for r in reader]
@@ -113,8 +114,8 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChor
             for columnNo in range(dataSetLen):
                     try:
                         dataSet[columnNo] = float(rowsData[rowNo].pop(0))
-                    except TypeError as e2:
-                        misc.abort("A value on " + fileMocap + " is not valid when converting to float",
+                    except ValueError as e2:
+                        misc.abort("A value on \n" + dirMocap + "\nis not valid when converting to float",
                                     "Read CSV file with MoCap exported data", e2)
 
                     # All columns for a single row covered
@@ -160,13 +161,15 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
         misc.abort("Must specify the folder to store the file. Received only " + pathCalProf,
                     "Write CSV file with MoCap adjusted data")
     folder = pathCalProf.split("/")
-    storeDir = os.path.join(storeDir, folder[0])
+    fileName = folder.pop(-1)
+    for item in folder:
+        storeDir += "/" + item
 
     # If directory does not exist, create it
     misc.checkDirExists(storeDir)
 
     # Creating file
-    storeDir += "/" + folder[1] + ".csv"
+    storeDir += "/" + fileName+ ".csv"
     storeDir = checkCSVFileExists(storeDir)
 
     print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
@@ -176,7 +179,7 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
     time.sleep(3)
 
     try:
-        with open(storeDir, 'w', newline='') as csvfile:
+        with open(storeDir, 'w') as csvfile:
             fieldnames = [
                 'X Head', 'Y Head', 'Z Head', 'WX Head', 'WY Head', 'WZ Head',
                 'X Torso', 'Y Torso', 'Z Torso', 'WX Torso', 'WY Torso', 'WZ Torso',
@@ -202,7 +205,7 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
                             rowToWrite[fieldnames[6 * effectorNo + axis]] = None
                 writer.writerow(rowToWrite)
 
-    except Exception as e2:
+    except IOError as e2:
         misc.abort("Failed to create" + storeDir, "Write CSV file with MoCap adjusted data", e2)
 
     print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
@@ -261,7 +264,7 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
           "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     time.sleep(3)
     try:
-        with open(fileDir, 'w', newline='') as csvfile:
+        with open(fileDir, 'w') as csvfile:
             # Define columns
             fieldnames = list()
             if whichEffectors.upper() == "ALL":
@@ -349,8 +352,9 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
         dirNao = os.path.join(dirNao, "Default/")
     dirNao = os.path.join(dirNao, pathFile + ".csv")
     try:
-        fileNao = open(dirNao, 'rt', encoding="utf8")
-    except Exception as e1:
+        # fileNao = open(dirNao, 'rt', encoding="utf8")
+        fileNao = open(dirNao, 'rt')
+    except IOError as e1:
         misc.abort(dirNao + " is not a valid directory or file", "Read CSV file with reference data", e1)
     reader = csv.reader(fileNao)
     rowsMocap = [r for r in reader]
@@ -499,7 +503,7 @@ def writeCalibrationProfile(coefficients, fileName):
           + "Creating Calibration Profile as:\n" + file)
     time.sleep(3)
     try:
-        with open(file, 'w', newline='') as csvfile:
+        with open(file, 'w') as csvfile:
             writer = csv.writer(csvfile)
             for item in coefficients:
                 for element in item:
@@ -538,7 +542,7 @@ def checkCSVFileExists(pathToFile):
         if os.path.exists(filePath + fileName + ".csv"):
             print("\n------------------------------------------------------------------\n"
                   + "File already exists as :\n" + filePath + fileName + ".csv")
-            response = input("OVERWRITE FILE? (Y/N):  ").upper()
+            response = raw_input("OVERWRITE FILE? (Y/N):  ").upper()
             if  response == "N":
                 fileName = input("Write the NAME of the file to create and then press [ENTER]."
                                  + "\nPath of folder remains the same.\n")

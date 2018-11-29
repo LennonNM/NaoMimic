@@ -96,16 +96,16 @@ def main(pathMocap, pathReferences, calProfileDir):
 
 
 if __name__ == "__main__":
-    pathSubject1 = ["Validation/Javier/Take1",
-                    "Validation/Javier/Take2",
-                    "Validation/Javier/Take3",
-                    "Validation/Javier/Take4",
-                    "Validation/Javier/Take5"]
-    pathSubject2 = ["Validation/Naty/Take1",
-                    "Validation/Naty/Take2",
-                    "Validation/Naty/Take3",
-                    "Validation/Naty/Take4",
-                    "Validation/Naty/Take5"]
+    pathSubject1 = ["Validation/Javier/Take1/Javier",
+                    "Validation/Javier/Take2/Javier",
+                    "Validation/Javier/Take3/Javier",
+                    "Validation/Javier/Take4/Javier",
+                    "Validation/Javier/Take5/Javier"]
+    pathSubject2 = ["Validation/Naty/Take1/Naty",
+                    "Validation/Naty/Take2/Naty",
+                    "Validation/Naty/Take3/Naty",
+                    "Validation/Naty/Take4/Naty",
+                    "Validation/Naty/Take5/Naty"]
     pathRefNao = ["Validation/ref_HEAD",
                   "Validation/ref_TORSO",
                   "Validation/ref_ARMS"]

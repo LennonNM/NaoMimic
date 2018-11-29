@@ -7,7 +7,7 @@ import time
 from naoqi import ALProxy
 
 # Project libraries
-from Libraries import Miscellaneous_Utils as misc
+import Miscellaneous_Utils as misc
 
 # ----------------------------------------------------------------------------------------------------------------------
 
