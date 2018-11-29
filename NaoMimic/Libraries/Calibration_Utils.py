@@ -14,6 +14,7 @@ from Libraries import Graph_Utils as graph
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def syncData(mocapData, referenceData):
     """
     This function is used to time couple 2 different sets of data. It shifts mocapData to match the referenceData
@@ -42,6 +43,7 @@ def syncData(mocapData, referenceData):
     return finalDataSet
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def createCalibrationTerms(listPerson, listReference, degree = 1):
     """
@@ -106,6 +108,7 @@ def createCalibrationTerms(listPerson, listReference, degree = 1):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def extractAxes(axisDataSet):
     """
     This function is used to separate a list with data sets with all axes per row, of the form [[X,Y,Z,WX,WY,WZ]], to a
@@ -130,6 +133,7 @@ def extractAxes(axisDataSet):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def getBaseValueOfSet(axisDataSet):
     """
     This function is used to get the most frequent value from an axis data set.
@@ -143,6 +147,7 @@ def getBaseValueOfSet(axisDataSet):
     return [mostCommonValue, frequencyOfAppereance]
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def findMaxValue(axisDataSet):
     """
@@ -158,6 +163,7 @@ def findMaxValue(axisDataSet):
     return [maxValue, index]
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def rotateAxis(axisDataSet):
     """
@@ -186,6 +192,7 @@ def rotateAxis(axisDataSet):
     return rotatedDataSet
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def shiftDataSet(axisDataSet, referenceDataSet):
     """
@@ -223,6 +230,7 @@ def shiftDataSet(axisDataSet, referenceDataSet):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def makeListSameLength(axisDataSet, referenceDataSet):
     """
     This function is used to adjust a data set length to match a reference data set length. The reference data set
@@ -257,6 +265,7 @@ def makeListSameLength(axisDataSet, referenceDataSet):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def joinAxesInRow(axesDataSets):
     """
     This function is used to join into "rows" the data from a list with separated axes.
@@ -279,6 +288,7 @@ def joinAxesInRow(axesDataSets):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def extractEffectors(mixedEffectorsSet, effectorsNumber = 4):
     """
     This function is used to extract the effectors data from a data set of the form [[X, Y, Z, WX, WY, WZ, X, Y, Z,...]]
@@ -297,6 +307,7 @@ def extractEffectors(mixedEffectorsSet, effectorsNumber = 4):
     return dataEffectors
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def cleanseDataSet(dataSetToClean):
     """
@@ -320,6 +331,7 @@ def cleanseDataSet(dataSetToClean):
     return dataSetToClean
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProcessPNG = True):
     """

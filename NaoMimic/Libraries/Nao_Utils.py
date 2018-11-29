@@ -11,6 +11,7 @@ from Libraries import Miscellaneous_Utils as misc
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
     """
     This function is used to extract data from the Nao effector's sensors.
@@ -59,6 +60,7 @@ def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def setStiffness(motionProxy, stiffnessOn = True):
     """
     This function is used to toggle stiffness of Nao robot. Duration of transition is set to 1 second.
@@ -77,6 +79,7 @@ def setStiffness(motionProxy, stiffnessOn = True):
     motionProxy.stiffnessInterpolation(bodySection, stiffnessValue, time)
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def setNaoReadyToMimic(motionProxy, postureProxy):
     """
@@ -143,6 +146,7 @@ def setNaoReadyToMimic(motionProxy, postureProxy):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def restNao(motionProxy, postureProxy):
     """
     This function is used to rest the Nao's motors. Enables Fall Manager and disables Whole Body Balancing. Sends the
@@ -182,6 +186,7 @@ def restNao(motionProxy, postureProxy):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def createALProxy(naoqiProxyName, robotIP, proxyPort = 9559):
     """
     This function is used to create a Naoqi proxy object.
@@ -204,6 +209,7 @@ def createALProxy(naoqiProxyName, robotIP, proxyPort = 9559):
     return newALProxy
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effectorsList, timeline, axisMask, frame,
                           useAbsolutes = True, fps = 30):

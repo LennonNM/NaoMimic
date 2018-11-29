@@ -9,6 +9,7 @@ from Libraries import Calibration_Utils as calibration
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def adjustChoreography(choreographyName, pathToCalibrationProfile):
     """
     This function is used to adjust a whole choreography CSV file using the specified Calibraiton Profile coefficients.
@@ -47,6 +48,7 @@ def adjustChoreography(choreographyName, pathToCalibrationProfile):
     return adjustedDataSet
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def getFixedTimeline(effectorData):
     """

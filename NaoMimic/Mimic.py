@@ -22,7 +22,8 @@ from Libraries import Mimic_Utils as mimic
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def main(robotIP, choreographyName, pathCP, refFrame, effectorsToUse = "UPPER"):
+
+def main(choreographyName, pathCP, robotIP, refFrame, effectorsToUse = "UPPER"):
 
     print("\n\n\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
@@ -125,3 +126,22 @@ def main(robotIP, choreographyName, pathCP, refFrame, effectorsToUse = "UPPER"):
           + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+if __name__ == "__main__":
+    # robotIp = "10.0.1.128"  # Bato por red PrisNao
+    # robotIp = "169.254.42.173" #Bato Local
+    robotIp = "10.0.1.122"  # She por red PrisNao
+    refFrame = "ROBOT"
+
+    if len(sys.argv) < 3:
+        misc.abort("Needs Minimum of 2 arguments to start: Coreography to Mimic and Calibration Profile")
+    elif len(sys.argv) == 5:
+        choreographyName = sys.argv[1]
+        pathCP = sys.argv[2]
+        robotIp = sys.argv[3]
+        marcoRef = sys.argv[4]
+
+    main(choreographyName, pathCP, robotIP, refFrame)

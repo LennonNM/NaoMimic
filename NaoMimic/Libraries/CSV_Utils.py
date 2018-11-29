@@ -16,6 +16,7 @@ from Libraries import Calibration_Utils as cal
 # MoCap related
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChoreography = False):
     """
     This function is used to extract the data from a MoCap recording export to CSV from Motive. The order of appearance
@@ -129,6 +130,7 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChor
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
     """
     This function is used to write a single CSV file containing the data for each calibration routine done for a
@@ -212,6 +214,7 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
 # ----------------------------------------------------------------------------------------------------------------------
 # Nao data related
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichEffectors = "ALL"):
     """
@@ -321,6 +324,7 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def readCSVNao(pathFile, whichEffectors = "ALL"):
     """
     This function is used to extract the data from a CSV  file with data from the Nao's motion sensors. The order of
@@ -426,6 +430,7 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
 # Calibration Profiles related
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def readCalibrationFile(fileName):
     """
     This function reads a Calibration Profile CSV file and returns a list with all the coefficients contained.
@@ -462,6 +467,7 @@ def readCalibrationFile(fileName):
     return coefficients
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def writeCalibrationProfile(coefficients, fileName):
     """
@@ -505,6 +511,7 @@ def writeCalibrationProfile(coefficients, fileName):
           + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def checkCSVFileExists(pathToFile):
     """

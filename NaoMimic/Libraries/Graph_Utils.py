@@ -13,6 +13,7 @@ from Libraries import Miscellaneous_Utils as misc
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis", axisLabel1 = "Compare Axis 1",
                         compareAxis2 = None,  axisLabel2 = "Compare Axis 2", saveImage = False, filePath = "Default/",
                         showPlot = True):
@@ -70,6 +71,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
     plt.clf()
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def plotAxes(axesDataSet, labels = ["X axis", "Y axis", "Z axis", "WX axis", "WY axis", "WZ axis"],
                 saveImage = False, filePath = "Default/", showPlot = True):

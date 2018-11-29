@@ -12,6 +12,7 @@ from Libraries import Nao_Utils as naoUtils
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def abort(errorMessage, processName = None, sysError = None):
     """
     This function is used to terminate the current process with a defined error messages on terminal.
@@ -51,6 +52,7 @@ def abort(errorMessage, processName = None, sysError = None):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def checkDirExists(storeDir):
     """
     This function is used to check if the specified directory exists. If it does not exist, it creates it into the
@@ -73,6 +75,7 @@ def checkDirExists(storeDir):
               + "\n---------------------------------------\n")
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def abortMimic(motionProxy, postureProxy, sysError = None):
     """
