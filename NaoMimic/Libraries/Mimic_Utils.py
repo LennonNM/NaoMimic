@@ -6,6 +6,7 @@ Directly support the Mimic operation.
 # Project libraries
 import Miscellaneous_Utils as misc
 import Calibration_Utils as calibration
+import CSV_Utils as csvUtils
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -25,18 +26,22 @@ def adjustChoreography(choreographyName, pathToCalibrationProfile):
     coefficients = csvUtils.readCalibrationFile(pathToCalibrationProfile)
 
     # Extract data from MoCap CSV export and place data per axis
-    choreographyData = calibration.extractAxes(csvUtils.readCSVMocap(choreographyName, "ALL", True, True))
+    effectorsData = csvUtils.readCSVMocap(choreographyName, "ALL", True, True)
+    choreographyData = [[] for k in range(len(effectorsData))]
+    for effectorNo, effector in enumerate(effectorsData):
+        choreographyData[effectorNo] = calibration.extractAxes(effector)
 
     # Adjust each axis per effector
-    adjustedChoreography = [[] for k in range(choreographyData)]
-
+    adjustedChoreography = [[] for k in range(len(choreographyData))]
     try:
         for effectorNo in range(len(choreographyData)):
             for axisNo, axis in enumerate(choreographyData[effectorNo]):
                 for row, data in enumerate(axis):
+                    print(coefficients[axisNo][0])
                     adjustedChoreography[effectorNo][axisNo].append(data*float(coefficients[axisNo][0]) +
                                                                     float(coefficients[axisNo][1]))
     except Exception as e:
+        print(effectorNo, axisNo, row)
         misc.abort("Failed to adjust choreography file" + choreographyName,
                    "Adjust Choreography per Calibration Profile", e)
 

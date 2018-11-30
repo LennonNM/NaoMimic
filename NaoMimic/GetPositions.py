@@ -11,13 +11,13 @@ import sys
 import time
 
 # Project Libraries
-from Libraries import Error_Utils as error
+from Libraries import Miscellaneous_Utils as misc
 from Libraries import CSV_Utils as csvUtils
 from Libraries import Nao_Utils as naoUtils
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def main(robotIP, refFrame, name=None):
+def main(robotIP, refFrame, name, specificEffectors):
     """
     See file header description.
 
@@ -33,7 +33,7 @@ def main(robotIP, refFrame, name=None):
         print("Trying to create ALMotion proxy")
         motionProxy = ALProxy("ALMotion", robotIP, PORT)
     except Exception as e1:
-        error.abort("Could not create proxy to ALMotion", "Creating ALMotion proxy to Get Nao Positions", e1)
+        misc.abort("Could not create proxy to ALMotion", "Creating ALMotion proxy to Get Nao Positions", e1)
 
     # -------------------------------------------------------------------------------
 
@@ -43,15 +43,15 @@ def main(robotIP, refFrame, name=None):
     elif refFrame.upper() == "TORSO":
         frame = motion.FRAME_TORSO
     else:
-        error.abort(refFrame + " is not a valid frame for the tool", "Get Nao Positions")
+        misc.abort(refFrame + " is not a valid frame", "Get Nao Positions")
 
     # -------------------------------------------------------------------------------
 
     # Data collection
-    naoUtils.startCollectingData(motionProxy, frame)
+    dataSet = naoUtils.startCollectingData(motionProxy, frame)
 
+    # Write file
     print("Writing CSV file with the data collected")
-    dataSet = [posHead, posTorso, posRArm, posLArm]
     csvUtils.writeCSVReference(dataSet, name, refFrame, specificEffectors)
 
     print("Finish GetPositions routine\nCheck for exported data at Calibration/NAO/ReferenceData/Default/"
@@ -70,18 +70,14 @@ if __name__ == "__main__":
               + "Using robot IP: "+ robotIP +" with frame: "+ frameRef
               + "\nCollecting data for all available effectors"
               + "\nName of CSV file defined by time and date\n"
-              + "---------------------------------------------------------\n"
-              + "Starting to retrieve sensor values\n"
               + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     elif len(sys.argv) == 3:
         robotIP = sys.argv[1]
         frame = sys.argv[2]
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
               + "Using robot IP: "+ robotIP +" with frame: "+ frameRef
-              + "Collecting data for all available effectors.n"
+              + "Collecting data for all available effectors."
               + "\nName of CSV file defined by time and date\n"
-              + "---------------------------------------------------------\n"
-              + "Starting to retrieve sensor values\n"
               + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     elif len(sys.argv) == 4:
         robotIP = sys.argv[1]
@@ -91,12 +87,10 @@ if __name__ == "__main__":
               + "Using robot IP: " + robotIP + " with frame: " + frameRef
               + "Collecting data for all available effectors.n"
               + "\nName of CSV file: NAO_" + name
-              + "\n---------------------------------------------------------\n"
-              + "Starting to retrieve sensor values\n"
-              + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+              + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     else:
         print("\nRetrieving canceled\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-        error.abort("Expected maximum 3 arguments on call.", "GetPositions")
+        misc.abort("Expected maximum 3 arguments on call.", "GetPositions")
 
     time.sleep(1.0)
-    main(robotIP, frameRef, name)
+    main(robotIP, frameRef, name, specificEffectors)

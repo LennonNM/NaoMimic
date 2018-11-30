@@ -72,6 +72,8 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChor
     # Begin extraction of motion tracking data
     if whichEffectors.upper() == "ALL":
         totalEffectors = 4  # 6
+        for i in range(len(rowsData)):
+            del rowsData[i][7 * 4::]
     elif whichEffectors.upper() == "ARMS":
         totalEffectors = 2
         for i in range(len(rowsData)):
@@ -435,13 +437,13 @@ def readCSVNao(pathFile, whichEffectors = "ALL"):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def readCalibrationFile(fileName):
+def readCalibrationFile(filePath):
     """
     This function reads a Calibration Profile CSV file and returns a list with all the coefficients contained.
     The coefficients are ordered per row and per effector's axis, meaning first 6 rows corresponds to the axes
     X, Y, Z, WX, WY, WZ for Head effector, the next 6 rows the same for Torso and so on.
 
-    :param fileName: Path to the desired Calibration Profile.
+    :param filePath: Path to the desired Calibration Profile.
     :return coefficients: Coefficients that conforms the Calibration Profile.
     """
 
@@ -451,21 +453,21 @@ def readCalibrationFile(fileName):
 
     # Define path
     rootDir = dirname(dirname(abspath(__file__)))
-    file = os.path.join(rootDir, "Calibration/Human/CalibrationProfiles/")
-    file += fileName + ".csv"
+    fileDir = os.path.join(rootDir, "Calibration/Human/CalibrationProfiles/")
+    fileDir += filePath + ".csv"
 
     # Extract all data from file
     try:
-        print("\n------------------------------------------------------------------\nOpening file:\n" + file)
+        print("\n------------------------------------------------------------------\nOpening file:\n" + fileDir)
         time.sleep(3)
-        f = open(file, 'rt')
+        f = open(fileDir, 'rt')
         reader = csv.reader(f)
         coefficients = [row for row in reader]  # Each row contains the coefficients of a single axis
         f.close()
     except Exception as e:
-        misc.abort("Could not open " + file, "Read Calibration Profile", e)
+        misc.abort("Could not open " + fileDir, "Read Calibration Profile", e)
 
-    print("\nData extracted from Calibration Profile \n" + file
+    print("\nData extracted from Calibration Profile \n" + fileDir
           + "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
     return coefficients
@@ -473,45 +475,49 @@ def readCalibrationFile(fileName):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def writeCalibrationProfile(coefficients, fileName):
+def writeCalibrationProfile(coefficients, filePath):
     """
     This functions is used to create a CSV file containing the coefficients to adjust a data set. The file does not
     include a header. Each row corresponds to the coefficients of a single axis, each effector uses 6 rows
     (X, Y, Z, WX, WY, WZ).
 
     :param coefficients: List with the coefficients to write into the Calibration Profile.
-    :param fileName: Name of the Calibration Profile file. If "None" a generic name will be used.
+    :param filePath: Name of the Calibration Profile file. If "None" a generic name will be used.
     :return: void
     """
 
     # Define path
     rootDir = dirname(dirname(abspath(__file__)))
-    file = os.path.join(rootDir, "Calibration/Human/CalibrationProfiles/")
-    if fileName.find("/") == -1:
-        misc.abort("Must specify the folder to store the file. Received only " + fileName, "Write Calibration Profile")
-    folder = fileName.split("/")
-    file = os.path.join(file, folder[0])
+    calPath = os.path.join(rootDir, "Calibration/Human/CalibrationProfiles/")
+    if filePath.find("/") == -1:
+        misc.abort("Must specify the folder to store the file. Received only " + filePath, "Write Calibration Profile")
+
+    folder = filePath.split("/")
+    fileName = folder.pop(-1)
+    for item in folder:
+        calPath += item + "/"
+
     # Check if directory exists
-    misc.checkDirExists(file)
+    misc.checkDirExists(calPath)
 
     # Check if file exists
-    file += "/" + folder[1] + "_CP.csv"
-    file = checkCSVFileExists(file)
+    calPath += fileName + "_CP.csv"
+    calPath = checkCSVFileExists(calPath)
 
     # Create file
     print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-          + "Creating Calibration Profile as:\n" + file)
+          + "Creating Calibration Profile as:\n" + calPath)
     time.sleep(3)
     try:
-        with open(file, 'w') as csvfile:
+        with open(calPath, 'w') as csvfile:
             writer = csv.writer(csvfile)
             for item in coefficients:
                 for element in item:
                     writer.writerow(element)
-    except Exception as e2:
+    except IOError as e2:
         misc.abort("Could not create Calibration Profile", "Write Calibration Profile", e2)
 
-    print("\nCalibration Profile Created Successfully as:\n" + file
+    print("\nCalibration Profile Created Successfully as:\n" + calPath
           + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 # ----------------------------------------------------------------------------------------------------------------------

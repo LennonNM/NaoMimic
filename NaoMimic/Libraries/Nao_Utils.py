@@ -46,13 +46,13 @@ def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
             posLArm.append(motionProxy.getPosition("LArm", frame, useSensorValues))
             # posRLeg.append(motionProxy.getPosition("RLeg", frame, useSensorValues))
             # posLLeg.append(motionProxy.getPosition("LLeg", frame, useSensorValues))
-            time.sleep(0.003)  # This time matches the FPS used on Motive's export
+            time.sleep(0.08)  # This time matches the FPS used on Motive's export
             rowsCounter += 1
 
     except KeyboardInterrupt as keyInterrupt:
-        print("Data collection finished.\n"
+        print("\nData collection finished.\n"
               + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n")
-        time.sleep(0.25)
+        time.sleep(0.5)
         pass
 
     dataCollected = [posHead, posTorso, posRArm, posLArm]
@@ -198,13 +198,13 @@ def createALProxy(naoqiProxyName, robotIP, proxyPort = 9559):
     """
 
     print("\n\n------------------------------------------------------------------"
-          + "Creating NAO proxy " + naoqiProxyName)
+          + "\nCreating NAO proxy " + naoqiProxyName)
     try:
         newALProxy = ALProxy(naoqiProxyName, robotIP, proxyPort)
         print(naoqiProxyName + " creation successfully"
               + "\n\n------------------------------------------------------------------")
     except Exception as e:
-        misc.abort("Could not create proxy " + naoqiProxyName, None, e)
+        misc.abort("Could not create proxy " + naoqiProxyName + "\nIs PC connected to same network as Nao?", None, e)
 
     return newALProxy
 

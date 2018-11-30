@@ -112,7 +112,7 @@ def createCalibrationTerms(listPerson, listReference, degree = 1):
 def extractAxes(axisDataSet):
     """
     This function is used to separate a list with data sets with all axes per row, of the form [[X,Y,Z,WX,WY,WZ]], to a
-    list with data sets for each axis, with the form [[X], [Y], [Z], [WX], [WY], [WZ]].
+    list with data sets for each axis, with the form [[X], [Y], [Z], [WX], [WY], [WZ]]. Receives a single effector set.
 
     :param axisDataSet: Set with the data to separate into axes. Each element (row) is a set of (X,Y,Z,WX,WY,WZ).
     :return axesList: List which each element is a set of the separated axes.
@@ -388,7 +388,7 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
           + "\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n")
     time.sleep(2)
-    singleCSVPath = pathCalProfile + "/AdjustedDataSet"
+    singleCSVPath = pathCalProfile + "_AdjustedDataSet"
     csvUtils.writeCSVMocapSingleAdjusted(dataEffectors, singleCSVPath)
 
     # Create Calibration Profile from adjusted data CSV
@@ -413,7 +413,7 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
     coefficientsList = [HeadCoeff, TorsoCoeff, RArmCoeff, LArmCoeff]
 
     # # Write Calibration Profile with terms
-    csvUtils.writeCalibrationProfile(coefficientsList, pathCalProfile + "/" + pathCalProfile)
+    csvUtils.writeCalibrationProfile(coefficientsList, pathCalProfile)
 
     print("\n\n             Calibration Process Finished Successfully             \n"
           + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"

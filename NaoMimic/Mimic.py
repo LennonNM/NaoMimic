@@ -14,10 +14,11 @@ Some info:
 # Imports
 import time
 import motion
+import sys
 
 # Project libraries
-from Libraries import Miscellaneous_Utils as error
-from Libraries import Nao_Utilities as naoUtils
+from Libraries import Miscellaneous_Utils as misc
+from Libraries import Nao_Utils as naoUtils
 from Libraries import Mimic_Utils as mimic
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -60,8 +61,8 @@ def main(choreographyName, pathCP, robotIP, refFrame, effectorsToUse = "UPPER"):
     else:
         misc.abort("Did not receive a valid Reference Frame", "Setting NAO MIMIC environment")
     print("Nao robot IP: " + robotIP
-          + "Calibration Profile: \n" + pathCP
-          + "Name of choreography file to Mimic: " + choreographyName)
+          + "\nCalibration Profile: " + pathCP
+          + "\nName of choreography file to Mimic: " + choreographyName)
 
     # # True to use absolute positions
     useAbsoluteValues = True
@@ -71,10 +72,7 @@ def main(choreographyName, pathCP, robotIP, refFrame, effectorsToUse = "UPPER"):
 
     # # Define effectors list
     effectorsList = ["Head", "Torso", "RArm", "LArm"]
-    print("Effectors to control: " + effectorsList[0], effectorsList[1], effectorsList[2], effectorsList[3])
-
-    # # Timeline
-    timeline = mimic.getFixedTimeline(choreographyName[0])
+    print("Effectors to control: " + effectorsList[0] + effectorsList[1] + effectorsList[2] + effectorsList[3])
 
     # # Frame per Seconds used on MoCap exported data
     fps = 30
@@ -92,6 +90,9 @@ def main(choreographyName, pathCP, robotIP, refFrame, effectorsToUse = "UPPER"):
           + "\n------------------------------------------------------------------\n"
           + "\n------------------------------------------------------------------\n")
     adjustedChoreography = mimic.adjustChoreography(choreographyName, pathCP)
+
+    # # Timeline
+    timeline = mimic.getFixedTimeline(adjustedChoreography[0])
 
     # -------------------------------------------------------------------------------
 
@@ -132,16 +133,22 @@ def main(choreographyName, pathCP, robotIP, refFrame, effectorsToUse = "UPPER"):
 
 if __name__ == "__main__":
     # robotIp = "10.0.1.128"  # Bato por red PrisNao
-    # robotIp = "169.254.42.173" #Bato Local
-    robotIp = "10.0.1.122"  # She por red PrisNao
+    # robotIp = "169.254.42.173" # Bato Local
+    # robotIP = "10.0.1.122"  # She por red PrisNao
+    robotIP = "10.0.1.193"  # Mok
     refFrame = "ROBOT"
+    choreographyName = ""
+    pathCP = ""
 
     if len(sys.argv) < 3:
         misc.abort("Needs Minimum of 2 arguments to start: Coreography to Mimic and Calibration Profile")
+    elif len(sys.argv) == 3:
+        choreographyName = sys.argv[1]
+        pathCP = sys.argv[2]
     elif len(sys.argv) == 5:
         choreographyName = sys.argv[1]
         pathCP = sys.argv[2]
-        robotIp = sys.argv[3]
+        robotIP = sys.argv[3]
         marcoRef = sys.argv[4]
 
     main(choreographyName, pathCP, robotIP, refFrame)
