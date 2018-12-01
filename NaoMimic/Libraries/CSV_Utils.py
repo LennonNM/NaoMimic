@@ -9,8 +9,8 @@ import time
 from os.path import dirname, abspath
 
 # Project libraries
-import Miscellaneous_Utils as misc
-import Calibration_Utils as cal
+from Libraries import Miscellaneous_Utils as misc
+from Libraries import Calibration_Utils as cal
 
 # ----------------------------------------------------------------------------------------------------------------------
 # MoCap related

@@ -5,17 +5,18 @@ Supports the calibration process.
 # Imports
 import time
 import numpy as np
+from scipy import signal
 from collections import Counter
 
 # Project libraries
-import Miscellaneous_Utils as misc
-import CSV_Utils as csvUtils
-import Graph_Utils as graph
+from Libraries import Miscellaneous_Utils as misc
+from Libraries import CSV_Utils as csvUtils
+from Libraries import Graph_Utils as graph
 
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def syncData(mocapData, referenceData):
+def syncDataSimple(mocapData, referenceData, setDataByAxes = True):
     """
     This function is used to time couple 2 different sets of data. It shifts mocapData to match the referenceData
     general shape by comparing the position in the timeline of the maximum peak. Each set corresponds to a single
@@ -27,13 +28,17 @@ def syncData(mocapData, referenceData):
     """
 
     # Separate axes of the data sets
-    mocapAxes = extractAxes(mocapData)
-    referenceAxes = extractAxes(referenceData)
+    if setDataByAxes:
+        mocapAxes = extractAxes(mocapData)
+        referenceAxes = extractAxes(referenceData)
+    else:
+        mocapAxes = mocapData
+        referenceAxes = referenceData
 
     # Shift data set according to reference data set
     shiftedAxes = [[] for k in range(6)]
     for axis in range(6):
-        shiftedAxes[axis] = shiftDataSet(mocapAxes[axis], referenceAxes[axis])
+        shiftedAxes[axis] = shiftAxisDataSet(mocapAxes[axis], referenceAxes[axis])
 
     # Adjust data sets lengths
     finalDataSet = [[] for k in range(6)]
@@ -194,7 +199,7 @@ def rotateAxis(axisDataSet):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def shiftDataSet(axisDataSet, referenceDataSet):
+def shiftAxisDataSet(axisDataSet, referenceDataSet):
     """
     This function is used to shift the data set from a single axis so that the place of its maximum value matches the
     placement of the maximum value of the reference data set. To make sure it finds a maximum value (the value can be a
@@ -368,6 +373,18 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
     TorsoP = csvUtils.readCSVMocap(pathMoCap + "Torso", "TORSO")
     ArmsP = csvUtils.readCSVMocap(pathMoCap + "Arms", "ARMS")
 
+    # Filter human data to smooth it
+    print("\n\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n"
+          + "Filtering human data"
+          + "\n------------------------------------------------------------------\n"
+          + "------------------------------------------------------------------\n")
+    time.sleep(2)
+    HeadFiltP = calibration.filterAxesLowpassButterworth(extractAxes(HeadP))
+    TorsoFiltP = calibration.filterAxesLowpassButterworth(extractAxes(TorsoP))
+    RArmFiltP = calibration.filterAxesLowpassButterworth(extractAxes(ArmsP[0]))
+    LArmFiltP = calibration.filterAxesLowpassButterworth(extractAxes(ArmsP[1]))
+
     # Sync data (now data sets are gruped by axes instead of frame)
     print("\n\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n"
@@ -375,10 +392,10 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
           + "\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n")
     time.sleep(2)
-    HeadSync = syncData(HeadP, HeadNao)
-    TorsoSync = syncData(TorsoP, TorsoNao)
-    RArmSync = syncData(ArmsP[0], ArmsNao[0])
-    LArmSync = syncData(ArmsP[1], ArmsNao[1])
+    HeadSync = syncDataSimple(HeadP, HeadNao)
+    TorsoSync = syncDataSimple(TorsoP, TorsoNao)
+    RArmSync = syncDataSimple(ArmsP[0], ArmsNao[0])
+    LArmSync = syncDataSimple(ArmsP[1], ArmsNao[1])
     dataEffectors = [HeadSync, TorsoSync, RArmSync, LArmSync]
 
     # Write single CSV with adjusted data
@@ -424,8 +441,10 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
               + "\nSaving plot of data through the process as PNG files at /Comparisons\n"
               + "------------------------------------------------------------------\n")
         axesLabels = ["X", "Y", "Z", "WX", "WY", "WZ"]
+        effectorsLabels = ["Head", "Torso", "RArm", "LArm"]
 
-        # Original data
+        # Organize data to plot by axes
+        # # Original data
         axesHeadNao = extractAxes(HeadNao)
         axesTorsoNao = extractAxes(TorsoNao)
         axesRArmNao = extractAxes(ArmsNao[0])
@@ -434,6 +453,7 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
         axesTorsoP = extractAxes(TorsoP)
         axesRArmP = extractAxes(ArmsP[0])
         axesLArmP = extractAxes(ArmsP[1])
+        # #
 
         # Plot reference and MoCap data sets together
         for axis in range(6):
@@ -475,4 +495,31 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
                                       axesLArmNao[axis], "Nao " + axesLabels[axis], True,
                                       pathMoCap + "Synced_LArm_" + axesLabels[axis], False)
 
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+def filterAxisLowpassButterworth(axisData, degree=3, cutFreq=0.03):
+
+    b, a = signal.butter(degree, cutFreq)
+    filteredAxis = signal.filtfilt(b, a, axisData)
+
+    return filteredAxis
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+def filterAxesLowpassButterworth(dataSetAxes, degree=3, cutFreq=0.03):
+
+    filteredAxes = [[] for k in range(len(dataSetAxes))]
+    for axisNo, axis in enumerate(dataSetAxes):
+        filteredAxes[axisNo] = filterAxisLowpassButterworth(axis, degree, cutFreq)
+
+    return filteredAxes
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+def shiftDataSetByXCorr(axisDataSet, referenceDataSet):
+
+    a = 1
 # ----------------------------------------------------------------------------------------------------------------------

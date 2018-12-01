@@ -9,7 +9,7 @@ import time
 from os.path import dirname, abspath
 
 # Project libraries
-import Miscellaneous_Utils as misc
+from Libraries import Miscellaneous_Utils as misc
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -38,7 +38,8 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
     plt.plot(compareAxis1, label=axisLabel1)
     if compareAxis2 is not None:
         plt.plot(compareAxis2, label=axisLabel2)
-    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    plt.legend(loc='best', bbox_to_anchor=(1, 1))
+    plt.grid(True)
     image = plt.gcf()
 
     if showPlot:
@@ -76,7 +77,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def plotAxes(axesDataSet, labels = ["X axis", "Y axis", "Z axis", "WX axis", "WY axis", "WZ axis"],
+def plotAxesSameFig(axesDataSet, labels = ["X axis", "Y axis", "Z axis", "WX axis", "WY axis", "WZ axis"],
                 saveImage = False, filePath = "Default/", showPlot = True):
     """
     This function is used to plot a single data set to show all included axes. The plot can be saved into a PNG file.
