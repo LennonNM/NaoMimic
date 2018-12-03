@@ -3,6 +3,7 @@ Supports the calibration process.
 """
 
 # Imports
+import copy
 import time
 import numpy as np
 from scipy import signal
@@ -32,8 +33,8 @@ def syncDataSimple(mocapData, referenceData, setDataByAxes = True):
         mocapAxes = extractAxes(mocapData)
         referenceAxes = extractAxes(referenceData)
     else:
-        mocapAxes = mocapData
-        referenceAxes = referenceData
+        mocapAxes = copy.deepcopy(mocapData)
+        referenceAxes = copy.deepcopy(referenceData)
 
     # Shift data set according to reference data set
     shiftedAxes = [[] for k in range(6)]
@@ -182,10 +183,7 @@ def rotateAxis(axisDataSet):
     [baseValue, frequencyValue] = getBaseValueOfSet(axisDataSet)
 
     # Define limits for rotation with a 10% tolerance margin
-    if baseValue < 0:
-        lowTolerance = baseValue + baseValue * 0.1
-    else:
-        lowTolerance = baseValue - baseValue * 0.1
+    lowTolerance = round(baseValue - abs(baseValue) * 0.1, 5)
 
     # Rotate data set around baseValue
     for value in axisDataSet:
@@ -246,8 +244,11 @@ def makeListSameLength(axisDataSet, referenceDataSet):
     :return axisDataSet: The data set with its length adjusted to match the referenceDataSet length.
     """
 
+    # Copy data received
+    axisDataSetInternal = copy.deepcopy(axisDataSet)
+
     # Get lengths of each data set
-    lenAxis = len(axisDataSet)
+    lenAxis = len(axisDataSetInternal)
     lenRef = len(referenceDataSet)
 
     # Get the difference between lengths
@@ -256,17 +257,17 @@ def makeListSameLength(axisDataSet, referenceDataSet):
     # Adjust length of axisDataSet to match the reference length
     if lenDiff > 0:
         for space in range(lenDiff):
-            axisDataSet.insert(-1, axisDataSet[-1])
+            axisDataSetInternal.insert(-1, axisDataSetInternal[-1])
     elif lenDiff < 0:
         for space in range(abs(lenDiff)):
-            del axisDataSet[-1]
+            del axisDataSetInternal[-1]
 
     # Check that the lengths do match
-    finalLenAxis = len(axisDataSet)
+    finalLenAxis = len(axisDataSetInternal)
     if finalLenAxis != lenRef:
         misc.abort("Failed to adjust data sets lengths", "Make List Same Length")
 
-    return axisDataSet
+    return axisDataSetInternal
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -324,16 +325,17 @@ def cleanseDataSet(dataSetToClean):
     :return: Data set cleaned.
     """
 
+    dataSet = copy.deepcopy(dataSetToClean)
     for rowNo in range(len(dataSetToClean)):
         isRowBlank = True
         for axis in range(6):
-            if dataSetToClean[rowNo][axis] != "":
+            if dataSet[rowNo][axis] != "":
                 isRowBlank = False
         if isRowBlank:
-            del dataSetToClean[rowNo::]
+            del dataSet[rowNo::]
             break
 
-    return dataSetToClean
+    return dataSet
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -373,6 +375,16 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
     TorsoP = csvUtils.readCSVMocap(pathMoCap + "Torso", "TORSO")
     ArmsP = csvUtils.readCSVMocap(pathMoCap + "Arms", "ARMS")
 
+    # Organize data by axes
+    axesHeadNao = extractAxes(HeadNao)
+    axesTorsoNao = extractAxes(TorsoNao)
+    axesRArmNao = extractAxes(ArmsNao[0])
+    axesLArmNao = extractAxes(ArmsNao[1])
+    axesHeadP = extractAxes(HeadP)
+    axesTorsoP = extractAxes(TorsoP)
+    axesRArmP = extractAxes(ArmsP[0])
+    axesLArmP = extractAxes(ArmsP[1])
+
     # Filter human data to smooth it
     print("\n\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n"
@@ -380,10 +392,11 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
           + "\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n")
     time.sleep(2)
-    HeadFiltP = calibration.filterAxesLowpassButterworth(extractAxes(HeadP))
-    TorsoFiltP = calibration.filterAxesLowpassButterworth(extractAxes(TorsoP))
-    RArmFiltP = calibration.filterAxesLowpassButterworth(extractAxes(ArmsP[0]))
-    LArmFiltP = calibration.filterAxesLowpassButterworth(extractAxes(ArmsP[1]))
+
+    HeadFiltP = filterAxesLowpassButterworth(axesHeadP)
+    TorsoFiltP = filterAxesLowpassButterworth(axesTorsoP)
+    RArmFiltP = filterAxesLowpassButterworth(axesRArmP)
+    LArmFiltP = filterAxesLowpassButterworth(axesLArmP)
 
     # Sync data (now data sets are gruped by axes instead of frame)
     print("\n\n------------------------------------------------------------------\n"
@@ -392,10 +405,12 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
           + "\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n")
     time.sleep(2)
-    HeadSync = syncDataSimple(HeadP, HeadNao)
-    TorsoSync = syncDataSimple(TorsoP, TorsoNao)
-    RArmSync = syncDataSimple(ArmsP[0], ArmsNao[0])
-    LArmSync = syncDataSimple(ArmsP[1], ArmsNao[1])
+
+    HeadSync = syncDataSimple(HeadFiltP, axesHeadNao, False)
+    TorsoSync = syncDataSimple(TorsoFiltP, axesTorsoNao, False)
+    RArmSync = syncDataSimple(RArmFiltP, axesRArmNao, False)
+    LArmSync = syncDataSimple(LArmFiltP, axesLArmNao, False)
+
     dataEffectors = [HeadSync, TorsoSync, RArmSync, LArmSync]
 
     # Write single CSV with adjusted data
@@ -405,6 +420,7 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
           + "\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n")
     time.sleep(2)
+
     singleCSVPath = pathCalProfile + "_AdjustedDataSet"
     csvUtils.writeCSVMocapSingleAdjusted(dataEffectors, singleCSVPath)
 
@@ -415,6 +431,7 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
           + "\n------------------------------------------------------------------\n"
           + "------------------------------------------------------------------\n")
     time.sleep(2)
+
     # # Read adjusted data
     dataAdjusted = csvUtils.readCalibrationFile(singleCSVPath)[1:]
     adjustedEffectors = extractEffectors(dataAdjusted)
@@ -436,23 +453,13 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
           + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
+    # ------------------------------------
     if saveProcessPNG:
         print("\n------------------------------------------------------------------\n"
               + "\nSaving plot of data through the process as PNG files at /Comparisons\n"
               + "------------------------------------------------------------------\n")
         axesLabels = ["X", "Y", "Z", "WX", "WY", "WZ"]
         effectorsLabels = ["Head", "Torso", "RArm", "LArm"]
-
-        # Organize data to plot by axes
-        # # Original data
-        axesHeadNao = extractAxes(HeadNao)
-        axesTorsoNao = extractAxes(TorsoNao)
-        axesRArmNao = extractAxes(ArmsNao[0])
-        axesLArmNao = extractAxes(ArmsNao[1])
-        axesHeadP = extractAxes(HeadP)
-        axesTorsoP = extractAxes(TorsoP)
-        axesRArmP = extractAxes(ArmsP[0])
-        axesLArmP = extractAxes(ArmsP[1])
         # #
 
         # Plot reference and MoCap data sets together
@@ -473,24 +480,46 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
                                       "MoCap Orig " + axesLabels[axis], None,  None, True,
                                       pathMoCap + "Orig_LArm_" + axesLabels[axis], False)
 
-        # Plot MoCap orig data and synced sets together
+        # --------
+
+        # Plot MoCap orig data with it's filtered set
         for axis in range(6):
-            graph.plotCompareSameAxis(axesHeadP[axis], HeadSync[axis], "MoCap Orig " + axesLabels[axis],
+            graph.plotCompareSameAxis(axesHeadP[axis], HeadFiltP[axis], "MoCap Orig " + axesLabels[axis],
+                                      "MoCap Filtered " + axesLabels[axis], None,  None, True,
+                                      pathMoCap + "Filtered_Head_" + axesLabels[axis], False)
+        for axis in range(6):
+            graph.plotCompareSameAxis(axesTorsoP[axis], TorsoFiltP[axis], "MoCap Orig " + axesLabels[axis],
+                                      "MoCap Filtered " + axesLabels[axis], None,  None, True,
+                                      pathMoCap + "Filtered_Torso_" + axesLabels[axis], False)
+        for axis in range(6):
+            graph.plotCompareSameAxis(axesRArmP[axis], RArmFiltP[axis], "MoCap Orig " + axesLabels[axis],
+                                      "MoCap Filtered " + axesLabels[axis], None,  None, True,
+                                      pathMoCap + "Filtered_RArm_" + axesLabels[axis], False)
+        for axis in range(6):
+            graph.plotCompareSameAxis(axesLArmP[axis], LArmFiltP[axis], "MoCap Orig " + axesLabels[axis],
+                                      "MoCap Filtered " + axesLabels[axis], None,  None, True,
+                                      pathMoCap + "Filtered_LArm_" + axesLabels[axis], False)
+
+        # --------
+
+        # Plot MoCap filtered data and synced sets together
+        for axis in range(6):
+            graph.plotCompareSameAxis(HeadFiltP[axis], HeadSync[axis], "MoCap Orig " + axesLabels[axis],
                                       "MoCap Synced " + axesLabels[axis],
                                       axesHeadNao[axis], "Nao " + axesLabels[axis], True,
                                       pathMoCap + "Synced_Head_" + axesLabels[axis], False)
         for axis in range(6):
-            graph.plotCompareSameAxis(axesTorsoP[axis], TorsoSync[axis], "MoCap Orig " + axesLabels[axis],
+            graph.plotCompareSameAxis(TorsoFiltP[axis], TorsoSync[axis], "MoCap Orig " + axesLabels[axis],
                                       "MoCap Synced " + axesLabels[axis],
                                       axesTorsoNao[axis], "Nao " + axesLabels[axis], True,
                                       pathMoCap + "Synced_Torso_" + axesLabels[axis], False)
         for axis in range(6):
-            graph.plotCompareSameAxis(axesRArmP[axis], RArmSync[axis], "MoCap Orig " + axesLabels[axis],
+            graph.plotCompareSameAxis(RArmFiltP[axis], RArmSync[axis], "MoCap Orig " + axesLabels[axis],
                                       "MoCap Synced " + axesLabels[axis],
                                       axesRArmNao[axis], "Nao " + axesLabels[axis], True,
                                       pathMoCap + "Synced_RArm_" + axesLabels[axis], False)
         for axis in range(6):
-            graph.plotCompareSameAxis(axesLArmP[axis], LArmSync[axis], "MoCap Orig " + axesLabels[axis],
+            graph.plotCompareSameAxis(LArmFiltP[axis], LArmSync[axis], "MoCap Orig " + axesLabels[axis],
                                       "MoCap Synced " + axesLabels[axis],
                                       axesLArmNao[axis], "Nao " + axesLabels[axis], True,
                                       pathMoCap + "Synced_LArm_" + axesLabels[axis], False)
@@ -512,14 +541,8 @@ def filterAxesLowpassButterworth(dataSetAxes, degree=3, cutFreq=0.03):
 
     filteredAxes = [[] for k in range(len(dataSetAxes))]
     for axisNo, axis in enumerate(dataSetAxes):
-        filteredAxes[axisNo] = filterAxisLowpassButterworth(axis, degree, cutFreq)
+        filteredAxes[axisNo] = filterAxisLowpassButterworth(axis, degree, cutFreq).tolist()
 
     return filteredAxes
 
-# ----------------------------------------------------------------------------------------------------------------------
-
-
-def shiftDataSetByXCorr(axisDataSet, referenceDataSet):
-
-    a = 1
 # ----------------------------------------------------------------------------------------------------------------------

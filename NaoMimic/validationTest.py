@@ -11,12 +11,13 @@ from Libraries import Mimic_Utils as mimic
 def main(pathMocap, pathReferences, calProfileDir):
 
     # Generating Calibration Profiles
-    for subjectNo, subject in enumerate(pathMocap):
-        for takeNo, take in enumerate(subject):
-            calibration.performFullCalibration(pathMocap[subjectNo][takeNo],
-                                               pathReferences,
-                                               calProfileDir[subjectNo][takeNo],
-                                               True)
+    # for subjectNo, subject in enumerate(pathMocap):
+    #     for takeNo, take in enumerate(subject):
+    #         calibration.performFullCalibration(pathMocap[subjectNo][takeNo],
+    #                                            pathReferences,
+    #                                            calProfileDir[subjectNo][takeNo],
+    #                                            True)
+    calibration.performFullCalibration(pathMocap[0][0], pathReferences, calProfileDir[0][0], True)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -96,18 +97,18 @@ def main(pathMocap, pathReferences, calProfileDir):
 
 
 if __name__ == "__main__":
-    pathSubject1 = ["Validation/Javier/Take1/Javier",
-                    "Validation/Javier/Take2/Javier",
-                    "Validation/Javier/Take3/Javier",
-                    "Validation/Javier/Take4/Javier",
-                    "Validation/Javier/Take5/Javier"]
-    pathSubject2 = ["Validation/Naty/Take1/Naty",
-                    "Validation/Naty/Take2/Naty",
-                    "Validation/Naty/Take3/Naty",
-                    "Validation/Naty/Take4/Naty",
-                    "Validation/Naty/Take5/Naty"]
-    pathRefNao = ["Validation/ref_HEAD",
-                  "Validation/ref_TORSO",
-                  "Validation/ref_ARMS"]
+    pathSubject1 = ["Validation2/Javier/Take1/Javier",
+                    "Validation2/Javier/Take2/Javier",
+                    "Validation2/Javier/Take3/Javier",
+                    "Validation2/Javier/Take4/Javier",
+                    "Validation2/Javier/Take5/Javier"]
+    pathSubject2 = ["Validation2/Naty/Take1/Naty",
+                    "Validation2/Naty/Take2/Naty",
+                    "Validation2/Naty/Take3/Naty",
+                    "Validation2/Naty/Take4/Naty",
+                    "Validation2/Naty/Take5/Naty"]
+    pathRefNao = ["Validation2/ref_HEAD",
+                  "Validation2/ref_TORSO",
+                  "Validation2/ref_ARMS"]
 
     main([pathSubject1, pathSubject2], pathRefNao, [pathSubject1, pathSubject2])

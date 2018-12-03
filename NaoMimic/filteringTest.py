@@ -48,8 +48,8 @@ def main(pathMocap, pathReferences, calProfileDir):
     rootDir = dirname(dirname(abspath(__file__)))
     fileDir = os.path.join(rootDir, "NaoMimic/Comparisons/Validation/Javier_10_Filter/")
 
-    HeadPFilter = calibration.filterAxesLowpassButterworth(HeadP)
-    # graph.plotCompareSameAxis(HeadP[0], HeadPFilter[0])
+    HeadPFilter = calibration.filterAxesLowpassButterworth(TorsoP)
+    graph.plotCompareSameAxis(TorsoP[5], HeadPFilter[5])
 
 
 
@@ -62,4 +62,4 @@ if __name__ == "__main__":
                   "Validation/ref_TORSO",
                   "Validation/ref_ARMS"]
 
-    main("Validation/Javier/Take1/Javier", pathRefNao, "Validation/Javier_10_Filter/Take1/Javier")
+    main("Validation/Naty/Take1/Naty", pathRefNao, "Validation/Javier_10_Filter/Take1/Javier")
