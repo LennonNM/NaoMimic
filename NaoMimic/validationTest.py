@@ -107,8 +107,11 @@ if __name__ == "__main__":
                     "Validation2/Naty/Take3/Naty",
                     "Validation2/Naty/Take4/Naty",
                     "Validation2/Naty/Take5/Naty"]
-    pathRefNao = ["Validation2/ref_HEAD",
-                  "Validation2/ref_TORSO",
-                  "Validation2/ref_ARMS"]
+    # pathRefNao = ["Validation2/ref_HEAD",
+    #               "Validation2/ref_TORSO",
+    #               "Validation2/ref_ARMS"]
+    pathRefNao = ["Validation2/HEAD",
+                  "Validation2/TORSO",
+                  "Validation2/ARMS"]
 
     main([pathSubject1, pathSubject2], pathRefNao, [pathSubject1, pathSubject2])

@@ -65,9 +65,9 @@ def createCalibrationTerms(listPerson, listReference, degree = 1):
 
     # Makes sure data sets are same size
     if len(listReference) != len(listPerson):
-        misc.abort("Sizes of the data sets are not equal." +
-                    "\nReference data set size: " + listReference +
-                    "\nPerson data set size: " + listPerson, "Generation of calibration terms")
+        misc.abort("Sizes of the data sets are not equal."
+                   + "\nReference data set size: " + listReference
+                   + "\nPerson data set size: " + listPerson, "Generation of calibration terms")
 
     # Create lists
     refX = list()
@@ -458,71 +458,38 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
         print("\n------------------------------------------------------------------\n"
               + "\nSaving plot of data through the process as PNG files at /Comparisons\n"
               + "------------------------------------------------------------------\n")
+        # Labels
         axesLabels = ["X", "Y", "Z", "WX", "WY", "WZ"]
         effectorsLabels = ["Head", "Torso", "RArm", "LArm"]
-        # #
 
-        # Plot reference and MoCap data sets together
-        for axis in range(6):
-            graph.plotCompareSameAxis(axesHeadNao[axis], axesHeadP[axis], "Nao " + axesLabels[axis],
-                                      "MoCap Orig " + axesLabels[axis], None,  None, True,
-                                      pathMoCap + "Orig_Head_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(axesTorsoNao[axis], axesTorsoP[axis], "Nao " + axesLabels[axis],
-                                      "MoCap Orig " + axesLabels[axis], None,  None, True,
-                                      pathMoCap + "Orig_Torso_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(axesRArmNao[axis], axesRArmP[axis], "Nao " + axesLabels[axis],
-                                      "MoCap Orig " + axesLabels[axis], None,  None, True,
-                                      pathMoCap + "Orig_RArm_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(axesLArmNao[axis], axesLArmP[axis], "Nao " + axesLabels[axis],
-                                      "MoCap Orig " + axesLabels[axis], None,  None, True,
-                                      pathMoCap + "Orig_LArm_" + axesLabels[axis], False)
+        # Data sets in single lists
+        dataSetNao = [axesHeadNao, axesTorsoNao, axesRArmNao, axesLArmNao]
+        dataSetP = [axesHeadP, axesTorsoP, axesRArmP, axesLArmP]
+        dataSetFiltP = [HeadFiltP, TorsoFiltP, RArmFiltP, LArmFiltP]
+        dataSetSyncP = [HeadSync, TorsoSync, RArmSync, LArmSync]
 
-        # --------
+        for effectorNo, effector in enumerate(effectorsLabels):
+            for axisNo, axis in enumerate(axesLabels):
+                # Plot reference and MoCap data sets together
+                graph.plotCompareSameAxis(dataSetNao[effectorNo][axisNo], dataSetP[effectorNo][axisNo],
+                                          "Nao Reference " + axis, "MoCap Initial " + axis, None, None, True,
+                                          pathMoCap + "Orig_" + effector + "_" + axis, False,
+                                          "MoCap exported data compared to Nao reference data",
+                                          "Axis " + axis + " for effector " + effector)
+                # Plot MoCap orig data with it's filtered set
+                graph.plotCompareSameAxis(dataSetP[effectorNo][axisNo], dataSetFiltP[effectorNo][axisNo],
+                                          "MoCap Initial " + axis, "MoCap Filtered " + axis, None, None, True,
+                                          pathMoCap + "Filtered_" + effector + "_" + axis, False,
+                                          "MoCap filtered data compared to MoCap original export",
+                                          "Axis " + axis + " for effector " + effector)
+                # Plot MoCap filtered data and synced sets together
+                graph.plotCompareSameAxis(dataSetFiltP[effectorNo][axisNo], dataSetSyncP[effectorNo][axisNo],
+                                          "MoCap Initial " + axis, "MoCap Synced " + axis,
+                                          dataSetNao[effectorNo][axisNo], "Nao Reference" + axis, True,
+                                          pathMoCap + "Synced_" + effector + "_" + axis, False,
+                                          "MoCap synced data compared to MoCap export and Nao reference data",
+                                          "Axis " + axis + " for effector " + effector)
 
-        # Plot MoCap orig data with it's filtered set
-        for axis in range(6):
-            graph.plotCompareSameAxis(axesHeadP[axis], HeadFiltP[axis], "MoCap Orig " + axesLabels[axis],
-                                      "MoCap Filtered " + axesLabels[axis], None,  None, True,
-                                      pathMoCap + "Filtered_Head_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(axesTorsoP[axis], TorsoFiltP[axis], "MoCap Orig " + axesLabels[axis],
-                                      "MoCap Filtered " + axesLabels[axis], None,  None, True,
-                                      pathMoCap + "Filtered_Torso_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(axesRArmP[axis], RArmFiltP[axis], "MoCap Orig " + axesLabels[axis],
-                                      "MoCap Filtered " + axesLabels[axis], None,  None, True,
-                                      pathMoCap + "Filtered_RArm_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(axesLArmP[axis], LArmFiltP[axis], "MoCap Orig " + axesLabels[axis],
-                                      "MoCap Filtered " + axesLabels[axis], None,  None, True,
-                                      pathMoCap + "Filtered_LArm_" + axesLabels[axis], False)
-
-        # --------
-
-        # Plot MoCap filtered data and synced sets together
-        for axis in range(6):
-            graph.plotCompareSameAxis(HeadFiltP[axis], HeadSync[axis], "MoCap Orig " + axesLabels[axis],
-                                      "MoCap Synced " + axesLabels[axis],
-                                      axesHeadNao[axis], "Nao " + axesLabels[axis], True,
-                                      pathMoCap + "Synced_Head_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(TorsoFiltP[axis], TorsoSync[axis], "MoCap Orig " + axesLabels[axis],
-                                      "MoCap Synced " + axesLabels[axis],
-                                      axesTorsoNao[axis], "Nao " + axesLabels[axis], True,
-                                      pathMoCap + "Synced_Torso_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(RArmFiltP[axis], RArmSync[axis], "MoCap Orig " + axesLabels[axis],
-                                      "MoCap Synced " + axesLabels[axis],
-                                      axesRArmNao[axis], "Nao " + axesLabels[axis], True,
-                                      pathMoCap + "Synced_RArm_" + axesLabels[axis], False)
-        for axis in range(6):
-            graph.plotCompareSameAxis(LArmFiltP[axis], LArmSync[axis], "MoCap Orig " + axesLabels[axis],
-                                      "MoCap Synced " + axesLabels[axis],
-                                      axesLArmNao[axis], "Nao " + axesLabels[axis], True,
-                                      pathMoCap + "Synced_LArm_" + axesLabels[axis], False)
 
 # ----------------------------------------------------------------------------------------------------------------------
 
