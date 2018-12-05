@@ -17,6 +17,7 @@ from Libraries import Nao_Utils as naoUtils
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def main(robotIP, refFrame, name, specificEffectors):
     """
     See file header description.
@@ -59,6 +60,7 @@ def main(robotIP, refFrame, name, specificEffectors):
 
 # -------------------------------------------------------------------------------
 
+
 if __name__ == "__main__":
     robotIP = "10.0.1.193" # Based on PrisNao network
     frameRef = "ROBOT"
@@ -67,7 +69,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) < 3:
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-              + "Using robot IP: "+ robotIP +" with frame: "+ frameRef
+              + "Using robot IP: " + robotIP +" with frame: " + frameRef
               + "\nCollecting data for all available effectors"
               + "\nName of CSV file defined by time and date\n"
               + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -75,7 +77,7 @@ if __name__ == "__main__":
         robotIP = sys.argv[1]
         frame = sys.argv[2]
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-              + "Using robot IP: "+ robotIP +" with frame: "+ frameRef
+              + "Using robot IP: " + robotIP +" with frame: " + frameRef
               + "Collecting data for all available effectors."
               + "\nName of CSV file defined by time and date\n"
               + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")

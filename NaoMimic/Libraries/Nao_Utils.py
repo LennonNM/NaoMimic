@@ -12,7 +12,7 @@ import Miscellaneous_Utils as misc
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
+def startCollectingData(motionProxy, frame="ROBOT", useSensorValues=False):
     """
     This function is used to extract data from the Nao effector's sensors.
 
@@ -61,7 +61,7 @@ def startCollectingData(motionProxy, frame = "ROBOT", useSensorValues = False):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def setStiffness(motionProxy, stiffnessOn = True):
+def setStiffness(motionProxy, stiffnessOn=True):
     """
     This function is used to toggle stiffness of Nao robot. Duration of transition is set to 1 second.
 
@@ -187,7 +187,7 @@ def restNao(motionProxy, postureProxy):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def createALProxy(naoqiProxyName, robotIP, proxyPort = 9559):
+def createALProxy(naoqiProxyName, robotIP, proxyPort=9559):
     """
     This function is used to create a Naoqi proxy object.
 
@@ -212,7 +212,7 @@ def createALProxy(naoqiProxyName, robotIP, proxyPort = 9559):
 
 
 def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effectorsList, timeline, axisMask, frame,
-                          useAbsolutes = True, fps = 30):
+                          useAbsolutes=True, fps=30):
 
     # Define operation parameters
 

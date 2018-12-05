@@ -17,7 +17,7 @@ from Libraries import Calibration_Utils as cal
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChoreography = False):
+def readCSVMocap(pathFile, whichEffectors="ALL", includesHeader=True, isChoreography=False):
     """
     This function is used to extract the data from a MoCap recording export to CSV from Motive. The order of appearance
     of the effectors must follow: Head, Torso, RArm, LArm, RLeg, LLeg. If Header from Motive export is included,
@@ -134,13 +134,13 @@ def readCSVMocap(pathFile, whichEffectors = "ALL", includesHeader = True, isChor
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
+def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes=True):
     """
     This function is used to write a single CSV file containing the data for each calibration routine done for a
     specific set of effectors. The data sets received must be already time adjusted using syncData() from
     Calibrate_Utils.
 
-    :param dataEffectors: List with the data to write. Must include all effectors.
+    :param dataSet: List with the data to write. Must include all effectors.
     :param pathCalProf: Directory file to write the CSV file.
     :param joinAxes: True if data set received is organized as axes data set [[X], [Y], [Z], [WX], [WY], [WZ]] to join
                 the axes data into a data set of a row per axes set [[X, Y, Z, WX, WY, WZ]].
@@ -222,7 +222,7 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes = True):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichEffectors = "ALL"):
+def writeCSVReference(dataSet, filePath=None, referenceFrame="ROBOT", whichEffectors="ALL"):
     """
     This function is used to write a CSV file with the position data exported from the Nao's sensors.
     Header of the file goes as follows:
@@ -235,8 +235,9 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
     # ...
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    :param filePath: Directory path to store the CSV file.
     :param dataSet: List with the data to export to file. Contains the set of axes for each desired effector.
+    :param filePath: Directory path to store the CSV file.
+    :param referenceFrame: Name of the Nao's reference frame.
     :param whichEffectors: Used to identify the amount of effectors included on the CSV file.
                     "ALL": Head, Torso, RArm, LArm, RLeg, LLeg
                     "ARMS": RArm, LArm
@@ -332,7 +333,7 @@ def writeCSVReference(dataSet, filePath = None, referenceFrame = "ROBOT", whichE
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def readCSVNao(pathFile, whichEffectors = "ALL"):
+def readCSVNao(pathFile, whichEffectors="ALL"):
     """
     This function is used to extract the data from a CSV  file with data from the Nao's motion sensors. The order of
     appearance of the effectors must follow: Head, Torso, RArm, LArm, RLeg, LLeg. The CSV file is custom for the project

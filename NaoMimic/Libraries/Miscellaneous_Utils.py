@@ -13,7 +13,7 @@ import time
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def abort(errorMessage, processName = None, sysError = None):
+def abort(errorMessage, processName=None, sysError=None):
     """
     This function is used to terminate the current process with a defined error messages on terminal.
 
@@ -77,7 +77,7 @@ def checkDirExists(storeDir):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-# def abortMimic(motionProxy, postureProxy, sysError = None):
+# def abortMimic(motionProxy, postureProxy, sysError=None):
 #     """
 #     This function is used to terminate the current process handling the robot Nao spatial position and safety.
 #

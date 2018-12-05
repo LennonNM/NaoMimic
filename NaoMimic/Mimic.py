@@ -24,7 +24,7 @@ from Libraries import Mimic_Utils as mimic
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def main(choreographyName, pathCP, robotIP, refFrame, effectorsToUse = "UPPER"):
+def main(choreographyName, pathCP, robotIP, refFrame):
 
     print("\n\n\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
@@ -140,15 +140,19 @@ if __name__ == "__main__":
     choreographyName = ""
     pathCP = ""
 
-    if len(sys.argv) < 3:
-        misc.abort("Needs Minimum of 2 arguments to start: Coreography to Mimic and Calibration Profile")
-    elif len(sys.argv) == 3:
+    if len(sys.argv) == 3:
         choreographyName = sys.argv[1]
         pathCP = sys.argv[2]
+    elif len(sys.argv) == 4:
+        choreographyName = sys.argv[1]
+        pathCP = sys.argv[2]
+        robotIP = sys.argv[3]
     elif len(sys.argv) == 5:
         choreographyName = sys.argv[1]
         pathCP = sys.argv[2]
         robotIP = sys.argv[3]
         marcoRef = sys.argv[4]
+    else:
+        misc.abort("Expected 2 to 4 arguments")
 
     main(choreographyName, pathCP, robotIP, refFrame)

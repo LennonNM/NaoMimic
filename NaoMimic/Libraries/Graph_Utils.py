@@ -14,22 +14,24 @@ from Libraries import Miscellaneous_Utils as misc
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis", axisLabel1 = "Compare Axis 1",
-                        compareAxis2 = None,  axisLabel2 = "Compare Axis 2", saveImage = False, filePath = "Default/",
-                        showPlot = True, title = None, subtitle = None):
+def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", axisLabel1="Compare Axis 1",
+                        compareAxis2=None,  axisLabel2="Compare Axis 2", saveImage=False, filePath="Default/",
+                        showPlot=True, title=None, subtitle=None):
     """
     This function is used to plot the data sets from a reference axis and up to 2 comparison axes. The plotted image can
     be store as a PNG file.
 
     :param referenceAxis: Data set to take as reference.
-    :param refLabel: Label of the reference data set.
     :param compareAxis1: First data set to compare.
+    :param refLabel: Label of the reference data set.
     :param axisLabel1: Label of compareAxis1.
     :param compareAxis2: Second data set to compare.
     :param axisLabel2: Label of compareAxis2.
     :param saveImage: True to save the plot as a PNG file.
     :param filePath: Path and name of the file to store.
     :param showPlot: False to prevent plot to pop out.
+    :param title: Title of the plot. None to not show title.
+    :param subtitle: Subtitle of the plot. None to not show subtitle.
     :return: void
     """
 
@@ -85,8 +87,8 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel = "Reference Axis"
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def plotAxesSameFig(axesDataSet, labels = ["X axis", "Y axis", "Z axis", "WX axis", "WY axis", "WZ axis"],
-                saveImage = False, filePath = "Default/", showPlot = True):
+def plotAxesSameFig(axesDataSet, labels=["X axis", "Y axis", "Z axis", "WX axis", "WY axis", "WZ axis"],
+                saveImage=False, filePath="Default/", showPlot=True):
     """
     This function is used to plot a single data set to show all included axes. The plot can be saved into a PNG file.
 

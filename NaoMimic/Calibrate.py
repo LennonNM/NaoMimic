@@ -1,120 +1,54 @@
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#Utiliza las funciones definidas en CalibrateFunc.py para realizar el proceso de
-#calibracion para la teleoperacion del NAO, los factores generados por este
-#proceso son usados en CSV_read.py para el ajuste de las coordenadas.
-##
-#Realiza la calibracion segun las grabaciones de datos para calibrar dentro del
-#directorio local ../Calibration/NAO para las del robot NAO, y ../Calibration/Human para las de
-#la persona. Las grabaciones del NAO son predefinidas, las de la persona en
-#utilizar el sistema deben obtenerse de grabaciones previas al proceso de
-#calibracion.
-##
-#El directorio donde se encuentran los datos de la persona se debe especificar
-#y estar contenido en .../Calibration/Human con las grabaciones requeridas, cuyos nombres
-#deben seguir el formato *LetraMayusculaIndicandoPrueba*_Cal_P.csv, con la
-#letra en mayusucla correspondiente a la pose de calibracion del NAO.
-#Si no se especifica directorio se considera que se usan los archivos predefinidos
-#dentro de .../Calibration/Human
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+"""
+This script is used to run the calibration process to generate a calibration profile.
 
-#Imports
-import sys
-import time
-
-##Custom
-import Calibration_Utils as cal
-import Miscellaneous_Utils as error
-import CSV_Utils as csvUtils
+Parameters
+----------
+pathMocap : Path to the MoCap CSV export with the data from the person to calibrate. Directory must be inside
+            .../Calibration/Human/MoCap_Export/
+pathReferences : Path to the reference CSV files with Nao's data. Directory must be inside
+            .../Calibration/NAO/ReferenceData/. If no path is specified, the default path will be used to read the
+            reference data -> .../Calibration/NAO/ReferenceData/Default/
+calProfileDir : Path to store the Calibration Profile. Must be inside .../Calibration/Human/CalibrationProfiles/
 
 
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-def main(polDeg, wRot, humanDir, ID, naoDir):
-    #Datos para calibrar el movimiento de los brazos
-    ###Obtiene datos desde los csv correspondientes para la primer pose de calibracion
-    HeadNao, TorsoNao, RArmNao, LArmNao = csvUtils.readCSVNao( naoDir + "/" + "Brazos_NAO.csv")
-    HeadP, TorsoP, RArmP, LArmP = csvUtils.readCSVMocap(humanDir + "/" + "Brazos_P.csv")
+Files created
+-------------
+AdjustedDataSet : CSV file with the main data sets of each individual calibration routine MoCap export. The data
+            contained is fully adjusted to be used to generate the main Calibration Profile file.
+CalibrationProfile : Identified as ´CP´ file. Contains the coefficients of the mathematical relation obtained by the
+            calibration process for the specified person according to the specified reference data.
 
-    ##Obtiene factores para la regresion polinomial deseada para el ajuste
-    factRArm  = cal.getCalibrationTerms(RArmNao, RArmP)
-    factLArm  = cal.getCalibrationTerms(LArmNao, LArmP)
+Notes on usage
+--------------
+The default reference files are recognize by the name format ´ref_EFFECTORNAME´ (e.g. ref_ARMS.csv contains reference
+            data for RArm and LArm).
+"""
 
-    #---------------------------------------------------------------------------
-    #---------------------------------------------------------------------------
-    #Genera archivo CSV con los offsets finales a utilizar
-    print( "++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    print( "Writing offsets to file: .../Calibration/Offsets/offsets_"+ID+".csv")
-    try:
-        csvUtils.writeCalibrationProfile([factRArm, factLArm])
-    except Exception:
-        error.abort("Offset write unsuccessfull", "not valid parameters to function","OffsetFileFunc", "Calibrate")
-    print( "Done")
-    print( "++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    print( "++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+# Project libraries
+from Libraries import Calibration_Utils as calibration
+from Libraries import Miscellaneous_Utils as misc
 
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+def main(pathMocap, calProfileDir, pathReferences="Defaul"):
+
+    calibration.performFullCalibration(pathMocap, pathReferences, calProfileDir)
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+
 if __name__ == "__main__":
-    polDeg   = 2 #Polinomio grado 2 por defecto
-    humanDir = ""
-    naoDir = "RigidBody_Default"
-    wRot = "yes"
-    ID = ""
 
     if len(sys.argv) == 4:
-        try:
-            polDeg   = int(sys.argv[1])
-            wRot     = (sys.argv[2]).lower()
-            humanDir = sys.argv[3]
-            print( "++++++++++++++++++++++++++++++++++++")
-            print( "Using Pol degree:", polDeg)
-            print( "Include rotations:", wRot)
-            print( "Reading Human data from dir:", humanDir)
-            print( "Reading NAO data from default directory .../Calibration/Nao/RigidBody_Default")
-            print( "------------------------------------")
-            print( "Starting calibration process...")
-            print( "++++++++++++++++++++++++++++++++++++")
-        except ValueError as e:
-            error.abort("Expected int as argument in main function", None,"Calibrate")
-    elif len(sys.argv) == 5:
-        try:
-            polDeg   = int(sys.argv[1])
-            wRot     = (sys.argv[2]).lower()
-            humanDir = sys.argv[3]
-            ID       = sys.argv[4]
-            print( "++++++++++++++++++++++++++++++++++++")
-            print( "Using Pol degree:", polDeg)
-            print( "Include rotations:", wRot)
-            print( "Reading Human data from dir:", humanDir)
-            print( "Reading NAO data from dir:", naoDir)
-            print( "Adding extension name to offsets file:", ID)
-            print( "------------------------------------")
-            print( "Starting calibration process...")
-            print( "++++++++++++++++++++++++++++++++++++")
-            time.sleep(1.5) #Tiempo para que el usuario lea las indicaciones
-        except ValueError as e:
-            error.abort("Expected int as argument in main function", None,"Calibrate")
-    elif len(sys.argv) == 6:
-        try:
-            polDeg = int(sys.argv[1])
-            wRot     = (sys.argv[2]).lower()
-            humanDir = sys.argv[3]
-            ID       = sys.argv[4]
-            naoDir   = sys.argv[5]
-            print( "++++++++++++++++++++++++++++++++++++")
-            print( "Using Pol degree:", polDeg)
-            print( "Include rotations:", wRot)
-            print( "Reading Human data from dir:", humanDir)
-            print( "Reading NAO data from dir:", naoDir)
-            print( "Adding extension name to offsets file:", ID)
-            print( "------------------------------------")
-            print( "Starting calibration process...")
-            print( "++++++++++++++++++++++++++++++++++++")
-            time.sleep(1.5) #Tiempo para que el usuario lea las indicaciones
-        except ValueError as e:
-            error.abort("Expected int as argument in main function", None,"Calibrate")
+        pathMocap = sys.argv[1]
+        calProfileDir = sys.argv[2]
+        pathReferences = sys.argv[3]
+    elif len(sys.argv) == 3:
+        pathMocap = sys.argv[1]
+        calProfileDir = sys.argv[2]
     else:
-        error.abort("Expected 3, 4 or 5 arguments on call.", None, "Calibrate")
+        misc.abort("Expected 2 to 3 arguments.")
 
     time.sleep(1.0)
-    main(polDeg, wRot, humanDir, ID, naoDir)
+    main(pathMocap, calProfileDir, pathReferences)

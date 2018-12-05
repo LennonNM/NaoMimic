@@ -17,7 +17,7 @@ from Libraries import Graph_Utils as graph
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def syncDataSimple(mocapData, referenceData, setDataByAxes = True):
+def syncDataSimple(mocapData, referenceData, setDataByAxes=True):
     """
     This function is used to time couple 2 different sets of data. It shifts mocapData to match the referenceData
     general shape by comparing the position in the timeline of the maximum peak. Each set corresponds to a single
@@ -51,7 +51,7 @@ def syncDataSimple(mocapData, referenceData, setDataByAxes = True):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def createCalibrationTerms(listPerson, listReference, degree = 1):
+def createCalibrationTerms(listPerson, listReference, degree=1):
     """
     This function performs the linear regression coupling between the 2 data sets received. The sets correspond to a
     single effector. The default polynomial degree for the regression is set to 1. This function uses polyfit from
@@ -145,12 +145,13 @@ def getBaseValueOfSet(axisDataSet):
     This function is used to get the most frequent value from an axis data set.
 
     :param axisDataSet: Data set to find value for a single axis.
-    :return: Returns the value of the most frequent item and its frequency.
+    :return [mostCommonValue, frequencyOfAppearance]: Returns the value of the most frequent item and its frequency of
+                appearance.
     """
 
-    mostCommonValue, frequencyOfAppereance = Counter(axisDataSet).most_common(1)[0]
+    mostCommonValue, frequencyOfAppearance = Counter(axisDataSet).most_common(1)[0]
 
-    return [mostCommonValue, frequencyOfAppereance]
+    return [mostCommonValue, frequencyOfAppearance]
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -160,7 +161,7 @@ def findMaxValue(axisDataSet):
     This function is used to find the item with the maximum value of a data set.
 
     :param axisDataSet: Data set for a single axis.
-    :return: The Index of the element with the maximum value form the data set and its Value.
+    :return [maxValue, index]: The value of the maximum element in the list and its index.
     """
 
     maxValue = max(axisDataSet)
@@ -295,7 +296,7 @@ def joinAxesInRow(axesDataSets):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def extractEffectors(mixedEffectorsSet, effectorsNumber = 4):
+def extractEffectors(mixedEffectorsSet, effectorsNumber=4):
     """
     This function is used to extract the effectors data from a data set of the form [[X, Y, Z, WX, WY, WZ, X, Y, Z,...]]
     to the form [[X, Y, Z, WX, WY, WZ],[X, Y, Z, WX, WY, WZ]...]. Each row of the effector will contain all the axes.
@@ -322,7 +323,7 @@ def cleanseDataSet(dataSetToClean):
     single effector with all axes.
 
     :param dataSetToClean: Data set to delete extra blank rows.
-    :return: Data set cleaned.
+    :return dataSet: Data set cleaned.
     """
 
     dataSet = copy.deepcopy(dataSetToClean)
@@ -340,7 +341,7 @@ def cleanseDataSet(dataSetToClean):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProcessPNG = True):
+def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProcessPNG=True):
     """
     This function is used to run the whole calibration process. It requires the existance of the calibration CSV files,
     the MoCap calibration data and the Nao reference data. The calibration is performed for all available effectors to
@@ -495,6 +496,15 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
 
 
 def filterAxisLowpassButterworth(axisData, degree=3, cutFreq=0.03):
+    """
+    This function is used to apply a Butterworth low pass filter to a specific data set. The data set corresponds to
+    a single axis.
+
+    :param axisData: Data set of a single axis.
+    :param degree: Degree of the filter.
+    :param cutFreq: Cut frequency of the filter. Value is normalized from 0 to 1, where 1 is pi radians/sample.
+    :return filteredAxis: Filtered data set.
+    """
 
     b, a = signal.butter(degree, cutFreq)
     filteredAxis = signal.filtfilt(b, a, axisData)
@@ -505,6 +515,15 @@ def filterAxisLowpassButterworth(axisData, degree=3, cutFreq=0.03):
 
 
 def filterAxesLowpassButterworth(dataSetAxes, degree=3, cutFreq=0.03):
+    """
+    This function is used to aplply a Butterworth filter to a single effector data set. The received data set must be
+    organized per axis [[X], [Y], [Z], [WX], [WY], [WZ]].
+
+    :param dataSetAxes: Data set to filter of a single effector organized per axis.
+    :param degree: Degree of the filter.
+    :param cutFreq: Cut frequency of the filter. Value is normalized from 0 to 1, where 1 is pi radians/sample.
+    :return filteredAxes: Filtered data set, organized per axis.
+    """
 
     filteredAxes = [[] for k in range(len(dataSetAxes))]
     for axisNo, axis in enumerate(dataSetAxes):
