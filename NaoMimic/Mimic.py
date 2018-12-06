@@ -93,7 +93,7 @@ def main(choreographyName, pathCP, robotIP, refFrame):
 
     # # Timeline
     timeline = mimic.getFixedTimeline(adjustedChoreography[0])
-
+    
     # -------------------------------------------------------------------------------
 
     # Set the robot ready for Mimic operations

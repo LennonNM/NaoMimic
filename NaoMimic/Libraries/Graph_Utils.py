@@ -47,8 +47,8 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", 
         plt.title(title)
     if subtitle is not None:
         plt.title(subtitle)
-    plt.xlabel('Distance in meters in respect to ROBOT reference frame')
-    plt.ylabel('y label')
+    plt.ylabel('Distance in meters in respect to ROBOT reference frame')
+    plt.xlabel('Sample')
 
     image = plt.gcf()
 
@@ -77,7 +77,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", 
         try:
             image.savefig(fileDir, bbox_inches='tight')
             print("Plot image saved as:\n" + fileDir)
-            time.sleep(1.5)
+            time.sleep(0.5)
         except Exception as e2:
             misc.abort("Failed to save plot image", None, e2)
 

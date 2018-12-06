@@ -62,7 +62,7 @@ def main(robotIP, refFrame, name, specificEffectors):
 
 
 if __name__ == "__main__":
-    robotIP = "10.0.1.193" # Based on PrisNao network
+    robotIP = "10.0.1.193" # Mok on PrisNao network
     frameRef = "ROBOT"
     name = None
     specificEffectors = "ALL"

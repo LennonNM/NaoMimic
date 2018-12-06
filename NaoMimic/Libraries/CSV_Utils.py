@@ -9,8 +9,8 @@ import time
 from os.path import dirname, abspath
 
 # Project libraries
-from Libraries import Miscellaneous_Utils as misc
-from Libraries import Calibration_Utils as cal
+import Miscellaneous_Utils as misc
+import Calibration_Utils as cal
 
 # ----------------------------------------------------------------------------------------------------------------------
 # MoCap related
@@ -181,8 +181,8 @@ def writeCSVMocapSingleAdjusted(dataSet, pathCalProf, joinAxes=True):
     time.sleep(3)
 
     try:
-        # with open(storeDir, 'wb') as csvfile:  # Python 2.x
-        with open(storeDir, 'w', newline='') as csvfile:  # Python 3.x
+        with open(storeDir, 'wb') as csvfile:  # Python 2.x
+        # with open(storeDir, 'w', newline='') as csvfile:  # Python 3.x
             fieldnames = [
                 'X Head', 'Y Head', 'Z Head', 'WX Head', 'WY Head', 'WZ Head',
                 'X Torso', 'Y Torso', 'Z Torso', 'WX Torso', 'WY Torso', 'WZ Torso',
@@ -268,8 +268,8 @@ def writeCSVReference(dataSet, filePath=None, referenceFrame="ROBOT", whichEffec
           "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     time.sleep(3)
     try:
-        # with open(fileDir, 'wb') as csvfile:  # Python 2.x
-        with open(fileDir, 'w', newline='') as csvfile:  # Python 3.x
+        with open(fileDir, 'wb') as csvfile:  # Python 2.x
+        # with open(fileDir, 'w', newline='') as csvfile:  # Python 3.x
             # Define columns
             fieldnames = list()
             if whichEffectors.upper() == "ALL":
@@ -512,8 +512,8 @@ def writeCalibrationProfile(coefficients, filePath):
           + "Creating Calibration Profile as:\n" + calPath)
     time.sleep(3)
     try:
-        # with open(calPath, 'wb') as csvfile:  # Python 2.x
-        with open(calPath, 'w', newline='') as csvfile:  # Python 3.x
+        with open(calPath, 'wb') as csvfile:  # Python 2.x
+        # with open(calPath, 'w', newline='') as csvfile:  # Python 3.x
             writer = csv.writer(csvfile)
             for item in coefficients:
                 for element in item:
@@ -552,8 +552,8 @@ def checkCSVFileExists(pathToFile):
         if os.path.exists(filePath + fileName + ".csv"):
             print("\n------------------------------------------------------------------\n"
                   + "File already exists as :\n" + filePath + fileName + ".csv")
-            # response = raw_input("OVERWRITE FILE? (Y/N):  ").upper()  # Python 2.x
-            response = input("OVERWRITE FILE? (Y/N):  ").upper()  # Python 3.x
+            response = raw_input("OVERWRITE FILE? (Y/N):  ").upper()  # Python 2.x
+            # response = input("OVERWRITE FILE? (Y/N):  ").upper()  # Python 3.x
             if response == "N":
                 # fileName = raw_input("Write the NAME of the file to create and then press [ENTER]."
                 #                  + "\nPath of folder remains the same.\n")  # Python 2.x

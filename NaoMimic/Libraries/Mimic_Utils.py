@@ -31,16 +31,14 @@ def adjustChoreography(choreographyName, pathToCalibrationProfile):
         choreographyData[effectorNo] = calibration.extractAxes(effector)
 
     # Adjust each axis per effector
-    adjustedChoreography = [[] for k in range(len(choreographyData))]
+    adjustedChoreography = [[[] for axis in range(6)] for effector in range(len(choreographyData))]
     try:
         for effectorNo in range(len(choreographyData)):
             for axisNo, axis in enumerate(choreographyData[effectorNo]):
-                for row, data in enumerate(axis):
-                    print(coefficients[axisNo][0])
-                    adjustedChoreography[effectorNo][axisNo].append(data*float(coefficients[axisNo][0]) +
-                                                                    float(coefficients[axisNo][1]))
+                for rowNo, data in enumerate(axis):
+                    adjustedChoreography[effectorNo][axisNo].append(data*float(coefficients[axisNo][0])
+                                                                        + float(coefficients[axisNo][1]))
     except Exception as e:
-        print(effectorNo, axisNo, row)
         misc.abort("Failed to adjust choreography file" + choreographyName,
                    "Adjust Choreography per Calibration Profile", e)
 
@@ -49,12 +47,13 @@ def adjustChoreography(choreographyName, pathToCalibrationProfile):
                        calibration.joinAxesInRow(adjustedChoreography[1]),
                        calibration.joinAxesInRow(adjustedChoreography[2]),
                        calibration.joinAxesInRow(adjustedChoreography[3])]
+
     return adjustedDataSet
 
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def getFixedTimeline(effectorData):
+def getFixedTimeline(effectorData, fps=30):
     """
     This function is used to generate a list with the time in seconds for each animation frame represented as a single
     row of axes. The base time between 2 consecutive animation frames should consider the following:
@@ -66,10 +65,10 @@ def getFixedTimeline(effectorData):
     :return singleTimeline: A list with the timeline in seconds for the animation length.
     """
 
-    timeBase = 0.05
-    singleTimeline = [[0.00, 0.00, 0.00, 0.00, 0.00, 0.00]]
+    timeBase = 1.0/float(fps)
+    singleTimeline = list()
     for rowNo in range(len(effectorData)):
-        singleTimeline.append([round(timeBase * (rowNo + 1), 2) for axis in range(6)])
+        singleTimeline.append(round(timeBase * (rowNo + 1), 4))
 
     return singleTimeline
 

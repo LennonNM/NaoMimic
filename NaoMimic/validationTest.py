@@ -11,13 +11,13 @@ from Libraries import Mimic_Utils as mimic
 def main(pathMocap, pathReferences, calProfileDir):
 
     # Generating Calibration Profiles
-    # for subjectNo, subject in enumerate(pathMocap):
-    #     for takeNo, take in enumerate(subject):
-    #         calibration.performFullCalibration(pathMocap[subjectNo][takeNo],
-    #                                            pathReferences,
-    #                                            calProfileDir[subjectNo][takeNo],
-    #                                            True)
-    calibration.performFullCalibration(pathMocap[0][0], pathReferences, calProfileDir[0][0], True)
+    for subjectNo, subject in enumerate(pathMocap):
+        for takeNo, take in enumerate(subject):
+            calibration.performFullCalibration(pathMocap[subjectNo][takeNo],
+                                               pathReferences,
+                                               calProfileDir[subjectNo][takeNo],
+                                               True)
+    # calibration.performFullCalibration(pathMocap[0][0], pathReferences, calProfileDir[0][0], True)
 
     # ------------------------------------------------------------------------------------------------------------------
 

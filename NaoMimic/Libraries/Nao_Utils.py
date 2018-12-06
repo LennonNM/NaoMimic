@@ -32,6 +32,9 @@ def startCollectingData(motionProxy, frame="ROBOT", useSensorValues=False):
     # posLLeg  = list()
 
     rowsCounter = 0
+    while(raw_input("Press 'S' to start: ").upper() != "S"):  # Python 2.x
+    # while(raw_input("Press 'S' to start").upper() != "S"):  # Python 3.x
+        print("Wrong input")
     print("\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
           + "Starting to collect data, interrupt the process only if necessary.\n"
           + "Press Ctrl+C anytime to stop collecting data and proceed with data export.\n"
@@ -114,7 +117,7 @@ def setNaoReadyToMimic(motionProxy, postureProxy):
           + "\n******************************************************************"
           + "\n******************************************************************")
     time.sleep(3.0)
-    motionProxy.setFallManagerEnabled(False)
+    # motionProxy.setFallManagerEnabled(False)
 
     # Enable Nao's Whole Body Balancer
     print("\n------------------------------------------------------------------\n"
@@ -219,18 +222,18 @@ def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effec
     for i in range(0, len(adjustedChoreography[0]), fps):
         try:
             motionProxy.positionInterpolations(effectorsList, frame, [
-                listaCoordenadas[0][i:i + fps - 1],
-                listaCoordenadas[1][i:i + fps - 1],
-                listaCoordenadas[2][i:i + fps - 1],
-                listaCoordenadas[3][i:i + fps - 1]
+                adjustedChoreography[0][i:i + fps],
+                adjustedChoreography[1][i:i + fps],
+                adjustedChoreography[2][i:i + fps],
+                adjustedChoreography[3][i:i + fps]
             ],
                                                axisMask, [
-                listaTiempos[0][0:len(listaCoordenadas[0][i:i + fps - 1])],
-                listaTiempos[1][0:len(listaCoordenadas[1][i:i + fps - 1])],
-                listaTiempos[2][0:len(listaCoordenadas[2][i:i + fps - 1])],
-                listaTiempos[3][0:len(listaCoordenadas[3][i:i + fps - 1])]
+                timeline[i:len(adjustedChoreography[0][i:i + fps])],
+                timeline[i:len(adjustedChoreography[1][i:i + fps])],
+                timeline[i:len(adjustedChoreography[2][i:i + fps])],
+                timeline[i:len(adjustedChoreography[3][i:i + fps])]
             ],
-                                               useAbsolutes)
+                                                   useAbsolutes)
         except Exception as e:
             misc.abortMimic(motionProxy, postureProxy, e)
 
