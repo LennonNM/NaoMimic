@@ -471,25 +471,27 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
 
         for effectorNo, effector in enumerate(effectorsLabels):
             for axisNo, axis in enumerate(axesLabels):
+                yLabel = "Distance in meters" if axisNo < 3 else "Rotation in radians"
+                
                 # Plot reference and MoCap data sets together
                 graph.plotCompareSameAxis(dataSetNao[effectorNo][axisNo], dataSetP[effectorNo][axisNo],
                                           "Nao Reference " + axis, "MoCap Initial " + axis, None, None, True,
                                           pathMoCap + "Orig_" + effector + "_" + axis, False,
                                           "MoCap exported data compared to Nao reference data",
-                                          "Axis " + axis + " for effector " + effector)
+                                          "Axis " + axis + " for effector " + effector, None, yLabel)
                 # Plot MoCap orig data with it's filtered set
                 graph.plotCompareSameAxis(dataSetP[effectorNo][axisNo], dataSetFiltP[effectorNo][axisNo],
                                           "MoCap Initial " + axis, "MoCap Filtered " + axis, None, None, True,
                                           pathMoCap + "Filtered_" + effector + "_" + axis, False,
                                           "MoCap filtered data compared to MoCap original export",
-                                          "Axis " + axis + " for effector " + effector)
+                                          "Axis " + axis + " for effector " + effector, None, yLabel)
                 # Plot MoCap filtered data and synced sets together
                 graph.plotCompareSameAxis(dataSetFiltP[effectorNo][axisNo], dataSetSyncP[effectorNo][axisNo],
                                           "MoCap Initial " + axis, "MoCap Synced " + axis,
                                           dataSetNao[effectorNo][axisNo], "Nao Reference" + axis, True,
                                           pathMoCap + "Synced_" + effector + "_" + axis, False,
                                           "MoCap synced data compared to MoCap export and Nao reference data",
-                                          "Axis " + axis + " for effector " + effector)
+                                          "Axis " + axis + " for effector " + effector, None, yLabel)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -530,5 +532,19 @@ def filterAxesLowpassButterworth(dataSetAxes, degree=3, cutFreq=0.03):
         filteredAxes[axisNo] = filterAxisLowpassButterworth(axis, degree, cutFreq).tolist()
 
     return filteredAxes
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+def adjustSingleAxisSampleResolution(axisDataToAdjust, sampleResolution=30):
+    """
+
+    :param axisDataToAdjust:
+    :param sampleResolution:
+    :return:
+    """
+
+    axesData = copy.deepcopy(axisDataToAdjust)
+
 
 # ----------------------------------------------------------------------------------------------------------------------

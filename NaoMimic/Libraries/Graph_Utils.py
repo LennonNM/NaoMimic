@@ -16,7 +16,7 @@ from Libraries import Miscellaneous_Utils as misc
 
 def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", axisLabel1="Compare Axis 1",
                         compareAxis2=None,  axisLabel2="Compare Axis 2", saveImage=False, filePath="Default/",
-                        showPlot=True, title=None, subtitle=None):
+                        showPlot=True, title=None, subtitle=None, xLabel=None, yLabel=None):
     """
     This function is used to plot the data sets from a reference axis and up to 2 comparison axes. The plotted image can
     be store as a PNG file.
@@ -43,12 +43,22 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", 
     # Set layout
     plt.legend(loc='best', bbox_to_anchor=(1, 1))
     plt.grid(True)
+    # # Title
     if title is not None:
         plt.title(title)
+    # # Subtitle
     if subtitle is not None:
         plt.title(subtitle)
-    plt.ylabel('Distance in meters in respect to ROBOT reference frame')
-    plt.xlabel('Sample')
+    # # Y Label
+    if yLabel is not None:
+        plt.ylabel(yLabel)
+    else:
+        plt.ylabel('Distance in meters in respect to ROBOT reference frame')
+    # # X Label
+    if xLabel is not None:
+        plt.xlabel(xLabel)
+    else:
+        plt.xlabel('Sample')
 
     image = plt.gcf()
 
