@@ -55,7 +55,7 @@ def readCSVMocap(pathFile, whichEffectors="ALL", includesHeader=True, isChoreogr
     # ------------------------------------------------------------------------------
 
     # Begin extraction of the data from CSV
-    # NOTE: Y and Z axis are switched on Motive in comparison with the Nao's reference frame. The respective adjustment
+    # NOTES: Y and Z axis are switched on Motive in comparison with the Nao's reference frame. The respective adjustment
     # is considered.
 
     if includesHeader:

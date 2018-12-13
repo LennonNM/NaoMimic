@@ -102,11 +102,11 @@ if __name__ == "__main__":
                     "Validation3/Javier/Take3/Javier",
                     "Validation3/Javier/Take4/Javier",
                     "Validation3/Javier/Take5/Javier"]
-    pathSubject2 = ["Validation2/Naty/Take1/Naty",
-                    "Validation2/Naty/Take2/Naty",
-                    "Validation2/Naty/Take3/Naty",
-                    "Validation2/Naty/Take4/Naty",
-                    "Validation2/Naty/Take5/Naty"]
+    pathSubject2 = ["Validation3/Naty/Take1/Naty_",
+                    "Validation3/Naty/Take2/Naty_",
+                    "Validation3/Naty/Take3/Naty_",
+                    "Validation3/Naty/Take4/Naty_",
+                    "Validation3/Naty/Take5/Naty_"]
     # pathRefNao = ["Validation2/ref_HEAD",
     #               "Validation2/ref_TORSO",
     #               "Validation2/ref_ARMS"]
@@ -114,5 +114,5 @@ if __name__ == "__main__":
                   "Validation3/ref_Torso_Val3",
                   "Validation3/ref_Arms_Val3"]
 
-    main([pathSubject1], pathRefNao, [pathSubject1, pathSubject2])
+    main([pathSubject2], pathRefNao, [pathSubject2])
     # main([pathSubject1, pathSubject2], pathRefNao, [pathSubject1, pathSubject2])

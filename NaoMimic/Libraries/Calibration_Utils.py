@@ -142,14 +142,16 @@ def extractAxes(axisDataSet):
 
 def getBaseValueOfSet(axisDataSet):
     """
-    This function is used to get the most frequent value from an axis data set.
+    This function is used to get the most frequent value from an axis data set. To find the value,
+    each element is rounded to 3 decimal places (mm resolution).
 
     :param axisDataSet: Data set to find value for a single axis.
     :return [mostCommonValue, frequencyOfAppearance]: Returns the value of the most frequent item and its frequency of
                 appearance.
     """
 
-    mostCommonValue, frequencyOfAppearance = Counter(axisDataSet).most_common(1)[0]
+    roundedDataSet = [round(element,3) for element in axisDataSet]
+    mostCommonValue, frequencyOfAppearance = Counter(roundedDataSet).most_common(3)[0]
 
     return [mostCommonValue, frequencyOfAppearance]
 
@@ -471,26 +473,27 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
 
         for effectorNo, effector in enumerate(effectorsLabels):
             for axisNo, axis in enumerate(axesLabels):
+                yLabel = None if axisNo < 3 else 'Rotation in radians in respect to ROBOT reference frame'
+
                 # Plot reference and MoCap data sets together
                 graph.plotCompareSameAxis(dataSetNao[effectorNo][axisNo], dataSetP[effectorNo][axisNo],
                                           "Nao Reference " + axis, "MoCap Initial " + axis, None, None, True,
                                           pathMoCap + "Orig_" + effector + "_" + axis, False,
                                           "MoCap exported data compared to Nao reference data",
-                                          "Axis " + axis + " for effector " + effector)
+                                          "Axis " + axis + " for effector " + effector, yLabel)
                 # Plot MoCap orig data with it's filtered set
                 graph.plotCompareSameAxis(dataSetP[effectorNo][axisNo], dataSetFiltP[effectorNo][axisNo],
                                           "MoCap Initial " + axis, "MoCap Filtered " + axis, None, None, True,
                                           pathMoCap + "Filtered_" + effector + "_" + axis, False,
                                           "MoCap filtered data compared to MoCap original export",
-                                          "Axis " + axis + " for effector " + effector)
+                                          "Axis " + axis + " for effector " + effector, yLabel)
                 # Plot MoCap filtered data and synced sets together
                 graph.plotCompareSameAxis(dataSetFiltP[effectorNo][axisNo], dataSetSyncP[effectorNo][axisNo],
                                           "MoCap Initial " + axis, "MoCap Synced " + axis,
                                           dataSetNao[effectorNo][axisNo], "Nao Reference" + axis, True,
                                           pathMoCap + "Synced_" + effector + "_" + axis, False,
                                           "MoCap synced data compared to MoCap export and Nao reference data",
-                                          "Axis " + axis + " for effector " + effector)
-
+                                          "Axis " + axis + " for effector " + effector, yLabel)
 
 # ----------------------------------------------------------------------------------------------------------------------
 

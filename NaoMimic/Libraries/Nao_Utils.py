@@ -219,19 +219,22 @@ def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effec
 
     # Define operation parameters
 
+    # Move the Nao
     for i in range(0, len(adjustedChoreography[0]), fps):
         try:
+            endTake = i + fps if i + fps < len(adjustedChoreography[0]) else len(adjustedChoreography[0])
+
             motionProxy.positionInterpolations(effectorsList, frame, [
-                adjustedChoreography[0][i:i + fps],
-                adjustedChoreography[1][i:i + fps],
-                adjustedChoreography[2][i:i + fps],
-                adjustedChoreography[3][i:i + fps]
+                adjustedChoreography[0][i:endTake],
+                adjustedChoreography[1][i:endTake],
+                adjustedChoreography[2][i:endTake],
+                adjustedChoreography[3][i:endTake]
             ],
                                                axisMask, [
-                timeline[i:len(adjustedChoreography[0][i:i + fps])],
-                timeline[i:len(adjustedChoreography[1][i:i + fps])],
-                timeline[i:len(adjustedChoreography[2][i:i + fps])],
-                timeline[i:len(adjustedChoreography[3][i:i + fps])]
+                timeline[i:endTake],
+                timeline[i:endTake],
+                timeline[i:endTake],
+                timeline[i:endTake]
             ],
                                                    useAbsolutes)
         except Exception as e:

@@ -16,7 +16,7 @@ from Libraries import Miscellaneous_Utils as misc
 
 def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", axisLabel1="Compare Axis 1",
                         compareAxis2=None,  axisLabel2="Compare Axis 2", saveImage=False, filePath="Default/",
-                        showPlot=True, title=None, subtitle=None):
+                        showPlot=True, title=None, subtitle=None, yLabel=None, xLabel=None):
     """
     This function is used to plot the data sets from a reference axis and up to 2 comparison axes. The plotted image can
     be store as a PNG file.
@@ -32,6 +32,8 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", 
     :param showPlot: False to prevent plot to pop out.
     :param title: Title of the plot. None to not show title.
     :param subtitle: Subtitle of the plot. None to not show subtitle.
+    :param yLabel: Name of Y axis.
+    :param xLabel: Name of X axis.
     :return: void
     """
 
@@ -43,12 +45,20 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", 
     # Set layout
     plt.legend(loc='best', bbox_to_anchor=(1, 1))
     plt.grid(True)
+    # Title and subtitle
     if title is not None:
         plt.title(title)
     if subtitle is not None:
         plt.title(subtitle)
-    plt.ylabel('Distance in meters in respect to ROBOT reference frame')
-    plt.xlabel('Sample')
+    # Plot axes labels
+    if yLabel is not None:
+        plt.ylabel(yLabel)
+    else:
+        plt.ylabel('Distance in meters in respect to ROBOT reference frame')
+    if xLabel is not None:
+        plt.xlabel(xLabel)
+    else:
+        plt.xlabel('Sample')
 
     image = plt.gcf()
 

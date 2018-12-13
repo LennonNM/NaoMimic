@@ -71,23 +71,23 @@ if __name__ == "__main__":
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
               + "Using robot IP: " + robotIP +" with frame: " + frameRef
               + "\nCollecting data for all available effectors"
-              + "\nName of CSV file defined by time and date\n"
-              + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+              + "\nName of CSV file defined by time and date"
+              + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     elif len(sys.argv) == 3:
         robotIP = sys.argv[1]
         frame = sys.argv[2]
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
               + "Using robot IP: " + robotIP +" with frame: " + frameRef
-              + "Collecting data for all available effectors."
-              + "\nName of CSV file defined by time and date\n"
-              + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+              + "\nCollecting data for all available effectors."
+              + "\nName of CSV file defined by time and date"
+              + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     elif len(sys.argv) == 4:
         robotIP = sys.argv[1]
         frame = sys.argv[2]
         name = sys.argv[3]
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
               + "Using robot IP: " + robotIP + " with frame: " + frameRef
-              + "Collecting data for all available effectors.n"
+              + "\nCollecting data for all available effectors"
               + "\nName of CSV file: NAO_" + name
               + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     else:

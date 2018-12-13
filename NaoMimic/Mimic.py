@@ -20,6 +20,7 @@ import sys
 from Libraries import Miscellaneous_Utils as misc
 from Libraries import Nao_Utils as naoUtils
 from Libraries import Mimic_Utils as mimic
+from Libraries import Graph_Utils as graph
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -89,11 +90,11 @@ def main(choreographyName, pathCP, robotIP, refFrame):
           + "Using specified calibration profile to adjust\n" + choreographyName + " motion data"
           + "\n------------------------------------------------------------------\n"
           + "\n------------------------------------------------------------------\n")
-    adjustedChoreography = mimic.adjustChoreography(choreographyName, pathCP)
+    adjustedChoreography = mimic.adjustChoreography(choreographyName, pathCP)    
 
     # # Timeline
     timeline = mimic.getFixedTimeline(adjustedChoreography[0])
-    
+
     # -------------------------------------------------------------------------------
 
     # Set the robot ready for Mimic operations
@@ -121,7 +122,7 @@ def main(choreographyName, pathCP, robotIP, refFrame):
     print("...finished Mimic activity"
           + "\n------------------------------------------------------------------\n"
           + "\n------------------------------------------------------------------\n")
-    naoUtils.restNao()
+    naoUtils.restNao(motionProxy, postureProxy)
 
     print("\n\n                         NAO MIMIC ENDED                         "
           + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
@@ -134,8 +135,8 @@ def main(choreographyName, pathCP, robotIP, refFrame):
 if __name__ == "__main__":
     # robotIp = "10.0.1.128"  # Bato por red PrisNao
     # robotIp = "169.254.42.173" # Bato Local
-    # robotIP = "10.0.1.122"  # She por red PrisNao
-    robotIP = "10.0.1.193"  # Mok
+    robotIP = "10.0.1.122"  # She por red PrisNao
+    # robotIP = "10.0.1.193"  # Mok
     refFrame = "ROBOT"
     choreographyName = ""
     pathCP = ""

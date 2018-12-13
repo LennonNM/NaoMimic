@@ -14,7 +14,7 @@
         <Timeline enable="0">
             <BehaviorLayer name="behavior_layer1">
                 <BehaviorKeyframe name="keyframe1" index="1">
-                    <Diagram>
+                    <Diagram scale="70.7107">
                         <Box name="Say" id="5" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="71" y="170">
                             <bitmap>media/images/box/interaction/say.png</bitmap>
                             <script language="4">
@@ -122,7 +122,7 @@ class MyClass(GeneratedClass):
 			"Danish" : " Hej ",
 			"German" : " Hallo ",
 			"Greek" : "  ",
-			"English" : " Vamos a empezar por la cabeza.\nListo? ",
+			"English" : " Bienvenido a la rutina de generacion de datos de referencia.\n\nVamos a empezar por la cabeza.\nListo? ",
 			"Spanish" : " Hola ",
 			"Finnish" : " Hei ",
 			"French" : " Bonjour ",
@@ -162,7 +162,9 @@ class MyClass(GeneratedClass):
                                                         <![CDATA[]]>
 </greek>
                                                     <english>
-                                                        <![CDATA[Vamos a empezar por la cabeza.
+                                                        <![CDATA[Bienvenido a la rutina de generacion de datos de referencia.
+
+Vamos a empezar por la cabeza.
 Listo?]]>
 </english>
                                                     <spanish>
@@ -225,7 +227,7 @@ Listo?]]>
                             </Timeline>
                             <Resource name="Speech" type="Lock" timeout="0" />
                         </Box>
-                        <Box name="Speech Reco." id="7" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="78" y="316">
+                        <Box name="Speech Reco." id="7" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="71" y="319">
                             <bitmap>media/images/box/interaction/ear.png</bitmap>
                             <script language="4">
                                 <content>
@@ -754,7 +756,7 @@ Tres.]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>6</language>
+                                                    <language>7</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -769,7 +771,7 @@ Tres.]]>
                             </Timeline>
                             <Resource name="Speech" type="Lock" timeout="0" />
                         </Box>
-                        <Box name="Speech Reco. (1)" id="16" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="426" y="135">
+                        <Box name="Speech Reco. (1)" id="16" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="453" y="124">
                             <bitmap>media/images/box/interaction/ear.png</bitmap>
                             <script language="4">
                                 <content>
@@ -854,7 +856,7 @@ class MyClass(GeneratedClass):
                             <Parameter name="Enable word spotting" inherits_from_parent="0" content_type="0" value="0" default_value="0" tooltip="If this option is not activated the robot will only understand exact expressions. If it is, he will spot the exact expressions even in the middle of a sentence.&#x0A;&#x0A;!!Warning!! This option is only available with the speech recognition module using Nuance (ie in Atom version of the robot)." id="10" />
                             <Resource name="Speech recognition" type="Lock" timeout="0" />
                         </Box>
-                        <Box name="Twinkle (1)" id="20" localization="8" tooltip="The selected LEDs flash on and off during the time defined in parameters." x="440" y="498">
+                        <Box name="Twinkle (1)" id="20" localization="8" tooltip="The selected LEDs flash on and off during the time defined in parameters." x="482" y="579">
                             <bitmap>media/images/box/interaction/LED.png</bitmap>
                             <script language="4">
                                 <content>
@@ -1051,7 +1053,7 @@ class MyClass(GeneratedClass):
                                 </BehaviorLayer>
                             </Timeline>
                         </Box>
-                        <Box name="Say (4)" id="24" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="691" y="246">
+                        <Box name="Say (4)" id="24" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="691" y="218">
                             <bitmap>media/images/box/interaction/say.png</bitmap>
                             <script language="4">
                                 <content>
@@ -1249,7 +1251,7 @@ Listo?]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>6</language>
+                                                    <language>7</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -1264,7 +1266,7 @@ Listo?]]>
                             </Timeline>
                             <Resource name="Speech" type="Lock" timeout="0" />
                         </Box>
-                        <Box name="Speech Reco. (2)" id="25" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="699" y="352">
+                        <Box name="Speech Reco. (2)" id="25" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="701" y="326">
                             <bitmap>media/images/box/interaction/ear.png</bitmap>
                             <script language="4">
                                 <content>
@@ -1349,7 +1351,7 @@ class MyClass(GeneratedClass):
                             <Parameter name="Enable word spotting" inherits_from_parent="0" content_type="0" value="0" default_value="0" tooltip="If this option is not activated the robot will only understand exact expressions. If it is, he will spot the exact expressions even in the middle of a sentence.&#x0A;&#x0A;!!Warning!! This option is only available with the speech recognition module using Nuance (ie in Atom version of the robot)." id="10" />
                             <Resource name="Speech recognition" type="Lock" timeout="0" />
                         </Box>
-                        <Box name="ArmsChor (1)" id="28" localization="8" tooltip="" x="909" y="342">
+                        <Box name="ArmsChor (1)" id="28" localization="8" tooltip="" x="898" y="424">
                             <bitmap>media/images/box/box-timeLine.png</bitmap>
                             <script language="4">
                                 <content>
@@ -1425,7 +1427,7 @@ class MyClass(GeneratedClass):
                                 </ActuatorList>
                             </Timeline>
                         </Box>
-                        <Box name="Twinkle (2)" id="29" localization="8" tooltip="The selected LEDs flash on and off during the time defined in parameters." x="895" y="197">
+                        <Box name="Twinkle (2)" id="29" localization="8" tooltip="The selected LEDs flash on and off during the time defined in parameters." x="893" y="306">
                             <bitmap>media/images/box/interaction/LED.png</bitmap>
                             <script language="4">
                                 <content>
@@ -1622,7 +1624,7 @@ class MyClass(GeneratedClass):
                                 </BehaviorLayer>
                             </Timeline>
                         </Box>
-                        <Box name="Say (6)" id="30" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="1114" y="25">
+                        <Box name="Say (6)" id="30" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="926" y="35">
                             <bitmap>media/images/box/interaction/say.png</bitmap>
                             <script language="4">
                                 <content>
@@ -1820,7 +1822,7 @@ Gracias!]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>6</language>
+                                                    <language>7</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -2007,7 +2009,7 @@ class MyClass(GeneratedClass):
                             <Parameter name="Timeout (s)" inherits_from_parent="0" content_type="2" value="4" default_value="1" min="0" max="5000" tooltip="Duration the box waits before stimulating the output." id="5" />
                             <Parameter name="Trigger timerOutput if cancelled" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="If the box is currently delaying at least one signal and cancelled, output will be stimulated." id="6" />
                         </Box>
-                        <Box name="Say (7)" id="12" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="430" y="24">
+                        <Box name="Say (7)" id="12" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="457" y="13">
                             <bitmap>media/images/box/interaction/say.png</bitmap>
                             <script language="4">
                                 <content>
@@ -2207,7 +2209,7 @@ Listo?]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>6</language>
+                                                    <language>7</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -2222,7 +2224,7 @@ Listo?]]>
                             </Timeline>
                             <Resource name="Speech" type="Lock" timeout="0" />
                         </Box>
-                        <Box name="TorsoChor (1)" id="19" localization="8" tooltip="" x="680" y="28">
+                        <Box name="TorsoChor (1)" id="19" localization="8" tooltip="" x="686" y="17">
                             <bitmap>media/images/box/box-timeLine.png</bitmap>
                             <script language="4">
                                 <content>
@@ -2344,7 +2346,7 @@ Listo?]]>
                                 </ActuatorList>
                             </Timeline>
                         </Box>
-                        <Box name="Delay (3)" id="11" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="693" y="146">
+                        <Box name="Delay (3)" id="11" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="693" y="112">
                             <bitmap>media/images/box/wait.png</bitmap>
                             <script language="4">
                                 <content>
@@ -2392,7 +2394,7 @@ Listo?]]>
                             <Parameter name="Timeout (s)" inherits_from_parent="0" content_type="2" value="4" default_value="1" min="0" max="5000" tooltip="Duration the box waits before stimulating the output." id="5" />
                             <Parameter name="Trigger timerOutput if cancelled" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="If the box is currently delaying at least one signal and cancelled, output will be stimulated." id="6" />
                         </Box>
-                        <Box name="Delay (2)" id="3" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="436" y="366">
+                        <Box name="Delay (2)" id="3" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="482" y="461">
                             <bitmap>media/images/box/wait.png</bitmap>
                             <script language="4">
                                 <content>
@@ -2440,7 +2442,7 @@ Listo?]]>
                             <Parameter name="Timeout (s)" inherits_from_parent="0" content_type="2" value="4" default_value="1" min="0" max="5000" tooltip="Duration the box waits before stimulating the output." id="5" />
                             <Parameter name="Trigger timerOutput if cancelled" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="If the box is currently delaying at least one signal and cancelled, output will be stimulated." id="6" />
                         </Box>
-                        <Box name="Delay (4)" id="13" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="904" y="480">
+                        <Box name="Delay (4)" id="13" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="900" y="541">
                             <bitmap>media/images/box/wait.png</bitmap>
                             <script language="4">
                                 <content>
@@ -2488,7 +2490,7 @@ Listo?]]>
                             <Parameter name="Timeout (s)" inherits_from_parent="0" content_type="2" value="4" default_value="1" min="0" max="5000" tooltip="Duration the box waits before stimulating the output." id="5" />
                             <Parameter name="Trigger timerOutput if cancelled" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="If the box is currently delaying at least one signal and cancelled, output will be stimulated." id="6" />
                         </Box>
-                        <Box name="Say (2)" id="14" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="691" y="490">
+                        <Box name="Say (2)" id="14" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="703" y="546">
                             <bitmap>media/images/box/interaction/say.png</bitmap>
                             <script language="4">
                                 <content>
@@ -2694,7 +2696,7 @@ Tres.]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>7</language>
+                                                    <language>8</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -2709,7 +2711,7 @@ Tres.]]>
                             </Timeline>
                             <Resource name="Speech" type="Lock" timeout="0" />
                         </Box>
-                        <Box name="Say (3)" id="15" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="440" y="244">
+                        <Box name="Say (3)" id="15" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="475" y="342">
                             <bitmap>media/images/box/interaction/say.png</bitmap>
                             <script language="4">
                                 <content>
@@ -2909,7 +2911,7 @@ Tres.]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>6</language>
+                                                    <language>7</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -2924,7 +2926,7 @@ Tres.]]>
                             </Timeline>
                             <Resource name="Speech" type="Lock" timeout="0" />
                         </Box>
-                        <Box name="Delay (5)" id="17" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="914" y="45">
+                        <Box name="Delay (5)" id="17" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="894" y="196">
                             <bitmap>media/images/box/wait.png</bitmap>
                             <script language="4">
                                 <content>
@@ -2972,6 +2974,100 @@ Tres.]]>
                             <Parameter name="Timeout (s)" inherits_from_parent="0" content_type="2" value="4" default_value="1" min="0" max="5000" tooltip="Duration the box waits before stimulating the output." id="5" />
                             <Parameter name="Trigger timerOutput if cancelled" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="If the box is currently delaying at least one signal and cancelled, output will be stimulated." id="6" />
                         </Box>
+                        <Box name="Go to position Stand (2)" id="4" localization="8" tooltip="Robot will go to the position Stand&lt;br/&gt;Position description : Standing position with low power consumption. " x="465" y="230">
+                            <bitmap>media/images/positions/Stand.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[#~ This script was generated automatically by drang&drop from Position Library
+class MyClass(GeneratedClass):
+    def __init__(self):
+        try: # disable autoBind
+          GeneratedClass.__init__(self, False)
+        except TypeError: # if NAOqi < 1.14
+          GeneratedClass.__init__( self )
+
+    def onLoad(self):
+        self.postureProxy = None
+        try:
+            self.postureProxy = ALProxy("ALRobotPosture")
+        except:
+            self.logger.error("Module 'ALRobotPosture' not found.")
+
+    def onUnload(self):
+        if(self.postureProxy != None):
+            self.postureProxy.stopMove()
+
+    def onInput_onStart(self):
+        if(self.postureProxy != None):
+            result = self.postureProxy.goToPosture("Stand", 0.8)
+            if(result):
+                self.success()
+            else:
+                self.logger.error("Posture Stand is not a part of the standard posture library or robot cannot reach the posture")
+                self.failure()
+        else:
+            self.failure()
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommanded to call onUnload of this box in a onStop method,               as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="success" type="1" type_size="1" nature="1" inner="0" tooltip="Stimulated if the posture has been reached." id="4" />
+                            <Output name="failure" type="1" type_size="1" nature="1" inner="0" tooltip="Stimulated if the posture could not be reached." id="5" />
+                            <Resource name="All motors" type="Lock" timeout="0" />
+                            <Resource name="Stiffness" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="Go to position Stand (3)" id="18" localization="8" tooltip="Robot will go to the position Stand&lt;br/&gt;Position description : Standing position with low power consumption. " x="707" y="445">
+                            <bitmap>media/images/positions/Stand.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[#~ This script was generated automatically by drang&drop from Position Library
+class MyClass(GeneratedClass):
+    def __init__(self):
+        try: # disable autoBind
+          GeneratedClass.__init__(self, False)
+        except TypeError: # if NAOqi < 1.14
+          GeneratedClass.__init__( self )
+
+    def onLoad(self):
+        self.postureProxy = None
+        try:
+            self.postureProxy = ALProxy("ALRobotPosture")
+        except:
+            self.logger.error("Module 'ALRobotPosture' not found.")
+
+    def onUnload(self):
+        if(self.postureProxy != None):
+            self.postureProxy.stopMove()
+
+    def onInput_onStart(self):
+        if(self.postureProxy != None):
+            result = self.postureProxy.goToPosture("Stand", 0.8)
+            if(result):
+                self.success()
+            else:
+                self.logger.error("Posture Stand is not a part of the standard posture library or robot cannot reach the posture")
+                self.failure()
+        else:
+            self.failure()
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommanded to call onUnload of this box in a onStop method,               as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="success" type="1" type_size="1" nature="1" inner="0" tooltip="Stimulated if the posture has been reached." id="4" />
+                            <Output name="failure" type="1" type_size="1" nature="1" inner="0" tooltip="Stimulated if the posture could not be reached." id="5" />
+                            <Resource name="All motors" type="Lock" timeout="0" />
+                            <Resource name="Stiffness" type="Lock" timeout="0" />
+                        </Box>
                         <Link inputowner="7" indexofinput="2" outputowner="5" indexofoutput="4" />
                         <Link inputowner="9" indexofinput="2" outputowner="7" indexofoutput="5" />
                         <Link inputowner="7" indexofinput="3" outputowner="7" indexofoutput="5" />
@@ -2994,8 +3090,6 @@ Tres.]]>
                         <Link inputowner="24" indexofinput="2" outputowner="11" indexofoutput="4" />
                         <Link inputowner="20" indexofinput="2" outputowner="3" indexofoutput="4" />
                         <Link inputowner="19" indexofinput="2" outputowner="3" indexofoutput="4" />
-                        <Link inputowner="14" indexofinput="2" outputowner="25" indexofoutput="5" />
-                        <Link inputowner="15" indexofinput="2" outputowner="16" indexofoutput="5" />
                         <Link inputowner="3" indexofinput="2" outputowner="15" indexofoutput="4" />
                         <Link inputowner="13" indexofinput="2" outputowner="14" indexofoutput="4" />
                         <Link inputowner="28" indexofinput="2" outputowner="13" indexofoutput="4" />
@@ -3003,6 +3097,10 @@ Tres.]]>
                         <Link inputowner="17" indexofinput="2" outputowner="29" indexofoutput="4" />
                         <Link inputowner="30" indexofinput="2" outputowner="17" indexofoutput="4" />
                         <Link inputowner="5" indexofinput="2" outputowner="31" indexofoutput="4" />
+                        <Link inputowner="15" indexofinput="2" outputowner="4" indexofoutput="4" />
+                        <Link inputowner="4" indexofinput="2" outputowner="16" indexofoutput="5" />
+                        <Link inputowner="18" indexofinput="2" outputowner="25" indexofoutput="5" />
+                        <Link inputowner="14" indexofinput="2" outputowner="18" indexofoutput="4" />
                     </Diagram>
                 </BehaviorKeyframe>
             </BehaviorLayer>

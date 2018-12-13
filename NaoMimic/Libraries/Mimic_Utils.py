@@ -26,6 +26,7 @@ def adjustChoreography(choreographyName, pathToCalibrationProfile):
 
     # Extract data from MoCap CSV export and place data per axis
     effectorsData = csvUtils.readCSVMocap(choreographyName, "ALL", True, True)
+
     choreographyData = [[] for k in range(len(effectorsData))]
     for effectorNo, effector in enumerate(effectorsData):
         choreographyData[effectorNo] = calibration.extractAxes(effector)
