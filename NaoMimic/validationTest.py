@@ -107,12 +107,20 @@ if __name__ == "__main__":
                     "Validation3/Naty/Take3/Naty_",
                     "Validation3/Naty/Take4/Naty_",
                     "Validation3/Naty/Take5/Naty_"]
+    pathCalibrationFile = ["Validation3/Javier_FPSAdjust/Take1/Javier",
+                    "Validation3/Javier_FPSAdjust/Take2/Javier",
+                    "Validation3/Javier_FPSAdjust/Take3/Javier",
+                    "Validation3/Javier_FPSAdjust/Take4/Javier",
+                    "Validation3/Javier_FPSAdjust/Take5/Javier"]
     # pathRefNao = ["Validation2/ref_HEAD",
     #               "Validation2/ref_TORSO",
     #               "Validation2/ref_ARMS"]
-    pathRefNao = ["Validation3/ref_Head_Val3",
-                  "Validation3/ref_Torso_Val3",
-                  "Validation3/ref_Arms_Val3"]
+    # pathRefNao = ["Validation3/ref_Head_Val3",
+    #               "Validation3/ref_Torso_Val3",
+    #               "Validation3/ref_Arms_Val3"]
+    pathRefNao = ["Validation3/Head_prueba",
+                  "Validation3/Torso_prueba",
+                  "Validation3/Arms_prueba"]
 
-    main([pathSubject2], pathRefNao, [pathSubject2])
-    # main([pathSubject1, pathSubject2], pathRefNao, [pathSubject1, pathSubject2])
+    # main([pathSubject2], pathRefNao, [pathSubject2])
+    main([pathSubject1, pathSubject2], pathRefNao, [pathSubject1, pathSubject2])

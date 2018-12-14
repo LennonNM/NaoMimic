@@ -90,7 +90,7 @@ def main(choreographyName, pathCP, robotIP, refFrame):
           + "Using specified calibration profile to adjust\n" + choreographyName + " motion data"
           + "\n------------------------------------------------------------------\n"
           + "\n------------------------------------------------------------------\n")
-    adjustedChoreography = mimic.adjustChoreography(choreographyName, pathCP)    
+    adjustedChoreography = mimic.adjustChoreography(choreographyName, pathCP)
 
     # # Timeline
     timeline = mimic.getFixedTimeline(adjustedChoreography[0])
@@ -114,7 +114,7 @@ def main(choreographyName, pathCP, robotIP, refFrame):
     time.sleep(1)
 
     naoUtils.mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effectorsList, timeline, axisMask,
-                                   referenceFrame, useAbsoluteValues, fps)
+                                   referenceFrame, fps)
 
     # -------------------------------------------------------------------------------
 

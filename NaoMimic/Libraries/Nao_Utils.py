@@ -12,7 +12,7 @@ import Miscellaneous_Utils as misc
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def startCollectingData(motionProxy, frame="ROBOT", useSensorValues=False):
+def startCollectingData(motionProxy, frame="ROBOT", useSensorValues=True):
     """
     This function is used to extract data from the Nao effector's sensors.
 
@@ -49,12 +49,14 @@ def startCollectingData(motionProxy, frame="ROBOT", useSensorValues=False):
             posLArm.append(motionProxy.getPosition("LArm", frame, useSensorValues))
             # posRLeg.append(motionProxy.getPosition("RLeg", frame, useSensorValues))
             # posLLeg.append(motionProxy.getPosition("LLeg", frame, useSensorValues))
-            time.sleep(0.08)  # This time matches the FPS used on Motive's export
+
+            # time.sleep(0.08)  # This time matches the FPS used on Motive's export
             rowsCounter += 1
 
     except KeyboardInterrupt as keyInterrupt:
         print("\nData collection finished.\n"
               + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n")
+
         time.sleep(0.5)
         pass
 
@@ -215,7 +217,7 @@ def createALProxy(naoqiProxyName, robotIP, proxyPort=9559):
 
 
 def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effectorsList, timeline, axisMask, frame,
-                          useAbsolutes=True, fps=30):
+                            fps=30):
 
     # Define operation parameters
 
@@ -235,8 +237,11 @@ def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effec
                 timeline[i:endTake],
                 timeline[i:endTake],
                 timeline[i:endTake]
-            ],
-                                                   useAbsolutes)
+            ])
+
+
+        except KeyboardInterrupt as keyInterrupt:
+            misc.abortMimic(motionProxy, postureProxy, keyInterrupt)
         except Exception as e:
             misc.abortMimic(motionProxy, postureProxy, e)
 

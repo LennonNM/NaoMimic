@@ -212,7 +212,7 @@ Listo?]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>5</language>
+                                                    <language>6</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -756,7 +756,7 @@ Tres.]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>7</language>
+                                                    <language>5</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -1251,7 +1251,7 @@ Listo?]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>7</language>
+                                                    <language>8</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -1822,7 +1822,7 @@ Gracias!]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>7</language>
+                                                    <language>8</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -2209,7 +2209,7 @@ Listo?]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>7</language>
+                                                    <language>8</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -2696,7 +2696,7 @@ Tres.]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>8</language>
+                                                    <language>9</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -2911,7 +2911,7 @@ Tres.]]>
                                                     <chinese>
                                                         <![CDATA[]]>
 </chinese>
-                                                    <language>7</language>
+                                                    <language>8</language>
                                                 </pluginContent>
                                                 <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
                                                 <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
@@ -3068,6 +3068,59 @@ class MyClass(GeneratedClass):
                             <Resource name="All motors" type="Lock" timeout="0" />
                             <Resource name="Stiffness" type="Lock" timeout="0" />
                         </Box>
+                        <Box name="Goto Posture" id="21" localization="8" tooltip="The robot goes from its current postition to the asked posture." x="1151" y="11">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.nTries = 0
+        self.postureProxy = ALProxy("ALRobotPosture")
+        pass
+
+    def onUnload(self):
+        self.postureProxy.stopMove()
+
+    def onInput_onStart(self):
+        if(self.nTries != self.getParameter("Maximum of tries")):
+            self.nTries = self.getParameter("Maximum of tries")
+            self.postureProxy.setMaxTryNumber(self.nTries)
+
+        result = self.postureProxy.goToPosture(self.getParameter("Name"), self.getParameter("Speed (%)")/100.)
+        if(result):
+            self.success()
+        else:
+            self.failure()
+        pass
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommanded to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="success" type="1" type_size="1" nature="1" inner="0" tooltip="Stimulated if the posture has been reached." id="4" />
+                            <Output name="failure" type="1" type_size="1" nature="1" inner="0" tooltip="Stimulated if the posture could not be reached." id="5" />
+                            <Parameter name="Name" inherits_from_parent="0" content_type="3" value="Crouch" default_value="Stand" custom_choice="1" tooltip="Name of the posture to go to." id="6">
+                                <Choice value="Crouch" />
+                                <Choice value="LyingBack" />
+                                <Choice value="LyingBelly" />
+                                <Choice value="Sit" />
+                                <Choice value="SitRelax" />
+                                <Choice value="StandInit" />
+                                <Choice value="Stand" />
+                                <Choice value="StandZero" />
+                            </Parameter>
+                            <Parameter name="Speed (%)" inherits_from_parent="0" content_type="1" value="51" default_value="80" min="0" max="100" tooltip="Speed to go to the posture." id="7" />
+                            <Parameter name="Maximum of tries" inherits_from_parent="0" content_type="1" value="3" default_value="3" min="1" max="10" tooltip="The maximum number of fails of go to posture before stimulating the failure output." id="8" />
+                            <Resource name="All motors" type="Lock" timeout="0" />
+                            <Resource name="Stiffness" type="Lock" timeout="0" />
+                        </Box>
                         <Link inputowner="7" indexofinput="2" outputowner="5" indexofoutput="4" />
                         <Link inputowner="9" indexofinput="2" outputowner="7" indexofoutput="5" />
                         <Link inputowner="7" indexofinput="3" outputowner="7" indexofoutput="5" />
@@ -3077,7 +3130,6 @@ class MyClass(GeneratedClass):
                         <Link inputowner="25" indexofinput="2" outputowner="24" indexofoutput="4" />
                         <Link inputowner="29" indexofinput="3" outputowner="28" indexofoutput="4" />
                         <Link inputowner="2" indexofinput="3" outputowner="1" indexofoutput="4" />
-                        <Link inputowner="0" indexofinput="4" outputowner="30" indexofoutput="4" />
                         <Link inputowner="31" indexofinput="2" outputowner="0" indexofoutput="2" />
                         <Link inputowner="1" indexofinput="2" outputowner="6" indexofoutput="4" />
                         <Link inputowner="2" indexofinput="2" outputowner="6" indexofoutput="4" />
@@ -3101,6 +3153,8 @@ class MyClass(GeneratedClass):
                         <Link inputowner="4" indexofinput="2" outputowner="16" indexofoutput="5" />
                         <Link inputowner="18" indexofinput="2" outputowner="25" indexofoutput="5" />
                         <Link inputowner="14" indexofinput="2" outputowner="18" indexofoutput="4" />
+                        <Link inputowner="21" indexofinput="2" outputowner="30" indexofoutput="4" />
+                        <Link inputowner="0" indexofinput="4" outputowner="21" indexofoutput="4" />
                     </Diagram>
                 </BehaviorKeyframe>
             </BehaviorLayer>

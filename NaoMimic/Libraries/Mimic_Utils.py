@@ -37,11 +37,14 @@ def adjustChoreography(choreographyName, pathToCalibrationProfile):
         for effectorNo in range(len(choreographyData)):
             for axisNo, axis in enumerate(choreographyData[effectorNo]):
                 for rowNo, data in enumerate(axis):
-                    adjustedChoreography[effectorNo][axisNo].append(data*float(coefficients[axisNo][0])
-                                                                        + float(coefficients[axisNo][1]))
+                    adjustedChoreography[effectorNo][axisNo].append(round(data*float(coefficients[effectorNo*6 + axisNo][0])
+                                                                        + float(coefficients[effectorNo*6 + axisNo][1]), 5))
+
     except Exception as e:
         misc.abort("Failed to adjust choreography file" + choreographyName,
                    "Adjust Choreography per Calibration Profile", e)
+
+
 
     # Regroup data as [X, Y, Z, WX, WY, WZ] per row]
     adjustedDataSet = [calibration.joinAxesInRow(adjustedChoreography[0]),
