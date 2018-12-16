@@ -69,11 +69,12 @@ def main(choreographyName, pathCP, robotIP, refFrame):
     useAbsoluteValues = True
 
     # # Degrees of freedom. Must include one definition per effector
-    axisMask = [motion.AXIS_MASK_VEL] * 4
+    axisMask = [motion.AXIS_MASK_VEL] * 3
 
     # # Define effectors list
-    effectorsList = ["Head", "Torso", "RArm", "LArm"]
-    print("Effectors to control: " + effectorsList[0] + effectorsList[1] + effectorsList[2] + effectorsList[3])
+    # effectorsList = ["Head", "Torso", "RArm", "LArm"]
+    effectorsList = ["Head", "RArm", "LArm"]
+    #print("Effectors to control: " + effectorsList[0] + effectorsList[1] + effectorsList[2] + effectorsList[3])
 
     # # Frame per Seconds used on MoCap exported data
     fps = 30

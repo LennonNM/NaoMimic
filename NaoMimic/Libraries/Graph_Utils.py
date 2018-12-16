@@ -49,7 +49,7 @@ def plotCompareSameAxis(referenceAxis, compareAxis1, refLabel="Reference Axis", 
     if title is not None:
         plt.title(title)
     if subtitle is not None:
-        plt.title(subtitle)
+        plt.suptitle(subtitle)
     # Plot axes labels
     if yLabel is not None:
         plt.ylabel(yLabel)

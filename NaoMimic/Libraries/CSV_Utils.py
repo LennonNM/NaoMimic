@@ -316,7 +316,7 @@ def writeCSVReference(dataSet, filePath=None, referenceFrame="ROBOT", whichEffec
                     # 'WX LLeg': dataSet[5][i][3], 'WY LLeg': dataSet[5][i][4], 'WZ LLeg': dataSet[5][i][5],
                     # 'X LLeg': dataSet[5][i][0], 'Y LLeg': dataSet[5][i][1], 'Z LLeg': dataSet[5][i][2]
                     })
-                    
+
             elif whichEffectors == "ARMS" or whichEffectors == "LEGS":
                 for i in range(len(dataSet[0])):
                     writer.writerow({

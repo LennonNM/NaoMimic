@@ -34,8 +34,8 @@ def adjustChoreography(choreographyName, pathToCalibrationProfile):
     # Adjust each axis per effector
     adjustedChoreography = [[[] for axis in range(6)] for effector in range(len(choreographyData))]
     try:
-        for effectorNo in range(len(choreographyData)):
-            for axisNo, axis in enumerate(choreographyData[effectorNo]):
+        for effectorNo, effector in enumerate(choreographyData):
+            for axisNo, axis in enumerate(effector):
                 for rowNo, data in enumerate(axis):
                     adjustedChoreography[effectorNo][axisNo].append(round(data*float(coefficients[effectorNo*6 + axisNo][0])
                                                                         + float(coefficients[effectorNo*6 + axisNo][1]), 5))

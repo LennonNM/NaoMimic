@@ -219,8 +219,6 @@ def createALProxy(naoqiProxyName, robotIP, proxyPort=9559):
 def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effectorsList, timeline, axisMask, frame,
                             fps=30):
 
-    # Define operation parameters
-
     # Move the Nao
     for i in range(0, len(adjustedChoreography[0]), fps):
         try:
@@ -228,7 +226,7 @@ def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effec
 
             motionProxy.positionInterpolations(effectorsList, frame, [
                 adjustedChoreography[0][i:endTake],
-                adjustedChoreography[1][i:endTake],
+                #adjustedChoreography[1][i:endTake],
                 adjustedChoreography[2][i:endTake],
                 adjustedChoreography[3][i:endTake]
             ],
@@ -236,7 +234,7 @@ def mimicFullChoreography(motionProxy, postureProxy, adjustedChoreography, effec
                 timeline[i:endTake],
                 timeline[i:endTake],
                 timeline[i:endTake],
-                timeline[i:endTake]
+                #timeline[i:endTake]
             ])
 
 

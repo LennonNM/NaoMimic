@@ -424,7 +424,7 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
           + "------------------------------------------------------------------\n")
     time.sleep(2)
 
-    singleCSVPath = pathCalProfile + "_AdjustedDataSet"
+    singleCSVPath = pathCalProfile + "_SyncedDataSet"
     csvUtils.writeCSVMocapSingleAdjusted(dataEffectors, singleCSVPath)
 
     # Create Calibration Profile from adjusted data CSV
@@ -465,6 +465,7 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
         axesLabels = ["X", "Y", "Z", "WX", "WY", "WZ"]
         effectorsLabels = ["Head", "Torso", "RArm", "LArm"]
 
+
         # Data sets in single lists
         dataSetNao = [axesHeadNao, axesTorsoNao, axesRArmNao, axesLArmNao]
         dataSetP = [axesHeadP, axesTorsoP, axesRArmP, axesLArmP]
@@ -473,26 +474,42 @@ def performFullCalibration(pathMoCap, pathReferences, pathCalProfile, saveProces
 
         for effectorNo, effector in enumerate(effectorsLabels):
             for axisNo, axis in enumerate(axesLabels):
-                yLabel = None if axisNo < 3 else 'Rotation in radians in respect to ROBOT reference frame'
+                yLabel = 'Motion in meters' if axisNo < 3 else 'Rotation in radians'
 
                 # Plot reference and MoCap data sets together
                 graph.plotCompareSameAxis(dataSetNao[effectorNo][axisNo], dataSetP[effectorNo][axisNo],
-                                          "Nao Reference " + axis, "MoCap Initial " + axis, None, None, True,
+                                          "Nao Reference " + axis + " axis", "MoCap Initial " + axis + " axis",
+                                          None, None, True,
                                           pathMoCap + "Orig_" + effector + "_" + axis, False,
                                           "MoCap exported data compared to Nao reference data",
                                           "Axis " + axis + " for effector " + effector, yLabel)
                 # Plot MoCap orig data with it's filtered set
                 graph.plotCompareSameAxis(dataSetP[effectorNo][axisNo], dataSetFiltP[effectorNo][axisNo],
-                                          "MoCap Initial " + axis, "MoCap Filtered " + axis, None, None, True,
+                                          "MoCap Initial " + axis + " axis", "MoCap Filtered " + axis + " axis",
+                                          None, None, True,
                                           pathMoCap + "Filtered_" + effector + "_" + axis, False,
                                           "MoCap filtered data compared to MoCap original export",
                                           "Axis " + axis + " for effector " + effector, yLabel)
                 # Plot MoCap filtered data and synced sets together
                 graph.plotCompareSameAxis(dataSetFiltP[effectorNo][axisNo], dataSetSyncP[effectorNo][axisNo],
-                                          "MoCap Initial " + axis, "MoCap Synced " + axis,
+                                          "MoCap Initial " + axis + " axis", "MoCap Synced " + axis + " axis",
                                           dataSetNao[effectorNo][axisNo], "Nao Reference" + axis, True,
                                           pathMoCap + "Synced_" + effector + "_" + axis, False,
                                           "MoCap synced data compared to MoCap export and Nao reference data",
+                                          "Axis " + axis + " for effector " + effector, yLabel)
+                # Plot result of applying Calibration Profile to data set used to generate it and compare it to
+                # reference data
+                adjustedAxis = list()
+                for rowNo, data in enumerate(dataSetSyncP[effectorNo][axisNo]):
+                    adjustedAxis.append(round(data*float(coefficientsList[effectorNo][axisNo][0])
+                                                                        + float(coefficientsList[effectorNo][axisNo][1]), 5))
+                graph.plotCompareSameAxis(dataSetNao[effectorNo][axisNo], adjustedAxis,
+                                          "Nao Reference " + axis + " axis",
+                                          "MoCap after adjustment " + axis + " axis",
+                                          dataSetSyncP[effectorNo][axisNo], "MoCap before adjustment " + axis + " axis",
+                                          True,
+                                          pathMoCap + "AdjustedByCP_" + effector + "_" + axis, False,
+                                          "MoCap data from calibration routine adjusted by Calibration Profile",
                                           "Axis " + axis + " for effector " + effector, yLabel)
 
 # ----------------------------------------------------------------------------------------------------------------------
